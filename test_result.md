@@ -177,6 +177,30 @@ backend:
           agent: "testing"
           comment: "Working correctly - analyzes uploaded resume with GPT-4.1, provides comprehensive analysis including strengths, weaknesses, ATS optimization, skill extraction. Response time ~16 seconds."
 
+  - task: "Resume Listing"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "GET /api/resumes works correctly - returns list of all resumes with metadata (excluding text content for performance). Proper sorting by creation date."
+
+  - task: "Resume Retrieval"
+    implemented: true
+    working: true
+    file: "app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "GET /api/resume/{resumeId} works correctly - retrieves specific resume with full content by UUID. Returns 404 for invalid IDs."
+
   - task: "Mock Interview Start"
     implemented: true
     working: true
