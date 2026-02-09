@@ -149,27 +149,33 @@ backend:
 
   - task: "Resume Upload"
     implemented: true
-    working: "NA"
+    working: true
     file: "app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "POST /api/resume/upload - accepts FormData with file, parses PDF using pdf-parse, stores text in MongoDB"
+        - working: true
+          agent: "testing"
+          comment: "Working correctly - tested with text file upload, parses content, stores in MongoDB with UUID, returns resumeId and file metadata. Handles multiple file formats."
 
   - task: "Resume Analysis"
     implemented: true
-    working: "NA"
+    working: true
     file: "app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "POST /api/resume/analyze - sends resume text to GPT-4.1 for analysis"
+        - working: true
+          agent: "testing"
+          comment: "Working correctly - analyzes uploaded resume with GPT-4.1, provides comprehensive analysis including strengths, weaknesses, ATS optimization, skill extraction. Response time ~16 seconds."
 
   - task: "Mock Interview Start"
     implemented: true
