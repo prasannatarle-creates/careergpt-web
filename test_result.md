@@ -179,27 +179,33 @@ backend:
 
   - task: "Mock Interview Start"
     implemented: true
-    working: "NA"
+    working: true
     file: "app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "POST /api/mock-interview/start - starts interview session with role/level/type config"
+        - working: true
+          agent: "testing"
+          comment: "Working correctly - creates interview session with AI-generated first question based on role/level/type. Returns sessionId and first question. Response time ~3 seconds."
 
   - task: "Mock Interview Respond"
     implemented: true
-    working: "NA"
+    working: true
     file: "app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "POST /api/mock-interview/respond - evaluates answers and asks next question"
+        - working: true
+          agent: "testing"
+          comment: "Working correctly - evaluates interview responses, provides scored feedback, and generates next question. Tracks question count and completion status. Response time ~10 seconds."
 
   - task: "Career Path Explorer"
     implemented: true
