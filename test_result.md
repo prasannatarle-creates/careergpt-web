@@ -123,11 +123,14 @@ backend:
     file: "app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
           comment: "GET /api/models returns all 5 models with name, provider, color, guaranteed status"
+        - working: true
+          agent: "testing"
+          comment: "Retested - confirmed all 5 models returned correctly: GPT-4.1, Claude 4 Sonnet, Gemini 2.5 Flash (guaranteed), Grok 3 Mini, Perplexity Sonar Pro (non-guaranteed). All required fields present (name, provider, model, color, guaranteed)."
 
   - task: "Multi-Model AI Chat (5 models)"
     implemented: true
