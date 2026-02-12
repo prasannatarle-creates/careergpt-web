@@ -150,7 +150,7 @@ function LandingPage({ onNavigate }) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { icon: Brain, stat: 'Multi-Model AI', label: 'GPT-4.1 + Gemini 2.5 combined for best results', color: 'text-blue-400' },
+            { icon: Brain, stat: 'Multi-Model AI', label: '5 AI models: GPT-4.1, Claude, Gemini, Grok & Perplexity', color: 'text-blue-400' },
             { icon: Target, stat: 'Smart Analysis', label: 'Resume scoring, skill gaps, and ATS optimization', color: 'text-cyan-400' },
             { icon: Rocket, stat: 'Career Growth', label: 'Personalized paths, interview prep, and job matching', color: 'text-teal-400' },
           ].map((item, i) => (
