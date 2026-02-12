@@ -34,15 +34,24 @@ function getModelConfig(provider, model) {
   const isEmergent = EMERGENT_KEY && EMERGENT_KEY.startsWith('sk-emergent-');
   if (isEmergent) {
     if (provider === 'gemini') return `gemini/${model}`;
+    if (provider === 'xai') return `xai/${model}`;
+    if (provider === 'perplexity') return `perplexity/${model}`;
     return model;
   }
   return `${provider}/${model}`;
 }
 
-const MODELS = [
-  { provider: 'openai', model: 'gpt-4.1', name: 'GPT-4.1' },
-  { provider: 'gemini', model: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash' },
+// All 5 AI models - Claude is guaranteed, Grok & Perplexity are attempted
+const ALL_MODELS = [
+  { provider: 'openai', model: 'gpt-4.1', name: 'GPT-4.1', color: '#10a37f', guaranteed: true },
+  { provider: 'anthropic', model: 'claude-4-sonnet-20250514', name: 'Claude 4 Sonnet', color: '#d97706', guaranteed: true },
+  { provider: 'gemini', model: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', color: '#4285f4', guaranteed: true },
+  { provider: 'xai', model: 'grok-3-mini', name: 'Grok 3 Mini', color: '#ef4444', guaranteed: false },
+  { provider: 'perplexity', model: 'sonar-pro', name: 'Perplexity Sonar Pro', color: '#22d3ee', guaranteed: false },
 ];
+
+// Default active models (all enabled)
+const MODELS = ALL_MODELS;
 
 const CAREER_SYSTEM_PROMPT = `You are CareerGPT, an expert AI career guidance counselor. You help students and job seekers with:
 - Career path selection and exploration
