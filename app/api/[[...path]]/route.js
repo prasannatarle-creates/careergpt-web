@@ -86,14 +86,19 @@ const MOCK_INTERVIEW_SYSTEM = `You are an expert interviewer conducting a mock i
 
 Format your feedback with markdown. Be encouraging but honest.`;
 
-async function callSingleModel(client, modelStr, messages) {
+async function callSingleModel(client, modelStr, messages, timeoutMs = 30000) {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    
     const response = await client.chat.completions.create({
       model: modelStr,
       messages: messages,
       max_tokens: 2000,
       temperature: 0.7,
     });
+    
+    clearTimeout(timeoutId);
     return response.choices[0]?.message?.content || '';
   } catch (error) {
     console.error(`Error calling model ${modelStr}:`, error.message);
