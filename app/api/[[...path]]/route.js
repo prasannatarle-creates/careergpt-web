@@ -180,7 +180,6 @@ Provide a unified, well-formatted markdown response that combines the best insig
     totalModels: modelsToUse.length,
     successCount: validResults.length,
   };
-  };
 }
 
 async function callSingleModelForFeature(systemPrompt, userMessage) {
