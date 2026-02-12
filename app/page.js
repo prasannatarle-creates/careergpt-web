@@ -240,13 +240,44 @@ function AIChat({ onBack }) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [showModelPanel, setShowModelPanel] = useState(false);
+  const [expandedMsg, setExpandedMsg] = useState(null);
   const messagesEndRef = useRef(null);
+
+  // Available AI models
+  const [availableModels, setAvailableModels] = useState([
+    { name: 'GPT-4.1', provider: 'openai', color: '#10a37f', guaranteed: true, active: true },
+    { name: 'Claude 4 Sonnet', provider: 'anthropic', color: '#d97706', guaranteed: true, active: true },
+    { name: 'Gemini 2.5 Flash', provider: 'gemini', color: '#4285f4', guaranteed: true, active: true },
+    { name: 'Grok 3 Mini', provider: 'xai', color: '#ef4444', guaranteed: false, active: true },
+    { name: 'Perplexity Sonar Pro', provider: 'perplexity', color: '#22d3ee', guaranteed: false, active: true },
+  ]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => { scrollToBottom(); }, [messages]);
+
+  // Load models from backend
+  useEffect(() => {
+    fetch('/api/models').then(r => r.json()).then(data => {
+      if (data.models) {
+        setAvailableModels(data.models.map(m => ({ ...m, active: true })));
+      }
+    }).catch(() => {});
+  }, []);
+
+  const activeModelNames = availableModels.filter(m => m.active).map(m => m.name);
+
+  const toggleModel = (name) => {
+    setAvailableModels(prev => {
+      const updated = prev.map(m => m.name === name ? { ...m, active: !m.active } : m);
+      // Ensure at least one model is active
+      if (updated.filter(m => m.active).length === 0) return prev;
+      return updated;
+    });
+  };
 
   const loadSessions = useCallback(async () => {
     try {
@@ -292,7 +323,11 @@ function AIChat({ onBack }) {
       const res = await fetch('/api/chat/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId: activeSession, message: msg }),
+        body: JSON.stringify({ 
+          sessionId: activeSession, 
+          message: msg,
+          activeModels: activeModelNames,
+        }),
       });
       const data = await res.json();
 
@@ -304,8 +339,12 @@ function AIChat({ onBack }) {
         role: 'assistant',
         content: data.response,
         timestamp: new Date().toISOString(),
-        models: data.models,
+        models: data.models || [],
+        failedModels: data.failedModels || [],
         synthesized: data.synthesized,
+        successCount: data.successCount,
+        totalModels: data.totalModels,
+        individualResponses: data.individualResponses || [],
       };
       setMessages(prev => [...prev, assistantMsg]);
       loadSessions();
@@ -323,6 +362,17 @@ function AIChat({ onBack }) {
     'Can you help me create a 6-month career development plan?',
   ];
 
+  const getModelIcon = (provider) => {
+    switch (provider) {
+      case 'openai': return '🟢';
+      case 'anthropic': return '🟠';
+      case 'gemini': return '🔵';
+      case 'xai': return '🔴';
+      case 'perplexity': return '🔷';
+      default: return '⚪';
+    }
+  };
+
   return (
     <div className="h-screen flex bg-slate-950">
       {/* Sidebar */}
@@ -332,7 +382,49 @@ function AIChat({ onBack }) {
             <Plus className="w-4 h-4 mr-2" /> New Chat
           </Button>
         </div>
-        <ScrollArea className="flex-1 px-4">
+
+        {/* Model Toggles in Sidebar */}
+        <div className="px-4 pb-3">
+          <button 
+            onClick={() => setShowModelPanel(!showModelPanel)}
+            className="w-full flex items-center justify-between text-sm text-slate-300 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition-colors"
+          >
+            <span className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-cyan-400" />
+              AI Models ({availableModels.filter(m => m.active).length}/{availableModels.length})
+            </span>
+            <ChevronRight className={`w-4 h-4 transition-transform ${showModelPanel ? 'rotate-90' : ''}`} />
+          </button>
+          {showModelPanel && (
+            <div className="mt-2 space-y-1.5 pl-1">
+              {availableModels.map((m) => (
+                <button
+                  key={m.name}
+                  onClick={() => toggleModel(m.name)}
+                  className={`w-full flex items-center gap-2.5 p-2 rounded-lg text-xs transition-all ${
+                    m.active 
+                      ? 'bg-slate-800 text-white border border-slate-600' 
+                      : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 border border-transparent'
+                  }`}
+                >
+                  <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${m.active ? 'animate-pulse' : 'opacity-30'}`} style={{ backgroundColor: m.color }} />
+                  <span className="flex-1 text-left truncate">{m.name}</span>
+                  {!m.guaranteed && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400">beta</span>
+                  )}
+                  <div className={`w-8 h-4 rounded-full transition-colors flex items-center ${m.active ? 'bg-cyan-600 justify-end' : 'bg-slate-700 justify-start'}`}>
+                    <div className="w-3 h-3 rounded-full bg-white mx-0.5" />
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <Separator className="bg-slate-800" />
+
+        <ScrollArea className="flex-1 px-4 pt-3">
+          <p className="text-xs text-slate-500 mb-2 uppercase tracking-wider">Chat History</p>
           <div className="space-y-1">
             {sessions.map(s => (
               <div
@@ -379,22 +471,44 @@ function AIChat({ onBack }) {
               <p className="text-xs text-slate-400">Multi-Model AI Career Guidance</p>
             </div>
           </div>
-          <Badge className="ml-auto bg-green-500/20 text-green-300 border-green-500/30 text-xs">
-            <div className="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse" />
-            GPT-4.1 + Gemini 2.5
-          </Badge>
+          {/* Active model badges */}
+          <div className="ml-auto flex items-center gap-1.5 flex-wrap justify-end">
+            {availableModels.filter(m => m.active).map(m => (
+              <div key={m.name} className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium border" style={{ 
+                borderColor: m.color + '40', 
+                backgroundColor: m.color + '15',
+                color: m.color,
+              }}>
+                <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: m.color }} />
+                {m.name.split(' ')[0]}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Messages */}
         <ScrollArea className="flex-1 p-6">
           {messages.length === 0 ? (
-            <div className="max-w-2xl mx-auto mt-12">
-              <div className="text-center mb-10">
+            <div className="max-w-2xl mx-auto mt-8">
+              <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center mx-auto mb-4">
                   <Brain className="w-8 h-8 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-2">Welcome to CareerGPT</h2>
-                <p className="text-slate-400">Your AI career advisor powered by multiple models. Ask me anything about careers!</p>
+                <p className="text-slate-400 mb-4">Your AI career advisor powered by {availableModels.filter(m => m.active).length} AI models</p>
+                {/* Model status row */}
+                <div className="flex items-center justify-center gap-3 flex-wrap">
+                  {availableModels.filter(m => m.active).map(m => (
+                    <div key={m.name} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border" style={{ 
+                      borderColor: m.color + '30', 
+                      backgroundColor: m.color + '10',
+                    }}>
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: m.color }} />
+                      <span style={{ color: m.color }}>{m.name}</span>
+                      {!m.guaranteed && <span className="text-[9px] text-amber-400">(beta)</span>}
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {suggestedQuestions.map((q, i) => (
@@ -432,10 +546,64 @@ function AIChat({ onBack }) {
                     ) : (
                       <p className="text-sm">{msg.content}</p>
                     )}
-                    {msg.models && msg.synthesized && (
-                      <div className="mt-2 pt-2 border-t border-slate-700/50 flex items-center gap-2">
-                        <Sparkles className="w-3 h-3 text-cyan-400" />
-                        <span className="text-xs text-slate-400">Synthesized from {msg.models.join(' + ')}</span>
+                    {/* Model attribution bar */}
+                    {msg.role === 'assistant' && !msg.isError && (msg.models || msg.synthesized) && (
+                      <div className="mt-3 pt-3 border-t border-slate-700/50">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {msg.synthesized && (
+                            <div className="flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-cyan-400" />
+                              <span className="text-[10px] text-cyan-400 font-medium">SYNTHESIZED</span>
+                            </div>
+                          )}
+                          {(msg.models || []).map((m, idx) => {
+                            const modelInfo = typeof m === 'object' ? m : { name: m };
+                            const modelDef = availableModels.find(am => am.name === (modelInfo.name || m));
+                            const color = modelInfo.color || modelDef?.color || '#888';
+                            const name = modelInfo.name || m;
+                            const duration = modelInfo.duration;
+                            return (
+                              <div key={idx} className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px]" style={{ backgroundColor: color + '20' }}>
+                                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
+                                <span style={{ color }}>{name}</span>
+                                {duration && <span className="text-slate-500 ml-0.5">{(duration / 1000).toFixed(1)}s</span>}
+                              </div>
+                            );
+                          })}
+                          {(msg.failedModels || []).map((fm, idx) => (
+                            <div key={'f'+idx} className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-red-500/10">
+                              <X className="w-2.5 h-2.5 text-red-400" />
+                              <span className="text-red-400">{fm.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Expandable individual responses */}
+                        {msg.individualResponses && msg.individualResponses.length > 1 && (
+                          <button
+                            onClick={() => setExpandedMsg(expandedMsg === i ? null : i)}
+                            className="mt-2 text-[10px] text-slate-500 hover:text-slate-300 flex items-center gap-1 transition-colors"
+                          >
+                            <ChevronRight className={`w-3 h-3 transition-transform ${expandedMsg === i ? 'rotate-90' : ''}`} />
+                            {expandedMsg === i ? 'Hide' : 'View'} individual model responses
+                          </button>
+                        )}
+                        {expandedMsg === i && msg.individualResponses && (
+                          <div className="mt-2 space-y-2">
+                            {msg.individualResponses.map((ir, idx) => (
+                              <div key={idx} className="p-2 rounded-lg text-xs border" style={{ 
+                                borderColor: (ir.color || '#888') + '30',
+                                backgroundColor: (ir.color || '#888') + '08',
+                              }}>
+                                <div className="flex items-center gap-1.5 mb-1">
+                                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: ir.color || '#888' }} />
+                                  <span className="font-medium" style={{ color: ir.color || '#888' }}>{ir.name}</span>
+                                  {ir.duration && <span className="text-slate-500">({(ir.duration / 1000).toFixed(1)}s)</span>}
+                                </div>
+                                <p className="text-slate-400">{ir.preview}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -452,9 +620,17 @@ function AIChat({ onBack }) {
                     <Bot className="w-5 h-5 text-white" />
                   </div>
                   <div className="bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 mb-2">
                       <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
-                      <span className="text-sm text-slate-400">Consulting GPT-4.1 & Gemini 2.5...</span>
+                      <span className="text-sm text-slate-300">Consulting {activeModelNames.length} AI models...</span>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {availableModels.filter(m => m.active).map((m, idx) => (
+                        <div key={idx} className="flex items-center gap-1 px-2 py-0.5 rounded text-[10px] animate-pulse" style={{ backgroundColor: m.color + '20' }}>
+                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: m.color }} />
+                          <span style={{ color: m.color }}>{m.name}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -483,6 +659,14 @@ function AIChat({ onBack }) {
               >
                 <Send className="w-4 h-4" />
               </Button>
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-[10px] text-slate-500">Active:</span>
+              {availableModels.filter(m => m.active).map(m => (
+                <span key={m.name} className="text-[10px] px-1.5 py-0.5 rounded" style={{ color: m.color, backgroundColor: m.color + '15' }}>
+                  {m.name.split(' ')[0]}
+                </span>
+              ))}
             </div>
           </div>
         </div>
