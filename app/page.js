@@ -118,7 +118,7 @@ function LandingPage({ onNavigate }) {
       <div className="container mx-auto px-6 -mt-16 relative z-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { icon: MessageSquare, title: 'AI Career Chat', desc: 'Multi-model AI guidance combining GPT-4.1 & Gemini', color: 'from-blue-500 to-blue-600', nav: 'chat' },
+            { icon: MessageSquare, title: 'AI Career Chat', desc: '5-model AI: GPT-4.1, Claude, Gemini, Grok & Perplexity combined', color: 'from-blue-500 to-blue-600', nav: 'chat' },
             { icon: FileText, title: 'Resume Analyzer', desc: 'Upload & get AI-powered resume feedback instantly', color: 'from-cyan-500 to-teal-500', nav: 'resume' },
             { icon: Mic, title: 'Mock Interviews', desc: 'Practice with AI interviewer and get real-time feedback', color: 'from-violet-500 to-purple-600', nav: 'interview' },
             { icon: Compass, title: 'Career Explorer', desc: 'Discover career paths matched to your skills', color: 'from-amber-500 to-orange-500', nav: 'career' },
