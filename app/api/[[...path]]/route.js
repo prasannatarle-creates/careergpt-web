@@ -106,8 +106,13 @@ async function callSingleModel(client, modelStr, messages, timeoutMs = 30000) {
   }
 }
 
-async function callMultiModel(userMessage, sessionMessages = []) {
+async function callMultiModel(userMessage, sessionMessages = [], activeModelNames = null) {
   const client = getOpenAIClient(EMERGENT_KEY);
+  
+  // Filter to only active models if specified
+  const modelsToUse = activeModelNames 
+    ? ALL_MODELS.filter(m => activeModelNames.includes(m.name))
+    : MODELS;
   
   const baseMessages = [
     { role: 'system', content: CAREER_SYSTEM_PROMPT },
@@ -115,15 +120,26 @@ async function callMultiModel(userMessage, sessionMessages = []) {
     { role: 'user', content: userMessage },
   ];
 
-  // Call multiple models in parallel
-  const modelPromises = MODELS.map(async (m) => {
+  // Call multiple models in parallel with individual timeouts
+  const modelPromises = modelsToUse.map(async (m) => {
+    const startTime = Date.now();
     const modelStr = getModelConfig(m.provider, m.model);
-    const result = await callSingleModel(client, modelStr, baseMessages);
-    return { name: m.name, provider: m.provider, response: result };
+    const result = await callSingleModel(client, modelStr, baseMessages, 30000);
+    const duration = Date.now() - startTime;
+    return { 
+      name: m.name, 
+      provider: m.provider, 
+      model: m.model,
+      color: m.color,
+      response: result, 
+      duration,
+      success: !!result,
+    };
   });
 
   const results = await Promise.all(modelPromises);
   const validResults = results.filter(r => r.response);
+  const failedModels = results.filter(r => !r.response);
 
   if (validResults.length === 0) {
     throw new Error('All models failed to respond');
@@ -133,12 +149,15 @@ async function callMultiModel(userMessage, sessionMessages = []) {
     return {
       combinedResponse: validResults[0].response,
       modelResponses: validResults,
+      failedModels: failedModels.map(r => ({ name: r.name, provider: r.provider })),
       synthesized: false,
+      totalModels: modelsToUse.length,
+      successCount: validResults.length,
     };
   }
 
   // Synthesize responses from multiple models
-  const synthesisPrompt = `You are a career guidance synthesizer. Below are responses from multiple AI models to a career-related query. Combine them into a single, comprehensive, well-structured response that takes the best insights from each.
+  const synthesisPrompt = `You are a career guidance synthesizer. Below are responses from ${validResults.length} AI models to a career-related query. Combine them into a single, comprehensive, well-structured response that takes the best insights from each.
 
 Original query: "${userMessage}"
 
@@ -156,7 +175,11 @@ Provide a unified, well-formatted markdown response that combines the best insig
   return {
     combinedResponse: synthesized || validResults[0].response,
     modelResponses: validResults,
+    failedModels: failedModels.map(r => ({ name: r.name, provider: r.provider })),
     synthesized: true,
+    totalModels: modelsToUse.length,
+    successCount: validResults.length,
+  };
   };
 }
 
