@@ -537,6 +537,17 @@ export async function GET(request) {
 
   try {
     if (path === '/health') return handleHealthCheck();
+    if (path === '/models') {
+      return NextResponse.json({ 
+        models: ALL_MODELS.map(m => ({ 
+          name: m.name, 
+          provider: m.provider, 
+          model: m.model, 
+          color: m.color, 
+          guaranteed: m.guaranteed 
+        })) 
+      });
+    }
     if (path === '/chat/sessions') return handleGetSessions();
     if (path.startsWith('/chat/sessions/')) {
       const id = path.split('/chat/sessions/')[1];
