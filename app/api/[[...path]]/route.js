@@ -226,13 +226,16 @@ async function handleChatSend(body) {
   const userMsg = { role: 'user', content: message, timestamp: new Date().toISOString() };
 
   try {
-    const result = await callMultiModel(message, recentMessages);
+    const result = await callMultiModel(message, recentMessages, activeModels);
     const assistantMsg = {
       role: 'assistant',
       content: result.combinedResponse,
       timestamp: new Date().toISOString(),
       models: result.modelResponses.map(r => r.name),
+      failedModels: result.failedModels || [],
       synthesized: result.synthesized,
+      successCount: result.successCount,
+      totalModels: result.totalModels,
     };
 
     await db.collection('sessions').updateOne(
@@ -246,8 +249,17 @@ async function handleChatSend(body) {
     return NextResponse.json({
       sessionId: sid,
       response: result.combinedResponse,
-      models: result.modelResponses.map(r => r.name),
+      models: result.modelResponses.map(r => ({ name: r.name, color: r.color, duration: r.duration })),
+      failedModels: result.failedModels || [],
       synthesized: result.synthesized,
+      successCount: result.successCount,
+      totalModels: result.totalModels,
+      individualResponses: result.modelResponses.map(r => ({
+        name: r.name,
+        color: r.color,
+        preview: r.response ? r.response.substring(0, 200) + '...' : null,
+        duration: r.duration,
+      })),
     });
   } catch (error) {
     console.error('Chat error:', error);
