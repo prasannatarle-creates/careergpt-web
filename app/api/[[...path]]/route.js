@@ -194,7 +194,7 @@ async function callSingleModelForFeature(systemPrompt, userMessage) {
 
 // Route handlers
 async function handleChatSend(body) {
-  const { sessionId, message } = body;
+  const { sessionId, message, activeModels } = body;
   if (!message) return NextResponse.json({ error: 'Message is required' }, { status: 400 });
 
   const db = await getDb();
