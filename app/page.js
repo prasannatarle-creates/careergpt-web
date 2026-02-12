@@ -90,7 +90,7 @@ function LandingPage({ onNavigate }) {
               </span>
             </h1>
             <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Combining GPT-4.1 and Gemini 2.5 to deliver the most comprehensive career guidance.
+              Combining 5 AI models — GPT-4.1, Claude, Gemini, Grok & Perplexity — to deliver the most comprehensive career guidance.
               Resume analysis, mock interviews, and personalized career paths — all in one platform.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
