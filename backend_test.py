@@ -1,508 +1,650 @@
 #!/usr/bin/env python3
-"""
-CareerGPT Backend API Tests
-Tests all backend endpoints with real data and comprehensive error handling.
-"""
 import requests
 import json
 import time
-import os
 import tempfile
+import os
 from typing import Dict, Any, Optional
+
+# Base URL from environment
+BASE_URL = "https://interview-prep-97.preview.emergentagent.com/api"
 
 class CareerGPTTester:
     def __init__(self):
-        self.base_url = "https://interview-prep-97.preview.emergentagent.com/api"
         self.session = requests.Session()
-        self.session.timeout = 60  # 60 second timeout for AI endpoints
-        self.test_session_id = None
-        self.test_resume_id = None
-        self.test_interview_session_id = None
+        self.auth_token = None
+        self.user_data = None
+        self.test_results = {}
         
-    def log_test(self, test_name: str, success: bool, details: str = ""):
+    def log_test(self, test_name: str, success: bool, details: str = "", response_data: Any = None):
+        """Log test results"""
         status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{status} - {test_name}")
-        if details:
-            print(f"    {details}")
-        print()
+        print(f"{status} {test_name}: {details}")
+        self.test_results[test_name] = {
+            "success": success,
+            "details": details,
+            "response_data": response_data
+        }
+    
+    def make_request(self, method: str, endpoint: str, data: Any = None, files: Any = None, 
+                    timeout: int = 30, use_auth: bool = False) -> Dict[str, Any]:
+        """Make HTTP request with proper error handling"""
+        url = f"{BASE_URL}{endpoint}"
+        headers = {"Content-Type": "application/json"} if not files else {}
         
-    def test_health_check(self) -> bool:
-        """Test GET /api/health - Health check"""
+        if use_auth and self.auth_token:
+            headers["Authorization"] = f"Bearer {self.auth_token}"
+        
         try:
-            print("Testing Health Check API...")
-            response = self.session.get(f"{self.base_url}/health")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('status') == 'healthy' and 'timestamp' in data:
-                    self.log_test("Health Check", True, f"Status: {data['status']}, DB ping successful")
-                    return True
+            if method == "GET":
+                response = self.session.get(url, headers=headers, timeout=timeout)
+            elif method == "POST":
+                if files:
+                    headers.pop("Content-Type", None)  # Let requests set it for multipart
+                    response = self.session.post(url, headers=headers, files=files, timeout=timeout)
                 else:
-                    self.log_test("Health Check", False, f"Unexpected response structure: {data}")
-                    return False
-            else:
-                self.log_test("Health Check", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Health Check", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_chat_send(self) -> bool:
-        """Test POST /api/chat/send - Send chat message"""
-        try:
-            print("Testing Chat Send API (AI endpoint - may take 15-30 seconds)...")
-            payload = {
-                "message": "What are the key skills for a software engineer?"
-            }
+                    response = self.session.post(url, headers=headers, json=data, timeout=timeout)
+            elif method == "PUT":
+                response = self.session.put(url, headers=headers, json=data, timeout=timeout)
+            elif method == "DELETE":
+                response = self.session.delete(url, headers=headers, timeout=timeout)
             
-            start_time = time.time()
-            response = self.session.post(f"{self.base_url}/chat/send", json=payload)
-            duration = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                required_fields = ['sessionId', 'response', 'models']
-                
-                if all(field in data for field in required_fields):
-                    self.test_session_id = data['sessionId']  # Store for later tests
-                    models_used = data.get('models', [])
-                    synthesized = data.get('synthesized', False)
-                    
-                    self.log_test("Chat Send", True, 
-                        f"Response in {duration:.1f}s, Models: {models_used}, "
-                        f"Synthesized: {synthesized}, SessionID: {self.test_session_id}")
-                    return True
-                else:
-                    missing = [f for f in required_fields if f not in data]
-                    self.log_test("Chat Send", False, f"Missing fields: {missing}")
-                    return False
-            else:
-                self.log_test("Chat Send", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Chat Send", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_get_sessions(self) -> bool:
-        """Test GET /api/chat/sessions - List all sessions"""
-        try:
-            print("Testing Get Chat Sessions API...")
-            response = self.session.get(f"{self.base_url}/chat/sessions")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if 'sessions' in data and isinstance(data['sessions'], list):
-                    sessions_count = len(data['sessions'])
-                    self.log_test("Get Chat Sessions", True, f"Retrieved {sessions_count} sessions")
-                    return True
-                else:
-                    self.log_test("Get Chat Sessions", False, f"Invalid response structure: {data}")
-                    return False
-            else:
-                self.log_test("Get Chat Sessions", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Get Chat Sessions", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_get_specific_session(self) -> bool:
-        """Test GET /api/chat/sessions/{sessionId} - Get specific session"""
-        if not self.test_session_id:
-            self.log_test("Get Specific Session", False, "No test session ID available from previous test")
-            return False
-            
-        try:
-            print("Testing Get Specific Session API...")
-            response = self.session.get(f"{self.base_url}/chat/sessions/{self.test_session_id}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if 'session' in data:
-                    session = data['session']
-                    if session.get('id') == self.test_session_id and 'messages' in session:
-                        message_count = len(session['messages'])
-                        self.log_test("Get Specific Session", True, 
-                            f"Session found with {message_count} messages")
-                        return True
-                    else:
-                        self.log_test("Get Specific Session", False, "Session structure invalid")
-                        return False
-                else:
-                    self.log_test("Get Specific Session", False, f"No session in response: {data}")
-                    return False
-            elif response.status_code == 404:
-                self.log_test("Get Specific Session", False, "Session not found (404)")
-                return False
-            else:
-                self.log_test("Get Specific Session", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Get Specific Session", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_resume_upload(self) -> bool:
-        """Test POST /api/resume/upload - Upload resume file"""
-        try:
-            print("Testing Resume Upload API...")
-            # Create a sample resume file
-            resume_content = """John Doe
-Software Engineer
-
-EXPERIENCE:
-- 3 years at Tech Company as Senior Developer
-- Built scalable web applications using Python and React
-- Led team of 5 developers on cloud migration project
-
-SKILLS:
-- Programming: Python, JavaScript, Java, SQL
-- Frameworks: React, Django, Flask, Node.js
-- Cloud: AWS, Docker, Kubernetes
-- Databases: PostgreSQL, MongoDB, Redis
-
-EDUCATION:
-- BS Computer Science, University of Technology (2018)
-
-ACHIEVEMENTS:
-- Increased system performance by 40%
-- Reduced deployment time by 60% through CI/CD implementation
-- Mentored 3 junior developers"""
-
-            # Create temporary file
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
-                f.write(resume_content)
-                temp_file_path = f.name
-            
+            # Try to parse JSON response
             try:
-                with open(temp_file_path, 'rb') as f:
-                    files = {'file': ('john_doe_resume.txt', f, 'text/plain')}
-                    response = self.session.post(f"{self.base_url}/resume/upload", files=files)
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    required_fields = ['resumeId', 'fileName', 'textPreview', 'charCount']
-                    
-                    if all(field in data for field in required_fields):
-                        self.test_resume_id = data['resumeId']  # Store for later tests
-                        char_count = data['charCount']
-                        file_name = data['fileName']
-                        
-                        self.log_test("Resume Upload", True, 
-                            f"File: {file_name}, Characters: {char_count}, ResumeID: {self.test_resume_id}")
-                        return True
-                    else:
-                        missing = [f for f in required_fields if f not in data]
-                        self.log_test("Resume Upload", False, f"Missing fields: {missing}")
-                        return False
-                else:
-                    self.log_test("Resume Upload", False, f"HTTP {response.status_code}: {response.text}")
-                    return False
-                    
-            finally:
-                # Clean up temp file
-                if os.path.exists(temp_file_path):
-                    os.unlink(temp_file_path)
-                    
-        except Exception as e:
-            self.log_test("Resume Upload", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_resume_analyze(self) -> bool:
-        """Test POST /api/resume/analyze - Analyze resume"""
-        if not self.test_resume_id:
-            self.log_test("Resume Analyze", False, "No test resume ID available from upload test")
-            return False
+                response_data = response.json()
+            except:
+                response_data = {"text": response.text, "status_code": response.status_code}
             
-        try:
-            print("Testing Resume Analyze API (AI endpoint - may take 15-30 seconds)...")
-            payload = {"resumeId": self.test_resume_id}
-            
-            start_time = time.time()
-            response = self.session.post(f"{self.base_url}/resume/analyze", json=payload)
-            duration = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                if 'analysis' in data and 'resumeId' in data:
-                    analysis_length = len(data['analysis'])
-                    self.log_test("Resume Analyze", True, 
-                        f"Analysis completed in {duration:.1f}s, Length: {analysis_length} chars")
-                    return True
-                else:
-                    self.log_test("Resume Analyze", False, f"Missing analysis or resumeId: {data}")
-                    return False
-            elif response.status_code == 404:
-                self.log_test("Resume Analyze", False, "Resume not found (404)")
-                return False
-            else:
-                self.log_test("Resume Analyze", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Resume Analyze", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_get_resumes(self) -> bool:
-        """Test GET /api/resumes - List all resumes"""
-        try:
-            print("Testing Get Resumes API...")
-            response = self.session.get(f"{self.base_url}/resumes")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if 'resumes' in data and isinstance(data['resumes'], list):
-                    resume_count = len(data['resumes'])
-                    self.log_test("Get Resumes", True, f"Retrieved {resume_count} resumes")
-                    return True
-                else:
-                    self.log_test("Get Resumes", False, f"Invalid response structure: {data}")
-                    return False
-            else:
-                self.log_test("Get Resumes", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Get Resumes", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_get_specific_resume(self) -> bool:
-        """Test GET /api/resume/{resumeId} - Get specific resume"""
-        if not self.test_resume_id:
-            self.log_test("Get Specific Resume", False, "No test resume ID available from upload test")
-            return False
-            
-        try:
-            print("Testing Get Specific Resume API...")
-            response = self.session.get(f"{self.base_url}/resume/{self.test_resume_id}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if 'resume' in data:
-                    resume = data['resume']
-                    if resume.get('id') == self.test_resume_id and 'textContent' in resume:
-                        file_name = resume.get('fileName', 'Unknown')
-                        self.log_test("Get Specific Resume", True, f"Resume found: {file_name}")
-                        return True
-                    else:
-                        self.log_test("Get Specific Resume", False, "Resume structure invalid")
-                        return False
-                else:
-                    self.log_test("Get Specific Resume", False, f"No resume in response: {data}")
-                    return False
-            elif response.status_code == 404:
-                self.log_test("Get Specific Resume", False, "Resume not found (404)")
-                return False
-            else:
-                self.log_test("Get Specific Resume", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Get Specific Resume", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_mock_interview_start(self) -> bool:
-        """Test POST /api/mock-interview/start - Start mock interview"""
-        try:
-            print("Testing Mock Interview Start API (AI endpoint - may take 15-30 seconds)...")
-            payload = {
-                "role": "Senior Software Engineer",
-                "level": "senior-level", 
-                "type": "technical"
+            return {
+                "status_code": response.status_code,
+                "success": 200 <= response.status_code < 300,
+                "data": response_data,
+                "headers": dict(response.headers)
             }
-            
-            start_time = time.time()
-            response = self.session.post(f"{self.base_url}/mock-interview/start", json=payload)
-            duration = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                required_fields = ['sessionId', 'question', 'questionNumber']
-                
-                if all(field in data for field in required_fields):
-                    self.test_interview_session_id = data['sessionId']  # Store for later test
-                    question_num = data['questionNumber']
-                    question_preview = data['question'][:100] + "..." if len(data['question']) > 100 else data['question']
-                    
-                    self.log_test("Mock Interview Start", True, 
-                        f"Started in {duration:.1f}s, Question #{question_num}, SessionID: {self.test_interview_session_id}")
-                    return True
-                else:
-                    missing = [f for f in required_fields if f not in data]
-                    self.log_test("Mock Interview Start", False, f"Missing fields: {missing}")
-                    return False
-            else:
-                self.log_test("Mock Interview Start", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
+        
         except Exception as e:
-            self.log_test("Mock Interview Start", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_mock_interview_respond(self) -> bool:
-        """Test POST /api/mock-interview/respond - Respond to interview"""
-        if not self.test_interview_session_id:
-            self.log_test("Mock Interview Respond", False, "No test interview session ID available")
-            return False
-            
-        try:
-            print("Testing Mock Interview Respond API (AI endpoint - may take 15-30 seconds)...")
-            payload = {
-                "sessionId": self.test_interview_session_id,
-                "answer": "I have 5+ years of experience in software development, specializing in backend systems using Python and distributed architectures. I've led teams of 3-5 developers and have experience with microservices, cloud platforms like AWS, and have delivered several high-impact projects that improved system performance by 40%."
+            return {
+                "status_code": 500,
+                "success": False,
+                "data": {"error": str(e)},
+                "headers": {}
             }
-            
-            start_time = time.time()
-            response = self.session.post(f"{self.base_url}/mock-interview/respond", json=payload)
-            duration = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                required_fields = ['sessionId', 'feedback', 'questionNumber']
-                
-                if all(field in data for field in required_fields):
-                    question_num = data['questionNumber']
-                    is_complete = data.get('isComplete', False)
-                    feedback_preview = data['feedback'][:150] + "..." if len(data['feedback']) > 150 else data['feedback']
-                    
-                    self.log_test("Mock Interview Respond", True, 
-                        f"Response processed in {duration:.1f}s, Question #{question_num}, Complete: {is_complete}")
-                    return True
-                else:
-                    missing = [f for f in required_fields if f not in data]
-                    self.log_test("Mock Interview Respond", False, f"Missing fields: {missing}")
-                    return False
-            elif response.status_code == 404:
-                self.log_test("Mock Interview Respond", False, "Session not found (404)")
-                return False
-            else:
-                self.log_test("Mock Interview Respond", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Mock Interview Respond", False, f"Exception: {str(e)}")
-            return False
     
-    def test_career_paths_explore(self) -> bool:
-        """Test POST /api/career-paths/explore - Explore career paths"""
-        try:
-            print("Testing Career Paths Explore API (AI endpoint - may take 15-30 seconds)...")
-            payload = {
-                "interests": "Machine Learning and AI",
-                "skills": "Python, TensorFlow, Data Analysis, SQL",
-                "experience": "3 years in data science"
-            }
-            
-            start_time = time.time()
-            response = self.session.post(f"{self.base_url}/career-paths/explore", json=payload)
-            duration = time.time() - start_time
-            
-            if response.status_code == 200:
-                data = response.json()
-                if 'paths' in data:
-                    paths_length = len(data['paths'])
-                    models_used = data.get('models', [])
-                    
-                    self.log_test("Career Paths Explore", True, 
-                        f"Completed in {duration:.1f}s, Response length: {paths_length} chars, Models: {models_used}")
-                    return True
-                else:
-                    self.log_test("Career Paths Explore", False, f"No paths in response: {data}")
-                    return False
-            else:
-                self.log_test("Career Paths Explore", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Career Paths Explore", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_delete_session(self) -> bool:
-        """Test DELETE /api/chat/sessions/{sessionId} - Delete a session"""
-        if not self.test_session_id:
-            self.log_test("Delete Session", False, "No test session ID available to delete")
-            return False
-            
-        try:
-            print("Testing Delete Session API...")
-            response = self.session.delete(f"{self.base_url}/chat/sessions/{self.test_session_id}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('success') == True:
-                    self.log_test("Delete Session", True, f"Session {self.test_session_id} deleted successfully")
-                    return True
-                else:
-                    self.log_test("Delete Session", False, f"Unexpected response: {data}")
-                    return False
-            else:
-                self.log_test("Delete Session", False, f"HTTP {response.status_code}: {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Delete Session", False, f"Exception: {str(e)}")
-            return False
-
-    def run_all_tests(self):
-        """Run all backend tests in logical order"""
-        print("=" * 80)
-        print("CareerGPT Backend API Testing")
-        print(f"Base URL: {self.base_url}")
-        print("=" * 80)
+    def test_health_endpoint(self):
+        """Test health check endpoint"""
+        print("\n=== Testing Health Endpoint ===")
+        response = self.make_request("GET", "/health")
         
-        # Test results tracking
-        results = {}
-        
-        # Run tests in logical dependency order
-        tests = [
-            ("Health Check", self.test_health_check),
-            ("Chat Send", self.test_chat_send),
-            ("Get Sessions", self.test_get_sessions), 
-            ("Get Specific Session", self.test_get_specific_session),
-            ("Resume Upload", self.test_resume_upload),
-            ("Resume Analyze", self.test_resume_analyze),
-            ("Get Resumes", self.test_get_resumes),
-            ("Get Specific Resume", self.test_get_specific_resume),
-            ("Mock Interview Start", self.test_mock_interview_start),
-            ("Mock Interview Respond", self.test_mock_interview_respond),
-            ("Career Paths Explore", self.test_career_paths_explore),
-            ("Delete Session", self.test_delete_session),
-        ]
-        
-        for test_name, test_func in tests:
-            try:
-                results[test_name] = test_func()
-            except Exception as e:
-                print(f"❌ CRITICAL ERROR in {test_name}: {str(e)}")
-                results[test_name] = False
-            
-            # Brief pause between tests
-            time.sleep(1)
-        
-        # Summary
-        print("=" * 80)
-        print("TEST RESULTS SUMMARY")
-        print("=" * 80)
-        
-        passed = sum(1 for r in results.values() if r)
-        total = len(results)
-        
-        for test_name, result in results.items():
-            status = "✅ PASS" if result else "❌ FAIL"
-            print(f"{status} - {test_name}")
-        
-        print(f"\nOverall: {passed}/{total} tests passed ({passed/total*100:.1f}%)")
-        
-        if passed == total:
-            print("🎉 ALL TESTS PASSED! CareerGPT Backend is fully functional.")
+        if response["success"] and response["data"].get("status") == "healthy":
+            self.log_test("Health Check", True, "Health endpoint working correctly")
+            return True
         else:
-            failed_tests = [name for name, result in results.items() if not result]
-            print(f"⚠️  FAILED TESTS: {', '.join(failed_tests)}")
+            self.log_test("Health Check", False, f"Health check failed: {response}")
+            return False
+    
+    def test_models_endpoint(self):
+        """Test models endpoint"""
+        print("\n=== Testing Models Endpoint ===")
+        response = self.make_request("GET", "/models")
         
-        return results
+        if response["success"]:
+            models = response["data"].get("models", [])
+            if len(models) == 5:
+                model_names = [m.get("name") for m in models]
+                self.log_test("Models API", True, f"Retrieved 5 models: {model_names}")
+                return True
+            else:
+                self.log_test("Models API", False, f"Expected 5 models, got {len(models)}")
+                return False
+        else:
+            self.log_test("Models API", False, f"Models endpoint failed: {response}")
+            return False
+    
+    def test_auth_register(self):
+        """Test user registration"""
+        print("\n=== Testing User Registration ===")
+        
+        # Use realistic test data
+        test_user = {
+            "name": "Alex Johnson",
+            "email": "alex.johnson@test.com",
+            "password": "SecurePass123"
+        }
+        
+        response = self.make_request("POST", "/auth/register", test_user)
+        
+        if response["success"]:
+            data = response["data"]
+            if "token" in data and "user" in data:
+                self.auth_token = data["token"]
+                self.user_data = data["user"]
+                self.log_test("Auth Register", True, f"User registered successfully: {data['user']['email']}")
+                return True
+            else:
+                self.log_test("Auth Register", False, f"Missing token or user in response: {data}")
+                return False
+        else:
+            self.log_test("Auth Register", False, f"Registration failed: {response}")
+            return False
+    
+    def test_auth_login(self):
+        """Test user login"""
+        print("\n=== Testing User Login ===")
+        
+        login_data = {
+            "email": "alex.johnson@test.com", 
+            "password": "SecurePass123"
+        }
+        
+        response = self.make_request("POST", "/auth/login", login_data)
+        
+        if response["success"]:
+            data = response["data"]
+            if "token" in data and "user" in data:
+                # Verify token works
+                login_token = data["token"]
+                self.log_test("Auth Login", True, f"Login successful for: {data['user']['email']}")
+                return True
+            else:
+                self.log_test("Auth Login", False, f"Missing token or user in response: {data}")
+                return False
+        else:
+            self.log_test("Auth Login", False, f"Login failed: {response}")
+            return False
+    
+    def test_profile_get(self):
+        """Test getting user profile"""
+        print("\n=== Testing Get Profile ===")
+        
+        response = self.make_request("GET", "/profile", use_auth=True)
+        
+        if response["success"]:
+            data = response["data"]
+            if "user" in data and "stats" in data:
+                user = data["user"]
+                stats = data["stats"]
+                self.log_test("Profile Get", True, 
+                    f"Profile retrieved for {user.get('name')} with stats: {list(stats.keys())}")
+                return True
+            else:
+                self.log_test("Profile Get", False, f"Missing user or stats in profile: {data}")
+                return False
+        else:
+            self.log_test("Profile Get", False, f"Get profile failed: {response}")
+            return False
+    
+    def test_profile_update(self):
+        """Test updating user profile"""
+        print("\n=== Testing Update Profile ===")
+        
+        profile_data = {
+            "profile": {
+                "skills": ["Python", "React", "JavaScript", "Node.js"],
+                "interests": ["AI", "Machine Learning", "Web Development"], 
+                "education": "B.Tech Computer Science",
+                "experience": "3 years as Software Developer"
+            }
+        }
+        
+        response = self.make_request("PUT", "/profile", profile_data, use_auth=True)
+        
+        if response["success"]:
+            data = response["data"]
+            if data.get("success"):
+                self.log_test("Profile Update", True, "Profile updated successfully")
+                return True
+            else:
+                self.log_test("Profile Update", False, f"Profile update response: {data}")
+                return False
+        else:
+            self.log_test("Profile Update", False, f"Profile update failed: {response}")
+            return False
+    
+    def test_chat_send(self):
+        """Test sending chat message with AI models"""
+        print("\n=== Testing Chat Send (AI) ===")
+        
+        chat_data = {
+            "message": "What are the key skills needed for a Python developer role?",
+            "activeModels": ["GPT-4.1"]  # Use single model for speed
+        }
+        
+        response = self.make_request("POST", "/chat/send", chat_data, use_auth=True, timeout=90)
+        
+        if response["success"]:
+            data = response["data"]
+            if "sessionId" in data and "response" in data and "models" in data:
+                session_id = data["sessionId"]
+                ai_response = data["response"][:100] + "..." if len(data["response"]) > 100 else data["response"]
+                self.log_test("Chat Send", True, 
+                    f"AI response received from {len(data['models'])} models. Session: {session_id}")
+                return True, session_id
+            else:
+                self.log_test("Chat Send", False, f"Missing fields in chat response: {data}")
+                return False, None
+        else:
+            self.log_test("Chat Send", False, f"Chat send failed: {response}")
+            return False, None
+    
+    def test_chat_sessions(self):
+        """Test getting chat sessions"""
+        print("\n=== Testing Get Chat Sessions ===")
+        
+        response = self.make_request("GET", "/chat/sessions", use_auth=True)
+        
+        if response["success"]:
+            data = response["data"]
+            if "sessions" in data:
+                sessions = data["sessions"]
+                self.log_test("Chat Sessions", True, f"Retrieved {len(sessions)} chat sessions")
+                return True
+            else:
+                self.log_test("Chat Sessions", False, f"Missing sessions in response: {data}")
+                return False
+        else:
+            self.log_test("Chat Sessions", False, f"Get sessions failed: {response}")
+            return False
+    
+    def test_resume_upload(self):
+        """Test resume file upload"""
+        print("\n=== Testing Resume Upload ===")
+        
+        # Create test resume file
+        resume_content = """
+ALEX JOHNSON
+Software Developer
+Email: alex.johnson@test.com | Phone: (555) 123-4567
+
+EXPERIENCE
+Software Developer | TechCorp Inc. | 2021-Present
+• Developed web applications using Python, Django, and React
+• Built RESTful APIs handling 10k+ daily requests
+• Implemented automated testing reducing bugs by 40%
+• Collaborated with cross-functional teams in Agile environment
+
+Junior Developer | StartupXYZ | 2020-2021
+• Created responsive web interfaces using HTML, CSS, JavaScript
+• Integrated third-party APIs and payment systems
+• Participated in code reviews and maintained documentation
+
+EDUCATION
+Bachelor of Technology in Computer Science
+State University | 2016-2020 | GPA: 3.8/4.0
+
+SKILLS
+• Programming: Python, JavaScript, Java, SQL
+• Frontend: React, HTML5, CSS3, Bootstrap
+• Backend: Django, Node.js, Express.js
+• Database: PostgreSQL, MongoDB
+• Tools: Git, Docker, AWS, Jenkins
+
+PROJECTS
+E-Commerce Platform (2021)
+• Built full-stack web application with React and Django
+• Implemented user authentication and payment processing
+• Deployed on AWS with CI/CD pipeline
+
+Task Management App (2020)  
+• Developed mobile-responsive task tracker
+• Used React hooks and context for state management
+• Integrated with Firebase for real-time updates
+"""
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            f.write(resume_content)
+            temp_path = f.name
+        
+        try:
+            with open(temp_path, 'rb') as f:
+                files = {'file': ('resume.txt', f, 'text/plain')}
+                response = self.make_request("POST", "/resume/upload", files=files, use_auth=True)
+            
+            if response["success"]:
+                data = response["data"]
+                if "resumeId" in data and "fileName" in data:
+                    resume_id = data["resumeId"]
+                    self.log_test("Resume Upload", True, 
+                        f"Resume uploaded successfully. ID: {resume_id}, File: {data['fileName']}")
+                    return True, resume_id
+                else:
+                    self.log_test("Resume Upload", False, f"Missing resumeId or fileName: {data}")
+                    return False, None
+            else:
+                self.log_test("Resume Upload", False, f"Resume upload failed: {response}")
+                return False, None
+        
+        finally:
+            os.unlink(temp_path)
+    
+    def test_resume_analyze(self, resume_id: str):
+        """Test ATS resume analysis"""
+        print("\n=== Testing Resume ATS Analysis ===")
+        
+        analyze_data = {
+            "resumeId": resume_id,
+            "targetRole": "Software Engineer"
+        }
+        
+        response = self.make_request("POST", "/resume/analyze", analyze_data, use_auth=True, timeout=90)
+        
+        if response["success"]:
+            data = response["data"]
+            if "analysis" in data:
+                analysis = data["analysis"]
+                # Check for structured JSON response
+                required_fields = ["atsScore", "sections", "keywords", "strengths", "weaknesses"]
+                missing_fields = [field for field in required_fields if field not in analysis]
+                
+                if not missing_fields:
+                    ats_score = analysis.get("atsScore", 0)
+                    self.log_test("Resume ATS Analysis", True, 
+                        f"ATS analysis complete. Score: {ats_score}/100. Structured JSON returned.")
+                    return True
+                else:
+                    self.log_test("Resume ATS Analysis", False, 
+                        f"Missing required fields in analysis: {missing_fields}")
+                    return False
+            else:
+                self.log_test("Resume ATS Analysis", False, f"Missing analysis in response: {data}")
+                return False
+        else:
+            self.log_test("Resume ATS Analysis", False, f"Resume analysis failed: {response}")
+            return False
+    
+    def test_career_path_generate(self):
+        """Test career path generation"""
+        print("\n=== Testing Career Path Generation ===")
+        
+        career_data = {
+            "skills": "Python,React,JavaScript,Django",
+            "interests": "AI,Machine Learning,Web Development",
+            "education": "B.Tech Computer Science",
+            "experience": "3 years Software Developer"
+        }
+        
+        response = self.make_request("POST", "/career-path/generate", career_data, use_auth=True, timeout=90)
+        
+        if response["success"]:
+            data = response["data"]
+            if "careerPath" in data:
+                career_path = data["careerPath"]
+                # Check for structured response
+                required_fields = ["title", "summary", "matchScore", "timeline"]
+                missing_fields = [field for field in required_fields if field not in career_path]
+                
+                if not missing_fields:
+                    title = career_path.get("title", "")
+                    match_score = career_path.get("matchScore", 0)
+                    self.log_test("Career Path Generate", True, 
+                        f"Career path generated: '{title}' with {match_score}% match")
+                    return True
+                else:
+                    self.log_test("Career Path Generate", False, 
+                        f"Missing required fields: {missing_fields}")
+                    return False
+            else:
+                self.log_test("Career Path Generate", False, f"Missing careerPath in response: {data}")
+                return False
+        else:
+            self.log_test("Career Path Generate", False, f"Career path generation failed: {response}")
+            return False
+    
+    def test_mock_interview_start(self):
+        """Test starting mock interview"""
+        print("\n=== Testing Mock Interview Start ===")
+        
+        interview_data = {
+            "role": "Software Engineer",
+            "level": "mid-level", 
+            "type": "behavioral"
+        }
+        
+        response = self.make_request("POST", "/mock-interview/start", interview_data, use_auth=True, timeout=90)
+        
+        if response["success"]:
+            data = response["data"]
+            if "sessionId" in data and "question" in data:
+                session_id = data["sessionId"]
+                question = data["question"][:100] + "..." if len(data["question"]) > 100 else data["question"]
+                self.log_test("Mock Interview Start", True, 
+                    f"Interview started. Session: {session_id}")
+                return True, session_id
+            else:
+                self.log_test("Mock Interview Start", False, f"Missing sessionId or question: {data}")
+                return False, None
+        else:
+            self.log_test("Mock Interview Start", False, f"Interview start failed: {response}")
+            return False, None
+    
+    def test_mock_interview_respond(self, session_id: str):
+        """Test responding to mock interview"""
+        print("\n=== Testing Mock Interview Response ===")
+        
+        response_data = {
+            "sessionId": session_id,
+            "answer": "I would approach this challenge by first understanding the requirements, then breaking down the problem into smaller manageable tasks. I'd collaborate with team members to gather different perspectives and create a structured plan with clear timelines and deliverables."
+        }
+        
+        response = self.make_request("POST", "/mock-interview/respond", response_data, use_auth=True, timeout=90)
+        
+        if response["success"]:
+            data = response["data"]
+            if "feedback" in data:
+                feedback = data["feedback"]
+                # Check for structured feedback
+                required_fields = ["score", "maxScore", "feedback", "strengths", "improvements"]
+                missing_fields = [field for field in required_fields if field not in feedback]
+                
+                if not missing_fields:
+                    score = feedback.get("score", 0)
+                    max_score = feedback.get("maxScore", 10)
+                    self.log_test("Mock Interview Respond", True, 
+                        f"Interview feedback received. Score: {score}/{max_score}")
+                    return True
+                else:
+                    self.log_test("Mock Interview Respond", False, 
+                        f"Missing required feedback fields: {missing_fields}")
+                    return False
+            else:
+                self.log_test("Mock Interview Respond", False, f"Missing feedback in response: {data}")
+                return False
+        else:
+            self.log_test("Mock Interview Respond", False, f"Interview response failed: {response}")
+            return False
+    
+    def test_job_match(self):
+        """Test job matching"""
+        print("\n=== Testing Job Matching ===")
+        
+        job_data = {
+            "skills": "Python,React,JavaScript,Django",
+            "interests": "AI,Machine Learning,Web Development", 
+            "experience": "3 years Software Developer",
+            "targetIndustry": "Technology"
+        }
+        
+        response = self.make_request("POST", "/job-match", job_data, use_auth=True, timeout=90)
+        
+        if response["success"]:
+            data = response["data"]
+            if "matches" in data:
+                matches_data = data["matches"]
+                if "matches" in matches_data:
+                    matches = matches_data["matches"]
+                    if len(matches) > 0:
+                        first_match = matches[0]
+                        role = first_match.get("role", "Unknown")
+                        match_score = first_match.get("matchScore", 0)
+                        self.log_test("Job Matching", True, 
+                            f"Found {len(matches)} job matches. Top match: {role} ({match_score}%)")
+                        return True
+                    else:
+                        self.log_test("Job Matching", False, "No job matches found")
+                        return False
+                else:
+                    self.log_test("Job Matching", False, f"Missing matches array in response: {matches_data}")
+                    return False
+            else:
+                self.log_test("Job Matching", False, f"Missing matches in response: {data}")
+                return False
+        else:
+            self.log_test("Job Matching", False, f"Job matching failed: {response}")
+            return False
+    
+    def test_admin_analytics(self):
+        """Test admin analytics"""
+        print("\n=== Testing Admin Analytics ===")
+        
+        response = self.make_request("GET", "/admin/analytics", use_auth=True)
+        
+        if response["success"]:
+            data = response["data"]
+            if "stats" in data:
+                stats = data["stats"]
+                required_stats = ["totalUsers", "totalResumes", "totalInterviews", "totalChats"]
+                missing_stats = [stat for stat in required_stats if stat not in stats]
+                
+                if not missing_stats:
+                    users = stats.get("totalUsers", 0)
+                    resumes = stats.get("totalResumes", 0)
+                    self.log_test("Admin Analytics", True, 
+                        f"Analytics retrieved: {users} users, {resumes} resumes")
+                    return True
+                else:
+                    self.log_test("Admin Analytics", False, f"Missing stats: {missing_stats}")
+                    return False
+            else:
+                self.log_test("Admin Analytics", False, f"Missing stats in response: {data}")
+                return False
+        else:
+            self.log_test("Admin Analytics", False, f"Analytics failed: {response}")
+            return False
+    
+    def run_all_tests(self):
+        """Run all backend tests in sequence"""
+        print(f"\n🚀 Starting CareerGPT Backend Tests")
+        print(f"Base URL: {BASE_URL}")
+        print("=" * 60)
+        
+        # Critical flow tests
+        success_count = 0
+        total_tests = 0
+        
+        # 1. Health check
+        total_tests += 1
+        if self.test_health_endpoint():
+            success_count += 1
+        
+        # 2. Models API
+        total_tests += 1
+        if self.test_models_endpoint():
+            success_count += 1
+        
+        # 3. Register user (required for auth)
+        total_tests += 1
+        if self.test_auth_register():
+            success_count += 1
+        else:
+            print("❌ CRITICAL: Registration failed - skipping auth-required tests")
+            self.print_summary(success_count, total_tests)
+            return
+        
+        # 4. Login user
+        total_tests += 1
+        if self.test_auth_login():
+            success_count += 1
+        
+        # 5. Get profile
+        total_tests += 1
+        if self.test_profile_get():
+            success_count += 1
+        
+        # 6. Update profile  
+        total_tests += 1
+        if self.test_profile_update():
+            success_count += 1
+        
+        # 7. Chat with AI
+        total_tests += 1
+        chat_success, session_id = self.test_chat_send()
+        if chat_success:
+            success_count += 1
+        
+        # 8. Get chat sessions
+        total_tests += 1
+        if self.test_chat_sessions():
+            success_count += 1
+        
+        # 9. Resume upload and analysis
+        total_tests += 1
+        upload_success, resume_id = self.test_resume_upload()
+        if upload_success:
+            success_count += 1
+            
+            # 10. Resume ATS analysis
+            total_tests += 1
+            if self.test_resume_analyze(resume_id):
+                success_count += 1
+        else:
+            total_tests += 1  # Count the skipped analysis test
+        
+        # 11. Career path generation
+        total_tests += 1
+        if self.test_career_path_generate():
+            success_count += 1
+        
+        # 12. Mock interview start and respond
+        total_tests += 1
+        interview_success, interview_session = self.test_mock_interview_start()
+        if interview_success:
+            success_count += 1
+            
+            # 13. Mock interview respond
+            total_tests += 1
+            if self.test_mock_interview_respond(interview_session):
+                success_count += 1
+        else:
+            total_tests += 1  # Count the skipped respond test
+        
+        # 14. Job matching
+        total_tests += 1
+        if self.test_job_match():
+            success_count += 1
+        
+        # 15. Admin analytics
+        total_tests += 1
+        if self.test_admin_analytics():
+            success_count += 1
+        
+        self.print_summary(success_count, total_tests)
+    
+    def print_summary(self, success_count: int, total_tests: int):
+        """Print test summary"""
+        print("\n" + "=" * 60)
+        print(f"🏁 TEST SUMMARY")
+        print("=" * 60)
+        print(f"Total Tests: {total_tests}")
+        print(f"Passed: {success_count}")
+        print(f"Failed: {total_tests - success_count}")
+        print(f"Success Rate: {(success_count/total_tests)*100:.1f}%")
+        
+        if success_count == total_tests:
+            print("🎉 ALL TESTS PASSED!")
+        elif success_count / total_tests >= 0.8:
+            print("✅ Most tests passed - system is largely functional")
+        else:
+            print("⚠️  Multiple failures detected - needs attention")
+        
+        # Print failed tests
+        failed_tests = [name for name, result in self.test_results.items() if not result["success"]]
+        if failed_tests:
+            print(f"\n❌ Failed Tests:")
+            for test in failed_tests:
+                print(f"  - {test}: {self.test_results[test]['details']}")
+        
+        print("=" * 60)
+
 
 if __name__ == "__main__":
     tester = CareerGPTTester()
-    results = tester.run_all_tests()
+    tester.run_all_tests()
