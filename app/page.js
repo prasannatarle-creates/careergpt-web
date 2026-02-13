@@ -647,7 +647,7 @@ function CareerPath() {
   );
 }
 
-// ============ MOCK INTERVIEW ============
+// ============ MOCK INTERVIEW (with Voice) ============
 function MockInterview() {
   const [started, setStarted] = useState(false);
   const [sessionId, setSessionId] = useState(null);
@@ -661,6 +661,89 @@ function MockInterview() {
   const [level, setLevel] = useState('mid-level');
   const [type, setType] = useState('behavioral');
   const [allFeedback, setAllFeedback] = useState([]);
+
+  // Voice recording state
+  const [isRecording, setIsRecording] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [voiceSupported, setVoiceSupported] = useState(false);
+  const recognitionRef = useRef(null);
+  const [audioLevel, setAudioLevel] = useState(0);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const animFrameRef = useRef(null);
+  const streamRef = useRef(null);
+
+  // Check voice support
+  useEffect(() => {
+    const SpeechRecognition = typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition);
+    setVoiceSupported(!!SpeechRecognition);
+    return () => { stopVoice(); };
+  }, []);
+
+  const startVoice = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    let finalTranscript = answer;
+
+    recognition.onresult = (event) => {
+      let interim = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript + ' ';
+        } else {
+          interim += event.results[i][0].transcript;
+        }
+      }
+      setAnswer(finalTranscript + interim);
+    };
+
+    recognition.onerror = (e) => { console.error('Speech error:', e); stopVoice(); };
+    recognition.onend = () => { if (isRecording) { try { recognition.start(); } catch(e) {} } };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsRecording(true);
+    setIsListening(true);
+
+    // Audio visualization
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      streamRef.current = stream;
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(stream);
+      source.connect(analyser);
+      analyser.fftSize = 256;
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+
+      const updateLevel = () => {
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(data);
+        const avg = data.reduce((a, b) => a + b, 0) / data.length;
+        setAudioLevel(avg);
+        animFrameRef.current = requestAnimationFrame(updateLevel);
+      };
+      updateLevel();
+    }).catch(() => {});
+  };
+
+  const stopVoice = () => {
+    setIsRecording(false);
+    setIsListening(false);
+    if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch(e) {} recognitionRef.current = null; }
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    if (audioContextRef.current) { try { audioContextRef.current.close(); } catch(e) {} }
+    if (streamRef.current) { streamRef.current.getTracks().forEach(t => t.stop()); }
+    setAudioLevel(0);
+  };
+
+  const toggleVoice = () => { isRecording ? stopVoice() : startVoice(); };
 
   const startInterview = async () => {
     setLoading(true);
