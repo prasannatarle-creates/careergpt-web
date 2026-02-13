@@ -1327,6 +1327,7 @@ function App() {
   const renderPage = () => {
     switch (page) {
       case 'dashboard': return <Dashboard user={user} onNavigate={setPage} />;
+      case 'profile': return <UserProfile user={user} onUpdate={(u) => setUser(u)} />;
       case 'chat': return <AIChat />;
       case 'resume': return <ResumeAnalyzer />;
       case 'career': return <CareerPath />;
