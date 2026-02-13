@@ -525,7 +525,10 @@ function ResumeAnalyzer() {
       <div className="p-6 max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-white">Resume Analysis</h1>
-          <Button onClick={() => { setAnalysis(null); setFile(null); }} variant="outline" className="border-slate-600 text-slate-300">Analyze Another</Button>
+          <div className="flex gap-2">
+            {!isRaw && <Button onClick={downloadPDF} variant="outline" className="border-green-600 text-green-300 hover:bg-green-900/30"><FileText className="w-4 h-4 mr-2" />Download PDF</Button>}
+            <Button onClick={() => { setAnalysis(null); setFile(null); }} variant="outline" className="border-slate-600 text-slate-300">Analyze Another</Button>
+          </div>
         </div>
 
         {isRaw ? (
