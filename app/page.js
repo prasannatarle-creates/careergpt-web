@@ -1165,6 +1165,142 @@ function Analytics() {
   );
 }
 
+// ============ USER PROFILE ============
+function UserProfile({ user, onUpdate }) {
+  const [name, setName] = useState(user?.name || '');
+  const [skills, setSkills] = useState((user?.profile?.skills || []).join(', '));
+  const [interests, setInterests] = useState((user?.profile?.interests || []).join(', '));
+  const [education, setEducation] = useState(user?.profile?.education || '');
+  const [experience, setExperience] = useState(user?.profile?.experience || '');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [resumes, setResumes] = useState([]);
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    api.get('/resumes').then(d => setResumes(d.resumes || []));
+    api.get('/profile').then(d => setStats(d.stats));
+  }, []);
+
+  const save = async () => {
+    setSaving(true);
+    setSaved(false);
+    await api.put('/profile', {
+      name,
+      profile: {
+        skills: skills.split(',').map(s => s.trim()).filter(Boolean),
+        interests: interests.split(',').map(s => s.trim()).filter(Boolean),
+        education,
+        experience,
+      },
+    });
+    setSaving(false);
+    setSaved(true);
+    if (onUpdate) onUpdate({ ...user, name, profile: { skills: skills.split(',').map(s => s.trim()).filter(Boolean), interests: interests.split(',').map(s => s.trim()).filter(Boolean), education, experience } });
+    setTimeout(() => setSaved(false), 3000);
+  };
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold text-white mb-6">My Profile</h1>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Profile Form */}
+        <div className="lg:col-span-2 space-y-4">
+          <Card className="bg-slate-900/60 border-slate-800">
+            <CardHeader><CardTitle className="text-white text-lg">Personal Information</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-slate-300 text-sm block mb-1">Full Name</label>
+                <Input value={name} onChange={e => setName(e.target.value)} className="bg-slate-800 border-slate-700 text-white" />
+              </div>
+              <div>
+                <label className="text-slate-300 text-sm block mb-1">Email</label>
+                <Input value={user?.email || ''} disabled className="bg-slate-800/50 border-slate-700 text-slate-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-slate-900/60 border-slate-800">
+            <CardHeader><CardTitle className="text-white text-lg">Career Profile</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-slate-300 text-sm block mb-1">Skills <span className="text-slate-500">(comma separated)</span></label>
+                <textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL, Machine Learning..." className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none resize-none" />
+              </div>
+              <div>
+                <label className="text-slate-300 text-sm block mb-1">Interests <span className="text-slate-500">(comma separated)</span></label>
+                <textarea value={interests} onChange={e => setInterests(e.target.value)} rows={2} placeholder="AI, Web Development, Data Science..." className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none resize-none" />
+              </div>
+              <div>
+                <label className="text-slate-300 text-sm block mb-1">Education</label>
+                <Input value={education} onChange={e => setEducation(e.target.value)} placeholder="B.Tech Computer Science, MIT..." className="bg-slate-800 border-slate-700 text-white" />
+              </div>
+              <div>
+                <label className="text-slate-300 text-sm block mb-1">Experience</label>
+                <Input value={experience} onChange={e => setExperience(e.target.value)} placeholder="2 years as Software Developer..." className="bg-slate-800 border-slate-700 text-white" />
+              </div>
+              <Button onClick={save} disabled={saving} className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0">
+                {saving ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Saving...</> : saved ? <><CheckCircle2 className="w-4 h-4 mr-2" />Saved!</> : 'Save Profile'}
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Stats & Resume History */}
+        <div className="space-y-4">
+          <Card className="bg-slate-900/60 border-slate-800">
+            <CardHeader><CardTitle className="text-white text-lg">Stats</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              {stats && [
+                { label: 'Chat Sessions', value: stats.chatCount, icon: MessageSquare, color: 'text-cyan-400' },
+                { label: 'Resumes Analyzed', value: stats.resumeCount, icon: FileText, color: 'text-teal-400' },
+                { label: 'Mock Interviews', value: stats.interviewCount, icon: Mic, color: 'text-violet-400' },
+                { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, color: 'text-amber-400' },
+              ].map((s, i) => (
+                <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+                  <s.icon className={`w-5 h-5 ${s.color}`} />
+                  <span className="text-sm text-slate-300 flex-1">{s.label}</span>
+                  <span className="text-sm font-bold text-white">{s.value || 0}</span>
+                </div>
+              ))}
+              <div className="text-center pt-2">
+                <p className="text-[10px] text-slate-500">Member since {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-slate-900/60 border-slate-800">
+            <CardHeader><CardTitle className="text-white text-lg">Resume History</CardTitle></CardHeader>
+            <CardContent>
+              {resumes.length === 0 ? (
+                <p className="text-slate-500 text-sm text-center py-4">No resumes uploaded yet</p>
+              ) : (
+                <div className="space-y-2">
+                  {resumes.map(r => (
+                    <div key={r.id} className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50">
+                      <FileText className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-slate-200 truncate">{r.fileName}</p>
+                        <p className="text-[10px] text-slate-500">{new Date(r.createdAt).toLocaleDateString()}</p>
+                      </div>
+                      {r.analysis?.atsScore && (
+                        <Badge className={`text-[10px] ${r.analysis.atsScore >= 70 ? 'bg-green-500/20 text-green-300' : r.analysis.atsScore >= 50 ? 'bg-yellow-500/20 text-yellow-300' : 'bg-red-500/20 text-red-300'}`}>
+                          ATS: {r.analysis.atsScore}
+                        </Badge>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ============ MAIN APP ============
 function App() {
   const [user, setUser] = useState(undefined); // undefined = loading, null = guest
