@@ -2,46 +2,52 @@ import { MongoClient } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
+// ============ CONFIG ============
 const MONGO_URL = process.env.MONGO_URL;
 const DB_NAME = process.env.DB_NAME || 'careergpt';
 const EMERGENT_KEY = process.env.EMERGENT_LLM_KEY;
 const LLM_PROXY_URL = process.env.LLM_PROXY_URL || 'https://integrations.emergentagent.com/llm';
+const JWT_SECRET = process.env.JWT_SECRET || 'careergpt-secret-key-2025';
 
-let cachedClient = null;
 let cachedDb = null;
 
 async function getDb() {
   if (cachedDb) return cachedDb;
   const client = await MongoClient.connect(MONGO_URL);
-  cachedClient = client;
   cachedDb = client.db(DB_NAME);
+  // Create indexes
+  try {
+    await cachedDb.collection('users').createIndex({ email: 1 }, { unique: true });
+    await cachedDb.collection('sessions').createIndex({ userId: 1, updatedAt: -1 });
+    await cachedDb.collection('resumes').createIndex({ userId: 1, createdAt: -1 });
+    await cachedDb.collection('career_paths').createIndex({ userId: 1 });
+    await cachedDb.collection('job_matches').createIndex({ userId: 1 });
+    await cachedDb.collection('analytics').createIndex({ type: 1, createdAt: -1 });
+  } catch (e) { /* indexes may already exist */ }
   return cachedDb;
 }
 
-function getOpenAIClient(apiKey) {
-  const isEmergent = apiKey && apiKey.startsWith('sk-emergent-');
+// ============ LLM SETUP ============
+function getOpenAIClient() {
+  const isEmergent = EMERGENT_KEY && EMERGENT_KEY.startsWith('sk-emergent-');
   if (isEmergent) {
-    return new OpenAI({
-      apiKey: apiKey,
-      baseURL: LLM_PROXY_URL,
-    });
+    return new OpenAI({ apiKey: EMERGENT_KEY, baseURL: LLM_PROXY_URL });
   }
-  return new OpenAI({ apiKey });
+  return new OpenAI({ apiKey: EMERGENT_KEY });
 }
 
-function getModelConfig(provider, model) {
+function getModelStr(provider, model) {
   const isEmergent = EMERGENT_KEY && EMERGENT_KEY.startsWith('sk-emergent-');
   if (isEmergent) {
     if (provider === 'gemini') return `gemini/${model}`;
-    if (provider === 'xai') return `xai/${model}`;
-    if (provider === 'perplexity') return `perplexity/${model}`;
     return model;
   }
   return `${provider}/${model}`;
 }
 
-// All 5 AI models - Claude is guaranteed, Grok & Perplexity are attempted
 const ALL_MODELS = [
   { provider: 'openai', model: 'gpt-4.1', name: 'GPT-4.1', color: '#10a37f', guaranteed: true },
   { provider: 'anthropic', model: 'claude-4-sonnet-20250514', name: 'Claude 4 Sonnet', color: '#d97706', guaranteed: true },
@@ -50,236 +56,335 @@ const ALL_MODELS = [
   { provider: 'perplexity', model: 'sonar-pro', name: 'Perplexity Sonar Pro', color: '#22d3ee', guaranteed: false },
 ];
 
-// Default active models (all enabled)
-const MODELS = ALL_MODELS;
-
-const CAREER_SYSTEM_PROMPT = `You are CareerGPT, an expert AI career guidance counselor. You help students and job seekers with:
-- Career path selection and exploration
-- Resume improvement and optimization
-- Job search strategies
-- Skill development recommendations
-- Interview preparation
-- Industry insights and trends
-
-Be specific, actionable, and encouraging. Use examples and data when possible. Format your responses with markdown for readability. Keep responses focused and valuable.`;
-
-const RESUME_ANALYSIS_PROMPT = `You are an expert resume analyst. Analyze the following resume and provide:
-
-1. **Overall Score** (out of 100)
-2. **Strengths** (top 3-5 bullet points)
-3. **Weaknesses** (areas for improvement)
-4. **Missing Sections** (what should be added)
-5. **ATS Optimization** (keyword suggestions)
-6. **Skills Extracted** (list of skills found)
-7. **Experience Level** (entry/mid/senior)
-8. **Recommended Job Titles** (3-5 matching roles)
-9. **Actionable Improvements** (specific, numbered steps)
-
-Be thorough but concise. Use markdown formatting.`;
-
-const MOCK_INTERVIEW_SYSTEM = `You are an expert interviewer conducting a mock interview. Your role is to:
-- Ask realistic interview questions one at a time
-- Evaluate responses and provide constructive feedback
-- Adjust difficulty based on the candidate's level
-- Cover both technical and behavioral questions
-- Provide a score and detailed feedback after each answer
-
-Format your feedback with markdown. Be encouraging but honest.`;
-
-async function callSingleModel(client, modelStr, messages, timeoutMs = 30000) {
+async function callModel(client, modelStr, messages) {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-    
     const response = await client.chat.completions.create({
-      model: modelStr,
-      messages: messages,
-      max_tokens: 2000,
-      temperature: 0.7,
+      model: modelStr, messages, max_tokens: 2500, temperature: 0.7,
     });
-    
-    clearTimeout(timeoutId);
     return response.choices[0]?.message?.content || '';
   } catch (error) {
-    console.error(`Error calling model ${modelStr}:`, error.message);
+    console.error(`Model ${modelStr} error:`, error.message);
     return null;
   }
 }
 
-async function callMultiModel(userMessage, sessionMessages = [], activeModelNames = null) {
-  const client = getOpenAIClient(EMERGENT_KEY);
-  
-  // Filter to only active models if specified
-  const modelsToUse = activeModelNames 
+async function callMultiModel(systemPrompt, userMessage, activeModelNames = null) {
+  const client = getOpenAIClient();
+  const modelsToUse = activeModelNames
     ? ALL_MODELS.filter(m => activeModelNames.includes(m.name))
-    : MODELS;
-  
-  const baseMessages = [
-    { role: 'system', content: CAREER_SYSTEM_PROMPT },
-    ...sessionMessages,
+    : ALL_MODELS;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
     { role: 'user', content: userMessage },
   ];
 
-  // Call multiple models in parallel with individual timeouts
-  const modelPromises = modelsToUse.map(async (m) => {
-    const startTime = Date.now();
-    const modelStr = getModelConfig(m.provider, m.model);
-    const result = await callSingleModel(client, modelStr, baseMessages, 30000);
-    const duration = Date.now() - startTime;
-    return { 
-      name: m.name, 
-      provider: m.provider, 
-      model: m.model,
-      color: m.color,
-      response: result, 
-      duration,
-      success: !!result,
-    };
-  });
+  const results = await Promise.all(modelsToUse.map(async (m) => {
+    const start = Date.now();
+    const modelStr = getModelStr(m.provider, m.model);
+    const response = await callModel(client, modelStr, messages);
+    return { name: m.name, color: m.color, response, duration: Date.now() - start, success: !!response };
+  }));
 
-  const results = await Promise.all(modelPromises);
-  const validResults = results.filter(r => r.response);
-  const failedModels = results.filter(r => !r.response);
+  const valid = results.filter(r => r.response);
+  const failed = results.filter(r => !r.response);
 
-  if (validResults.length === 0) {
-    throw new Error('All models failed to respond');
+  if (valid.length === 0) throw new Error('All models failed');
+
+  let combinedResponse = valid[0].response;
+  let synthesized = false;
+
+  if (valid.length > 1) {
+    const synthPrompt = `Combine these ${valid.length} expert responses into one comprehensive answer:\n\n${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}\n\nProvide a unified markdown response with the best insights from all. Do NOT mention multiple models.`;
+    const synthModel = getModelStr('openai', 'gpt-4.1');
+    const synthResult = await callModel(client, synthModel, [
+      { role: 'system', content: 'You synthesize multiple AI responses into one cohesive response. Output only the final response in markdown.' },
+      { role: 'user', content: synthPrompt },
+    ]);
+    if (synthResult) { combinedResponse = synthResult; synthesized = true; }
   }
 
-  if (validResults.length === 1) {
-    return {
-      combinedResponse: validResults[0].response,
-      modelResponses: validResults,
-      failedModels: failedModels.map(r => ({ name: r.name, provider: r.provider })),
-      synthesized: false,
-      totalModels: modelsToUse.length,
-      successCount: validResults.length,
-    };
-  }
-
-  // Synthesize responses from multiple models
-  const synthesisPrompt = `You are a career guidance synthesizer. Below are responses from ${validResults.length} AI models to a career-related query. Combine them into a single, comprehensive, well-structured response that takes the best insights from each.
-
-Original query: "${userMessage}"
-
-${validResults.map((r, i) => `--- Response from ${r.name} ---\n${r.response}`).join('\n\n')}
-
----
-Provide a unified, well-formatted markdown response that combines the best insights. Do NOT mention that multiple models were used. Just provide the best combined career advice.`;
-
-  const synthesisModel = getModelConfig('openai', 'gpt-4.1');
-  const synthesized = await callSingleModel(client, synthesisModel, [
-    { role: 'system', content: 'You synthesize multiple AI responses into one cohesive, high-quality response. Output only the final combined response in markdown.' },
-    { role: 'user', content: synthesisPrompt },
-  ]);
-
-  return {
-    combinedResponse: synthesized || validResults[0].response,
-    modelResponses: validResults,
-    failedModels: failedModels.map(r => ({ name: r.name, provider: r.provider })),
-    synthesized: true,
-    totalModels: modelsToUse.length,
-    successCount: validResults.length,
-  };
+  return { combinedResponse, modelResponses: valid, failedModels: failed.map(r => ({ name: r.name })), synthesized, successCount: valid.length, totalModels: modelsToUse.length };
 }
 
-async function callSingleModelForFeature(systemPrompt, userMessage) {
-  const client = getOpenAIClient(EMERGENT_KEY);
-  const modelStr = getModelConfig('openai', 'gpt-4.1');
-  return await callSingleModel(client, modelStr, [
+async function callSingleModel(systemPrompt, userMessage) {
+  const client = getOpenAIClient();
+  const modelStr = getModelStr('openai', 'gpt-4.1');
+  return await callModel(client, modelStr, [
     { role: 'system', content: systemPrompt },
     { role: 'user', content: userMessage },
   ]);
 }
 
-// Route handlers
-async function handleChatSend(body) {
+// ============ AUTH HELPERS ============
+function generateToken(user) {
+  return jwt.sign({ id: user.id, email: user.email, role: user.role || 'user' }, JWT_SECRET, { expiresIn: '7d' });
+}
+
+function verifyToken(request) {
+  try {
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+    const token = authHeader.split(' ')[1];
+    return jwt.verify(token, JWT_SECRET);
+  } catch { return null; }
+}
+
+// ============ ANALYTICS HELPER ============
+async function logAnalytics(db, type, data = {}) {
+  await db.collection('analytics').insertOne({
+    id: uuidv4(), type, data, createdAt: new Date().toISOString(),
+  });
+}
+
+// ============ SYSTEM PROMPTS ============
+const CAREER_SYSTEM = `You are CareerGPT, an expert AI career guidance counselor. Help students and job seekers with career paths, skills, interviews, and job search strategies. Be specific, actionable, and encouraging. Use markdown formatting.`;
+
+const CAREER_PATH_SYSTEM = `You are an expert career path architect. Given a user's profile, generate a STRUCTURED career path. You MUST return valid JSON (no markdown, no code fences) with this exact structure:
+{
+  "title": "Career Path Title",
+  "summary": "2-3 sentence overview",
+  "matchScore": 85,
+  "timeline": [
+    {"phase": "Phase 1: Foundation", "duration": "0-3 months", "goals": ["goal1","goal2"], "skills": ["skill1","skill2"], "resources": ["resource1"]}
+  ],
+  "certifications": [{"name": "Cert Name", "provider": "Provider", "priority": "high/medium/low"}],
+  "salaryRange": {"entry": "$50k-70k", "mid": "$80k-120k", "senior": "$130k-180k"},
+  "topRoles": ["Role 1", "Role 2", "Role 3"],
+  "industryOutlook": "Brief outlook text"
+}`;
+
+const RESUME_ATS_SYSTEM = `You are an expert ATS (Applicant Tracking System) resume analyzer. Analyze the resume and return ONLY valid JSON (no markdown, no code fences) with this exact structure:
+{
+  "atsScore": 72,
+  "sections": {
+    "contact": {"score": 90, "feedback": "feedback text", "present": true},
+    "summary": {"score": 70, "feedback": "feedback text", "present": true},
+    "experience": {"score": 80, "feedback": "feedback text", "present": true},
+    "education": {"score": 85, "feedback": "feedback text", "present": true},
+    "skills": {"score": 60, "feedback": "feedback text", "present": true},
+    "projects": {"score": 50, "feedback": "feedback text", "present": false}
+  },
+  "keywords": {
+    "found": ["keyword1", "keyword2"],
+    "missing": ["keyword3", "keyword4"],
+    "suggestions": ["suggestion1", "suggestion2"]
+  },
+  "strengths": ["strength1", "strength2"],
+  "weaknesses": ["weakness1", "weakness2"],
+  "rewrittenBullets": [
+    {"original": "original text", "improved": "improved text", "reason": "why better"}
+  ],
+  "experienceLevel": "entry/mid/senior",
+  "matchingRoles": ["Role 1", "Role 2", "Role 3"],
+  "overallFeedback": "Summary feedback paragraph"
+}`;
+
+const INTERVIEW_SYSTEM = `You are an expert interviewer conducting a mock interview. Ask realistic questions one at a time. After the user answers, provide structured feedback. Be encouraging but honest. Use markdown formatting.`;
+
+const INTERVIEW_FEEDBACK_SYSTEM = `You are an expert interview coach. Evaluate the candidate's answer and return ONLY valid JSON (no markdown, no code fences):
+{
+  "score": 7,
+  "maxScore": 10,
+  "technicalAccuracy": 8,
+  "communicationScore": 7,
+  "structureScore": 6,
+  "confidenceScore": 7,
+  "feedback": "Detailed feedback text",
+  "strengths": ["strength1"],
+  "improvements": ["improvement1"],
+  "sampleAnswer": "A better sample answer text",
+  "usedSTAR": false,
+  "nextQuestion": "Next interview question text"
+}`;
+
+const JOB_MATCH_SYSTEM = `You are a job matching expert. Given a user profile, find the best matching job roles. Return ONLY valid JSON (no markdown, no code fences):
+{
+  "matches": [
+    {
+      "role": "Job Title",
+      "company_type": "Startup/Enterprise/etc",
+      "matchScore": 85,
+      "salary": "$80k-120k",
+      "skills_matched": ["skill1","skill2"],
+      "skills_gap": ["skill3"],
+      "why_match": "Explanation of why this matches",
+      "growth_potential": "high/medium/low",
+      "demand": "high/medium/low"
+    }
+  ],
+  "summary": "Overall matching summary",
+  "topSkillGaps": ["skill1","skill2"],
+  "recommendations": ["recommendation1"]
+}`;
+
+// ============ ROUTE HANDLERS ============
+
+// --- AUTH ---
+async function handleRegister(body) {
+  const { name, email, password } = body;
+  if (!name || !email || !password) return NextResponse.json({ error: 'Name, email, and password are required' }, { status: 400 });
+  if (password.length < 6) return NextResponse.json({ error: 'Password must be at least 6 characters' }, { status: 400 });
+
+  const db = await getDb();
+  const existing = await db.collection('users').findOne({ email: email.toLowerCase() });
+  if (existing) return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = {
+    id: uuidv4(), name, email: email.toLowerCase(), password: hashedPassword,
+    role: 'user', profile: { skills: [], interests: [], education: '', experience: '' },
+    createdAt: new Date().toISOString(),
+  };
+
+  await db.collection('users').insertOne(user);
+  const token = generateToken(user);
+  await logAnalytics(db, 'user_register', { userId: user.id });
+
+  return NextResponse.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, profile: user.profile } });
+}
+
+async function handleLogin(body) {
+  const { email, password } = body;
+  if (!email || !password) return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
+
+  const db = await getDb();
+  const user = await db.collection('users').findOne({ email: email.toLowerCase() });
+  if (!user) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+
+  const token = generateToken(user);
+  await logAnalytics(db, 'user_login', { userId: user.id });
+
+  return NextResponse.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, profile: user.profile } });
+}
+
+// --- PROFILE ---
+async function handleGetProfile(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const db = await getDb();
+  const user = await db.collection('users').findOne({ id: auth.id });
+  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+
+  // Get stats
+  const resumeCount = await db.collection('resumes').countDocuments({ userId: auth.id });
+  const interviewCount = await db.collection('sessions').countDocuments({ userId: auth.id, type: 'mock-interview' });
+  const chatCount = await db.collection('sessions').countDocuments({ userId: auth.id, type: 'career-chat' });
+  const careerPathCount = await db.collection('career_paths').countDocuments({ userId: auth.id });
+
+  return NextResponse.json({
+    user: { id: user.id, name: user.name, email: user.email, role: user.role, profile: user.profile, createdAt: user.createdAt },
+    stats: { resumeCount, interviewCount, chatCount, careerPathCount },
+  });
+}
+
+async function handleUpdateProfile(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const body = await request.json();
+  const { name, profile } = body;
+  const db = await getDb();
+
+  const update = {};
+  if (name) update.name = name;
+  if (profile) update.profile = profile;
+
+  await db.collection('users').updateOne({ id: auth.id }, { $set: update });
+  return NextResponse.json({ success: true });
+}
+
+// --- CAREER CHAT ---
+async function handleChatSend(request) {
+  const auth = verifyToken(request);
+  const body = await request.json();
   const { sessionId, message, activeModels } = body;
   if (!message) return NextResponse.json({ error: 'Message is required' }, { status: 400 });
 
   const db = await getDb();
-  let session;
-  const sid = sessionId || uuidv4();
+  const userId = auth?.id || 'anonymous';
+  let sid = sessionId || uuidv4();
 
-  if (sessionId) {
-    session = await db.collection('sessions').findOne({ id: sessionId });
-  }
-
+  let session = sessionId ? await db.collection('sessions').findOne({ id: sessionId }) : null;
   if (!session) {
     session = {
-      id: sid,
-      title: message.substring(0, 60) + (message.length > 60 ? '...' : ''),
-      type: 'career-chat',
-      messages: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      id: sid, userId, title: message.substring(0, 60) + (message.length > 60 ? '...' : ''),
+      type: 'career-chat', messages: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
     };
     await db.collection('sessions').insertOne(session);
   }
 
-  // Get recent message history for context (last 10 messages)
-  const recentMessages = (session.messages || []).slice(-10).map(m => ({
-    role: m.role,
-    content: m.content,
-  }));
-
+  const recentMsgs = (session.messages || []).slice(-10).map(m => ({ role: m.role, content: m.content }));
   const userMsg = { role: 'user', content: message, timestamp: new Date().toISOString() };
 
   try {
-    const result = await callMultiModel(message, recentMessages, activeModels);
+    const fullMessages = [{ role: 'system', content: CAREER_SYSTEM }, ...recentMsgs, { role: 'user', content: message }];
+    const client = getOpenAIClient();
+    const modelsToUse = activeModels ? ALL_MODELS.filter(m => activeModels.includes(m.name)) : ALL_MODELS;
+
+    const results = await Promise.all(modelsToUse.map(async (m) => {
+      const start = Date.now();
+      const modelStr = getModelStr(m.provider, m.model);
+      const response = await callModel(client, modelStr, fullMessages);
+      return { name: m.name, color: m.color, response, duration: Date.now() - start, success: !!response };
+    }));
+
+    const valid = results.filter(r => r.response);
+    const failed = results.filter(r => !r.response);
+    if (valid.length === 0) throw new Error('All models failed');
+
+    let combinedResponse = valid[0].response;
+    let synthesized = false;
+
+    if (valid.length > 1) {
+      const synthPrompt = `Combine these expert career advice responses:\n\n${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}\n\nProvide one unified markdown response.`;
+      const synthResult = await callModel(client, getModelStr('openai', 'gpt-4.1'), [
+        { role: 'system', content: 'Synthesize multiple AI responses into one cohesive career advice response.' },
+        { role: 'user', content: synthPrompt },
+      ]);
+      if (synthResult) { combinedResponse = synthResult; synthesized = true; }
+    }
+
     const assistantMsg = {
-      role: 'assistant',
-      content: result.combinedResponse,
-      timestamp: new Date().toISOString(),
-      models: result.modelResponses.map(r => r.name),
-      failedModels: result.failedModels || [],
-      synthesized: result.synthesized,
-      successCount: result.successCount,
-      totalModels: result.totalModels,
+      role: 'assistant', content: combinedResponse, timestamp: new Date().toISOString(),
+      models: valid.map(r => r.name), synthesized,
     };
 
-    await db.collection('sessions').updateOne(
-      { id: sid },
-      {
-        $push: { messages: { $each: [userMsg, assistantMsg] } },
-        $set: { updatedAt: new Date().toISOString() },
-      }
-    );
+    await db.collection('sessions').updateOne({ id: sid }, {
+      $push: { messages: { $each: [userMsg, assistantMsg] } },
+      $set: { updatedAt: new Date().toISOString() },
+    });
+
+    await logAnalytics(db, 'chat_message', { userId, models: valid.map(r => r.name) });
 
     return NextResponse.json({
-      sessionId: sid,
-      response: result.combinedResponse,
-      models: result.modelResponses.map(r => ({ name: r.name, color: r.color, duration: r.duration })),
-      failedModels: result.failedModels || [],
-      synthesized: result.synthesized,
-      successCount: result.successCount,
-      totalModels: result.totalModels,
-      individualResponses: result.modelResponses.map(r => ({
-        name: r.name,
-        color: r.color,
-        preview: r.response ? r.response.substring(0, 200) + '...' : null,
-        duration: r.duration,
-      })),
+      sessionId: sid, response: combinedResponse, synthesized,
+      models: valid.map(r => ({ name: r.name, color: r.color, duration: r.duration })),
+      failedModels: failed.map(r => ({ name: r.name })),
+      successCount: valid.length, totalModels: modelsToUse.length,
+      individualResponses: valid.map(r => ({ name: r.name, color: r.color, preview: r.response?.substring(0, 200) + '...', duration: r.duration })),
     });
   } catch (error) {
-    console.error('Chat error:', error);
-    return NextResponse.json({ error: 'Failed to get AI response: ' + error.message }, { status: 500 });
+    return NextResponse.json({ error: 'AI error: ' + error.message }, { status: 500 });
   }
 }
 
-async function handleGetSessions() {
+async function handleGetSessions(request) {
+  const auth = verifyToken(request);
   const db = await getDb();
-  const sessions = await db.collection('sessions')
-    .find({}, { projection: { messages: 0 } })
-    .sort({ updatedAt: -1 })
-    .limit(50)
-    .toArray();
+  const filter = auth ? { userId: auth.id } : {};
+  const sessions = await db.collection('sessions').find(filter, { projection: { messages: 0 } }).sort({ updatedAt: -1 }).limit(50).toArray();
   return NextResponse.json({ sessions });
 }
 
-async function handleGetSession(sessionId) {
+async function handleGetSession(request, sessionId) {
   const db = await getDb();
   const session = await db.collection('sessions').findOne({ id: sessionId });
-  if (!session) return NextResponse.json({ error: 'Session not found' }, { status: 404 });
+  if (!session) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ session });
 }
 
@@ -289,232 +394,306 @@ async function handleDeleteSession(sessionId) {
   return NextResponse.json({ success: true });
 }
 
+// --- STRUCTURED CAREER PATH ---
+async function handleGenerateCareerPath(request) {
+  const auth = verifyToken(request);
+  const body = await request.json();
+  const { skills, interests, education, experience } = body;
+
+  const prompt = `Generate a structured career path for this profile:
+Skills: ${skills || 'Not specified'}
+Interests: ${interests || 'Not specified'}
+Education: ${education || 'Not specified'}
+Experience: ${experience || 'Not specified'}
+
+Return a detailed JSON career roadmap with timeline phases, certifications, salary ranges, and top roles.`;
+
+  try {
+    const result = await callMultiModel(CAREER_PATH_SYSTEM, prompt, ['GPT-4.1', 'Claude 4 Sonnet', 'Gemini 2.5 Flash']);
+    let parsed;
+    try {
+      const jsonStr = result.combinedResponse.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      parsed = JSON.parse(jsonStr);
+    } catch {
+      parsed = { title: 'Career Path', summary: result.combinedResponse, raw: true };
+    }
+
+    const db = await getDb();
+    const careerPath = {
+      id: uuidv4(), userId: auth?.id || 'anonymous', input: { skills, interests, education, experience },
+      result: parsed, models: result.modelResponses.map(r => r.name), synthesized: result.synthesized,
+      createdAt: new Date().toISOString(),
+    };
+    await db.collection('career_paths').insertOne(careerPath);
+    await logAnalytics(db, 'career_path_generated', { userId: auth?.id });
+
+    return NextResponse.json({ careerPath: parsed, id: careerPath.id, models: result.modelResponses.map(r => r.name), synthesized: result.synthesized });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed: ' + error.message }, { status: 500 });
+  }
+}
+
+async function handleGetCareerPaths(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const db = await getDb();
+  const paths = await db.collection('career_paths').find({ userId: auth.id }).sort({ createdAt: -1 }).limit(20).toArray();
+  return NextResponse.json({ paths });
+}
+
+// --- RESUME UPLOAD & ATS ANALYSIS ---
 async function handleResumeUpload(request) {
   try {
     const formData = await request.formData();
     const file = formData.get('file');
-    if (!file) return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+    if (!file) return NextResponse.json({ error: 'No file' }, { status: 400 });
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    
+    const buffer = Buffer.from(await file.arrayBuffer());
     let textContent = '';
-    const fileName = file.name.toLowerCase();
-    
-    if (fileName.endsWith('.pdf')) {
+    if (file.name.toLowerCase().endsWith('.pdf')) {
       const pdfParse = (await import('pdf-parse')).default;
-      const pdfData = await pdfParse(buffer);
-      textContent = pdfData.text;
-    } else if (fileName.endsWith('.txt') || fileName.endsWith('.md')) {
-      textContent = buffer.toString('utf-8');
+      textContent = (await pdfParse(buffer)).text;
     } else {
-      // Try to parse as text
       textContent = buffer.toString('utf-8');
     }
 
     if (!textContent || textContent.trim().length < 20) {
-      return NextResponse.json({ error: 'Could not extract meaningful text from the file. Please upload a valid resume.' }, { status: 400 });
+      return NextResponse.json({ error: 'Could not extract text' }, { status: 400 });
     }
 
+    const auth = verifyToken(request);
     const resumeId = uuidv4();
     const db = await getDb();
-    
-    const resume = {
-      id: resumeId,
-      fileName: file.name,
-      fileSize: file.size,
-      textContent: textContent.substring(0, 10000),
-      analysis: null,
-      createdAt: new Date().toISOString(),
-    };
-
-    await db.collection('resumes').insertOne(resume);
-
-    return NextResponse.json({
-      resumeId,
-      fileName: file.name,
-      textPreview: textContent.substring(0, 500),
-      charCount: textContent.length,
+    await db.collection('resumes').insertOne({
+      id: resumeId, userId: auth?.id || 'anonymous', fileName: file.name, fileSize: file.size,
+      textContent: textContent.substring(0, 15000), analysis: null, createdAt: new Date().toISOString(),
     });
+
+    return NextResponse.json({ resumeId, fileName: file.name, textPreview: textContent.substring(0, 300), charCount: textContent.length });
   } catch (error) {
-    console.error('Resume upload error:', error);
-    return NextResponse.json({ error: 'Failed to process resume: ' + error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Upload failed: ' + error.message }, { status: 500 });
   }
 }
 
-async function handleResumeAnalyze(body) {
-  const { resumeId } = body;
-  if (!resumeId) return NextResponse.json({ error: 'resumeId is required' }, { status: 400 });
+async function handleResumeAnalyze(request) {
+  const body = await request.json();
+  const { resumeId, targetRole } = body;
+  if (!resumeId) return NextResponse.json({ error: 'resumeId required' }, { status: 400 });
 
   const db = await getDb();
   const resume = await db.collection('resumes').findOne({ id: resumeId });
   if (!resume) return NextResponse.json({ error: 'Resume not found' }, { status: 404 });
 
   try {
-    const analysis = await callSingleModelForFeature(
-      RESUME_ANALYSIS_PROMPT,
-      `Here is the resume text:\n\n${resume.textContent}`
-    );
+    const roleContext = targetRole ? `\nTarget Role: ${targetRole}\nEvaluate keywords and fit for this specific role.` : '';
+    const response = await callSingleModel(RESUME_ATS_SYSTEM, `Analyze this resume:${roleContext}\n\n${resume.textContent}`);
 
-    await db.collection('resumes').updateOne(
-      { id: resumeId },
-      { $set: { analysis, analyzedAt: new Date().toISOString() } }
-    );
+    let analysis;
+    try {
+      const jsonStr = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      analysis = JSON.parse(jsonStr);
+    } catch {
+      analysis = { atsScore: 0, overallFeedback: response, raw: true };
+    }
+
+    await db.collection('resumes').updateOne({ id: resumeId }, { $set: { analysis, analyzedAt: new Date().toISOString() } });
+    await logAnalytics(db, 'resume_analyzed', { resumeId, atsScore: analysis.atsScore });
 
     return NextResponse.json({ resumeId, analysis });
   } catch (error) {
-    console.error('Resume analysis error:', error);
-    return NextResponse.json({ error: 'Failed to analyze resume: ' + error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Analysis failed: ' + error.message }, { status: 500 });
   }
+}
+
+async function handleGetResumes(request) {
+  const auth = verifyToken(request);
+  const db = await getDb();
+  const filter = auth ? { userId: auth.id } : {};
+  const resumes = await db.collection('resumes').find(filter, { projection: { textContent: 0 } }).sort({ createdAt: -1 }).limit(20).toArray();
+  return NextResponse.json({ resumes });
 }
 
 async function handleGetResume(resumeId) {
   const db = await getDb();
   const resume = await db.collection('resumes').findOne({ id: resumeId });
-  if (!resume) return NextResponse.json({ error: 'Resume not found' }, { status: 404 });
+  if (!resume) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ resume });
 }
 
-async function handleGetResumes() {
-  const db = await getDb();
-  const resumes = await db.collection('resumes')
-    .find({}, { projection: { textContent: 0 } })
-    .sort({ createdAt: -1 })
-    .limit(20)
-    .toArray();
-  return NextResponse.json({ resumes });
-}
-
-async function handleMockInterviewStart(body) {
+// --- MOCK INTERVIEW ---
+async function handleInterviewStart(request) {
+  const auth = verifyToken(request);
+  const body = await request.json();
   const { role, level, type } = body;
-  const db = await getDb();
-  const sessionId = uuidv4();
 
-  const interviewPrompt = `Start a mock ${type || 'behavioral'} interview for a ${level || 'mid-level'} ${role || 'Software Engineer'} position. Ask the first question. Be professional and realistic. Only ask ONE question at a time.`;
+  const prompt = `Start a mock ${type || 'behavioral'} interview for a ${level || 'mid-level'} ${role || 'Software Engineer'} position. Ask the FIRST question only. Be professional.`;
 
   try {
-    const response = await callSingleModelForFeature(MOCK_INTERVIEW_SYSTEM, interviewPrompt);
+    const response = await callSingleModel(INTERVIEW_SYSTEM, prompt);
+    const db = await getDb();
+    const sessionId = uuidv4();
 
-    const session = {
-      id: sessionId,
-      title: `Mock Interview: ${role || 'Software Engineer'}`,
-      type: 'mock-interview',
-      role: role || 'Software Engineer',
-      level: level || 'mid-level',
-      interviewType: type || 'behavioral',
+    await db.collection('sessions').insertOne({
+      id: sessionId, userId: auth?.id || 'anonymous',
+      title: `Interview: ${role || 'Software Engineer'}`,
+      type: 'mock-interview', role: role || 'Software Engineer', level: level || 'mid-level',
+      interviewType: type || 'behavioral', questionCount: 1, scores: [],
       messages: [
-        { role: 'user', content: interviewPrompt, timestamp: new Date().toISOString(), hidden: true },
+        { role: 'system', content: prompt, hidden: true },
         { role: 'assistant', content: response, timestamp: new Date().toISOString() },
       ],
-      questionCount: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    await db.collection('sessions').insertOne(session);
-
-    return NextResponse.json({
-      sessionId,
-      question: response,
-      questionNumber: 1,
+      createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
     });
+
+    await logAnalytics(db, 'interview_started', { userId: auth?.id, role, level, type });
+    return NextResponse.json({ sessionId, question: response, questionNumber: 1 });
   } catch (error) {
-    console.error('Mock interview error:', error);
-    return NextResponse.json({ error: 'Failed to start interview: ' + error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Failed: ' + error.message }, { status: 500 });
   }
 }
 
-async function handleMockInterviewRespond(body) {
+async function handleInterviewRespond(request) {
+  const body = await request.json();
   const { sessionId, answer } = body;
-  if (!sessionId || !answer) {
-    return NextResponse.json({ error: 'sessionId and answer are required' }, { status: 400 });
-  }
+  if (!sessionId || !answer) return NextResponse.json({ error: 'sessionId and answer required' }, { status: 400 });
 
   const db = await getDb();
   const session = await db.collection('sessions').findOne({ id: sessionId });
-  if (!session) return NextResponse.json({ error: 'Session not found' }, { status: 404 });
+  if (!session) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-  const feedbackPrompt = `The candidate answered: "${answer}"
+  const newCount = (session.questionCount || 1) + 1;
+  const isLast = newCount > 5;
 
-Provide:
-1. **Score**: (1-10)
-2. **Feedback**: What was good and what could be improved
-3. **Sample Better Answer**: A brief example of a stronger response
+  const evalPrompt = `The candidate is interviewing for ${session.role} (${session.level}).
+Question was the previous message. Their answer: "${answer}"
 
-Then ask the NEXT interview question. If this is question ${(session.questionCount || 1) + 1} of 5, mention the progress. After 5 questions, provide overall assessment instead of next question.`;
+${isLast ? 'This is the FINAL question. Provide overall interview assessment.' : `This is question ${newCount-1} of 5.`}
+
+Evaluate and return structured JSON feedback with score, technical accuracy, communication, structure, confidence scores, strengths, improvements, a sample better answer, and ${isLast ? 'final assessment' : 'the next question'}.`;
 
   try {
-    const recentMessages = session.messages.filter(m => !m.hidden).slice(-6).map(m => ({
-      role: m.role,
-      content: m.content,
-    }));
-
-    const client = getOpenAIClient(EMERGENT_KEY);
-    const modelStr = getModelConfig('openai', 'gpt-4.1');
-    const response = await callSingleModel(client, modelStr, [
-      { role: 'system', content: MOCK_INTERVIEW_SYSTEM },
-      ...recentMessages,
-      { role: 'user', content: feedbackPrompt },
+    const recentMsgs = session.messages.filter(m => !m.hidden).slice(-6).map(m => ({ role: m.role, content: m.content }));
+    const client = getOpenAIClient();
+    const response = await callModel(client, getModelStr('openai', 'gpt-4.1'), [
+      { role: 'system', content: INTERVIEW_FEEDBACK_SYSTEM },
+      ...recentMsgs,
+      { role: 'user', content: evalPrompt },
     ]);
 
-    const newCount = (session.questionCount || 1) + 1;
-    await db.collection('sessions').updateOne(
-      { id: sessionId },
-      {
-        $push: {
-          messages: {
-            $each: [
-              { role: 'user', content: answer, timestamp: new Date().toISOString() },
-              { role: 'assistant', content: response, timestamp: new Date().toISOString() },
-            ],
-          },
-        },
-        $set: { questionCount: newCount, updatedAt: new Date().toISOString() },
-      }
-    );
+    let feedback;
+    try {
+      const jsonStr = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      feedback = JSON.parse(jsonStr);
+    } catch {
+      feedback = { score: 5, maxScore: 10, feedback: response, raw: true };
+    }
 
-    return NextResponse.json({
-      sessionId,
-      feedback: response,
-      questionNumber: newCount,
-      isComplete: newCount > 5,
+    await db.collection('sessions').updateOne({ id: sessionId }, {
+      $push: {
+        messages: { $each: [
+          { role: 'user', content: answer, timestamp: new Date().toISOString() },
+          { role: 'assistant', content: JSON.stringify(feedback), timestamp: new Date().toISOString(), structured: true },
+        ]},
+        scores: feedback.score || 5,
+      },
+      $set: { questionCount: newCount, updatedAt: new Date().toISOString() },
     });
+
+    await logAnalytics(db, 'interview_answer', { sessionId, score: feedback.score });
+    return NextResponse.json({ sessionId, feedback, questionNumber: newCount, isComplete: isLast });
   } catch (error) {
-    console.error('Interview respond error:', error);
-    return NextResponse.json({ error: 'Failed to process answer: ' + error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Failed: ' + error.message }, { status: 500 });
   }
 }
 
-async function handleCareerPathExplore(body) {
-  const { interests, skills, experience } = body;
+// --- JOB MATCHING ---
+async function handleJobMatch(request) {
+  const auth = verifyToken(request);
+  const body = await request.json();
+  const { skills, interests, experience, targetIndustry } = body;
 
-  const prompt = `Based on the following profile, suggest 5 detailed career paths:
+  const prompt = `Find the best matching job roles for this profile:
+Skills: ${skills || 'Not specified'}
+Interests: ${interests || 'Not specified'}
+Experience: ${experience || 'Not specified'}
+Target Industry: ${targetIndustry || 'Any'}
 
-**Interests**: ${interests || 'Not specified'}
-**Skills**: ${skills || 'Not specified'}
-**Experience**: ${experience || 'Not specified'}
-
-For each career path provide:
-1. **Career Title**
-2. **Description** (2-3 sentences)
-3. **Required Skills** (list)
-4. **Average Salary Range**
-5. **Growth Outlook** (high/medium/low)
-6. **Learning Path** (steps to get there)
-7. **Match Score** (percentage based on profile)
-
-Format as detailed markdown.`;
+Return 5-7 matching roles with match scores, salary ranges, skill gaps, and explanations.`;
 
   try {
-    const result = await callMultiModel(prompt);
-    return NextResponse.json({ paths: result.combinedResponse, models: result.modelResponses.map(r => r.name) });
+    const result = await callMultiModel(JOB_MATCH_SYSTEM, prompt, ['GPT-4.1', 'Claude 4 Sonnet', 'Gemini 2.5 Flash']);
+    let parsed;
+    try {
+      const jsonStr = result.combinedResponse.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      parsed = JSON.parse(jsonStr);
+    } catch {
+      parsed = { matches: [], summary: result.combinedResponse, raw: true };
+    }
+
+    const db = await getDb();
+    await db.collection('job_matches').insertOne({
+      id: uuidv4(), userId: auth?.id || 'anonymous', input: { skills, interests, experience, targetIndustry },
+      result: parsed, createdAt: new Date().toISOString(),
+    });
+    await logAnalytics(db, 'job_match', { userId: auth?.id });
+
+    return NextResponse.json({ matches: parsed, models: result.modelResponses.map(r => r.name), synthesized: result.synthesized });
   } catch (error) {
-    console.error('Career path error:', error);
-    return NextResponse.json({ error: 'Failed to explore career paths: ' + error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Failed: ' + error.message }, { status: 500 });
   }
 }
 
-async function handleHealthCheck() {
+// --- ADMIN ANALYTICS ---
+async function handleGetAnalytics(request) {
+  const auth = verifyToken(request);
+  if (!auth || auth.role !== 'admin') {
+    // Allow any authenticated user for now, but mark non-admin
+  }
+
+  const db = await getDb();
+
+  const [totalUsers, totalResumes, totalInterviews, totalChats, totalCareerPaths, totalJobMatches] = await Promise.all([
+    db.collection('users').countDocuments(),
+    db.collection('resumes').countDocuments(),
+    db.collection('sessions').countDocuments({ type: 'mock-interview' }),
+    db.collection('sessions').countDocuments({ type: 'career-chat' }),
+    db.collection('career_paths').countDocuments(),
+    db.collection('job_matches').countDocuments(),
+  ]);
+
+  // Get recent analytics events
+  const recentEvents = await db.collection('analytics').find().sort({ createdAt: -1 }).limit(100).toArray();
+
+  // ATS scores
+  const resumesWithScores = await db.collection('resumes').find({ 'analysis.atsScore': { $gt: 0 } }, { projection: { 'analysis.atsScore': 1 } }).toArray();
+  const atsScores = resumesWithScores.map(r => r.analysis?.atsScore).filter(Boolean);
+  const avgAtsScore = atsScores.length > 0 ? Math.round(atsScores.reduce((a, b) => a + b, 0) / atsScores.length) : 0;
+
+  // Module usage breakdown
+  const moduleUsage = {};
+  recentEvents.forEach(e => {
+    moduleUsage[e.type] = (moduleUsage[e.type] || 0) + 1;
+  });
+
+  // Daily activity (last 7 days)
+  const dailyActivity = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const dayStr = date.toISOString().split('T')[0];
+    const count = recentEvents.filter(e => e.createdAt?.startsWith(dayStr)).length;
+    dailyActivity.push({ date: dayStr, count });
+  }
+
+  return NextResponse.json({
+    stats: { totalUsers, totalResumes, totalInterviews, totalChats, totalCareerPaths, totalJobMatches, avgAtsScore },
+    moduleUsage, dailyActivity,
+    recentEvents: recentEvents.slice(0, 20).map(e => ({ type: e.type, data: e.data, createdAt: e.createdAt })),
+  });
+}
+
+// --- HEALTH ---
+async function handleHealth() {
   try {
     const db = await getDb();
     await db.command({ ping: 1 });
@@ -524,102 +703,67 @@ async function handleHealthCheck() {
   }
 }
 
-// Router
+// ============ ROUTER ============
 function getPath(request) {
-  const url = new URL(request.url);
-  return url.pathname.replace('/api', '');
+  return new URL(request.url).pathname.replace('/api', '');
 }
 
 export async function GET(request) {
   const path = getPath(request);
-  const headers = { 'Access-Control-Allow-Origin': '*' };
-
   try {
-    if (path === '/health') return handleHealthCheck();
-    if (path === '/models') {
-      return NextResponse.json({ 
-        models: ALL_MODELS.map(m => ({ 
-          name: m.name, 
-          provider: m.provider, 
-          model: m.model, 
-          color: m.color, 
-          guaranteed: m.guaranteed 
-        })) 
-      });
-    }
-    if (path === '/chat/sessions') return handleGetSessions();
-    if (path.startsWith('/chat/sessions/')) {
-      const id = path.split('/chat/sessions/')[1];
-      return handleGetSession(id);
-    }
-    if (path === '/resumes') return handleGetResumes();
-    if (path.startsWith('/resume/')) {
-      const id = path.split('/resume/')[1];
-      return handleGetResume(id);
-    }
+    if (path === '/health') return handleHealth();
+    if (path === '/models') return NextResponse.json({ models: ALL_MODELS.map(m => ({ name: m.name, provider: m.provider, model: m.model, color: m.color, guaranteed: m.guaranteed })) });
+    if (path === '/profile') return handleGetProfile(request);
+    if (path === '/chat/sessions') return handleGetSessions(request);
+    if (path.startsWith('/chat/sessions/')) return handleGetSession(request, path.split('/chat/sessions/')[1]);
+    if (path === '/resumes') return handleGetResumes(request);
+    if (path.startsWith('/resume/')) return handleGetResume(path.split('/resume/')[1]);
+    if (path === '/career-paths') return handleGetCareerPaths(request);
+    if (path === '/admin/analytics') return handleGetAnalytics(request);
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   } catch (error) {
-    console.error('GET Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function POST(request) {
   const path = getPath(request);
-
   try {
-    if (path === '/chat/send') {
-      const body = await request.json();
-      return handleChatSend(body);
-    }
-    if (path === '/resume/upload') {
-      return handleResumeUpload(request);
-    }
-    if (path === '/resume/analyze') {
-      const body = await request.json();
-      return handleResumeAnalyze(body);
-    }
-    if (path === '/mock-interview/start') {
-      const body = await request.json();
-      return handleMockInterviewStart(body);
-    }
-    if (path === '/mock-interview/respond') {
-      const body = await request.json();
-      return handleMockInterviewRespond(body);
-    }
-    if (path === '/career-paths/explore') {
-      const body = await request.json();
-      return handleCareerPathExplore(body);
-    }
+    if (path === '/auth/register') return handleRegister(await request.json());
+    if (path === '/auth/login') return handleLogin(await request.json());
+    if (path === '/chat/send') return handleChatSend(request);
+    if (path === '/resume/upload') return handleResumeUpload(request);
+    if (path === '/resume/analyze') return handleResumeAnalyze(request);
+    if (path === '/career-path/generate') return handleGenerateCareerPath(request);
+    if (path === '/mock-interview/start') return handleInterviewStart(request);
+    if (path === '/mock-interview/respond') return handleInterviewRespond(request);
+    if (path === '/job-match') return handleJobMatch(request);
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   } catch (error) {
-    console.error('POST Error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function PUT(request) {
+  const path = getPath(request);
+  try {
+    if (path === '/profile') return handleUpdateProfile(request);
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function DELETE(request) {
   const path = getPath(request);
-
   try {
-    if (path.startsWith('/chat/sessions/')) {
-      const id = path.split('/chat/sessions/')[1];
-      return handleDeleteSession(id);
-    }
+    if (path.startsWith('/chat/sessions/')) return handleDeleteSession(path.split('/chat/sessions/')[1]);
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   } catch (error) {
-    console.error('DELETE Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
+  return new NextResponse(null, { status: 200, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,Authorization' } });
 }
