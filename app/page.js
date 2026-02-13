@@ -829,16 +829,63 @@ function MockInterview() {
 
       {!isComplete ? (
         <div className="space-y-3">
-          <textarea value={answer} onChange={e => setAnswer(e.target.value)} placeholder="Type your answer..." rows={5} className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-4 text-sm focus:border-violet-500 focus:outline-none resize-none" />
+          {/* Voice recording indicator */}
+          {isRecording && (
+            <div className="flex items-center gap-3 p-3 bg-red-900/20 border border-red-500/30 rounded-xl">
+              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-sm text-red-300">Recording... Speak your answer</span>
+              <div className="flex-1 flex items-center gap-0.5 h-6">
+                {[...Array(20)].map((_, i) => (
+                  <div key={i} className="flex-1 bg-red-500/60 rounded-full transition-all duration-75" style={{ height: `${Math.max(4, Math.min(24, (audioLevel / 5) * Math.random() * 2))}px` }} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="relative">
+            <textarea value={answer} onChange={e => setAnswer(e.target.value)} placeholder={isRecording ? "Listening... speak now" : "Type or use voice to answer..."} rows={5} className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-4 pr-14 text-sm focus:border-violet-500 focus:outline-none resize-none" />
+            {voiceSupported && (
+              <button onClick={toggleVoice} className={`absolute right-3 top-3 w-10 h-10 rounded-full flex items-center justify-center transition-all ${isRecording ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/30' : 'bg-slate-700 text-slate-400 hover:bg-violet-600 hover:text-white'}`}>
+                <Mic className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+
+          {voiceSupported && !isRecording && (
+            <p className="text-[10px] text-slate-500 flex items-center gap-1"><Mic className="w-3 h-3" /> Click the mic icon to answer with your voice</p>
+          )}
+
           <div className="flex gap-3">
-            <Button onClick={submitAnswer} disabled={!answer.trim() || loading} className="flex-1 bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 py-4 rounded-xl">
+            <Button onClick={() => { stopVoice(); submitAnswer(); }} disabled={!answer.trim() || loading} className="flex-1 bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 py-4 rounded-xl">
               {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Evaluating...</> : <><Send className="w-4 h-4 mr-2" />Submit Answer</>}
             </Button>
-            <Button onClick={() => { setStarted(false); setFeedback(null); setAllFeedback([]); }} variant="outline" className="border-slate-600 text-slate-300">End</Button>
+            <Button onClick={() => { stopVoice(); setStarted(false); setFeedback(null); setAllFeedback([]); }} variant="outline" className="border-slate-600 text-slate-300">End</Button>
           </div>
         </div>
       ) : (
-        <Button onClick={() => { setStarted(false); setFeedback(null); setAllFeedback([]); }} className="w-full bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 py-4 rounded-xl">Start New Interview</Button>
+        <div className="space-y-4">
+          {/* Final scores summary */}
+          {allFeedback.length > 0 && (
+            <Card className="bg-slate-900/60 border-slate-800">
+              <CardContent className="p-5">
+                <h3 className="text-white font-semibold mb-3">Interview Performance Summary</h3>
+                <div className="grid grid-cols-5 gap-2">
+                  {allFeedback.map((fb, i) => (
+                    <div key={i} className="text-center p-2 rounded-lg bg-slate-800">
+                      <p className="text-[10px] text-slate-400">Q{i+1}</p>
+                      <p className={`text-lg font-bold ${(fb.score || 0) >= 7 ? 'text-green-400' : (fb.score || 0) >= 5 ? 'text-yellow-400' : 'text-red-400'}`}>{fb.score || '?'}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 text-center">
+                  <p className="text-slate-400 text-xs">Average Score</p>
+                  <p className="text-2xl font-bold text-white">{(allFeedback.reduce((a, b) => a + (b.score || 0), 0) / allFeedback.length).toFixed(1)}/10</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          <Button onClick={() => { stopVoice(); setStarted(false); setFeedback(null); setAllFeedback([]); }} className="w-full bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 py-4 rounded-xl">Start New Interview</Button>
+        </div>
       )}
     </div>
   );
