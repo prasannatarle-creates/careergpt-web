@@ -132,6 +132,7 @@ function AuthPage({ onAuth }) {
 function Sidebar({ currentPage, onNavigate, user, onLogout, collapsed, onToggle }) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'text-blue-400' },
+    { id: 'profile', label: 'My Profile', icon: Settings, color: 'text-slate-400' },
     { id: 'chat', label: 'AI Career Chat', icon: MessageSquare, color: 'text-cyan-400' },
     { id: 'resume', label: 'Resume Analyzer', icon: FileText, color: 'text-teal-400' },
     { id: 'career', label: 'Career Path', icon: Compass, color: 'text-amber-400' },
