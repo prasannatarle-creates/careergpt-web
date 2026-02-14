@@ -4,6 +4,7 @@ import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import pdfParse from 'pdf-parse';
 
 // ============ CONFIG ============
 const MONGO_URL = process.env.MONGO_URL;
