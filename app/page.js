@@ -32,12 +32,24 @@ const api = {
     if (options.body && !(options.body instanceof FormData)) headers['Content-Type'] = 'application/json';
     try {
       const res = await fetch(`/api${url}`, { ...options, headers });
+      
+      // Handle server errors (5xx)
+      if (res.status >= 500) {
+        const text = await res.text().catch(() => '');
+        console.error(`Server error ${res.status} from:`, url, text.substring(0, 200));
+        if (res.status === 520) {
+          return { error: 'Connection error. Please try again.' };
+        }
+        return { error: `Server error (${res.status}). Please try again.` };
+      }
+      
       const contentType = res.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        const text = await res.text();
+        const text = await res.text().catch(() => '');
         console.error('Non-JSON response from:', url, text.substring(0, 200));
-        return { error: `Server error (${res.status}): Non-JSON response` };
+        return { error: 'Unexpected server response. Please try again.' };
       }
+      
       const data = await res.json();
       if (res.status === 401 && url !== '/auth/login' && url !== '/auth/register') {
         this.setToken(null);
@@ -46,6 +58,9 @@ const api = {
       return data;
     } catch (err) {
       console.error('API error for:', url, err);
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        return { error: 'Network error. Please check your connection.' };
+      }
       return { error: `Request failed: ${err.message}` };
     }
   },
