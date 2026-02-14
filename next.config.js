@@ -6,9 +6,11 @@ const nextConfig = {
   serverExternalPackages: ['mongodb'],
   allowedDevOrigins: [
     'interview-prep-97.preview.emergentagent.com',
-    '*.preview.emergentagent.com',
-    '*.preview.emergentcf.cloud',
     'interview-prep-97.cluster-10.preview.emergentcf.cloud',
+    '*.preview.emergentagent.com',
+    '*.emergentcf.cloud',
+    '*.preview.emergentcf.cloud',
+    '*.cluster-10.preview.emergentcf.cloud',
   ],
   turbopack: {},
   onDemandEntries: {
