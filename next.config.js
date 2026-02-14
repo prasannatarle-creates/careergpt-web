@@ -4,6 +4,7 @@ const nextConfig = {
     unoptimized: true,
   },
   serverExternalPackages: ['mongodb'],
+  allowedDevOrigins: ['*'],
   turbopack: {},
   onDemandEntries: {
     maxInactiveAge: 10000,
