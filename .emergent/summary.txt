@@ -1,0 +1,182 @@
+<analysis>
+
+**original_problem_statement**: The user wants to build a production-ready, interview-grade AI web application called **CareerGPT**.
+
+**PRODUCT REQUIREMENTS**:
+- **Core Functionality**: An AI-powered career guidance platform for students and job seekers.
+- **Features**:
+    - Choose career paths (using multiple AI models).
+    - Analyze resumes (PDF/DOCX upload, ATS score, feedback).
+    - Practice mock interviews (with voice input).
+    - Match jobs to skills.
+    - Track career progress via a user profile.
+    - Admin analytics dashboard.
+- **Tech Stack Vision**: Next.js, TypeScript, Tailwind CSS on the frontend. A Python (FastAPI) backend with PostgreSQL and a Vector Database.
+- **Implementation Note**: The project is currently being built in a full-stack Next.js environment with MongoDB. The user has requested to build all features from their vision incrementally.
+
+**User's preferred language**: English
+
+**what currently exists?**
+A full-stack Next.js application built within two main files:  for the backend and  for the frontend.
+
+**Frontend**:
+- A single-page application experience with routing handled internally.
+- Pages include: Login/Register, Dashboard (with analytics), AI Chat, Resume Analyzer, Mock Interview, Job Match, and a User Profile page.
+- **Key Features Implemented**:
+    - **Multi-model AI Chat**: Allows users to toggle between 5 different AI models (GPT-4.1, Claude, Gemini, Grok, Perplexity) and see synthesized and individual responses.
+    - **Resume Analyzer**: Supports PDF uploads and provides AI-based analysis. Includes a Download as PDF feature.
+    - **Mock Interview**: Features a voice recording option for answering questions.
+    - **User Authentication**: A complete JWT-based authentication system (register/login).
+    - **Analytics Dashboard**: Displays mock data for user statistics and module usage.
+
+**Backend**:
+- All API logic is contained within .
+- Connects to a MongoDB database using the  environment variable.
+- **Key Features Implemented**:
+    - Endpoints for all frontend modules: , , , , , , , .
+    - **Multi-Model Orchestrator**: Calls multiple AI models concurrently, handles timeouts, and provides graceful fallbacks for unavailable models.
+    - JWT token generation and validation middleware.
+    - CRUD operations for user and profile data.
+
+**Last working item**:
+- **Last item agent was working**: Debugging a user report that all modules except Mock Interview are generating errors on the frontend. The agent had just finished verifying that all backend API endpoints (, , , , etc.) are responding correctly with  commands.
+- **Status**: IN PROGRESS
+- **Agent Testing Done**: N (Backend API testing was done, but the root cause on the frontend has not been identified or tested).
+- **Which testing method agent to use?**: screenshot tool. The agent needs to visually inspect the frontend to see the errors the user is experiencing. After identifying the error, the agent will need to debug the frontend code in .
+- **User Testing Done**: N
+
+**All Pending/In progress Issue list**:
+  - Issue 1: (P0) Frontend modules are broken.
+
+  **Issues Detail**:
+  - **Issue 1**: Most modules (Resume Analyzer, Career Path, Job Match, AI Chat) are reportedly failing on the frontend, while the Mock Interview module works.
+     - **Attempted fixes**: The previous agent confirmed that all corresponding backend APIs are functioning correctly. This isolates the problem to the frontend code.
+     - **Next debug checklist**:
+       1.  Use the  tool to view the Career Path, Resume Analyzer, and Job Match pages to visually confirm the errors.
+       2.  Check the browser's developer console for any JavaScript errors when navigating to or using these modules.
+       3.  Examine the state management and data flow within  for each of the failing components. The issue could be related to how the API responses are being handled or rendered.
+       4.  Compare the logic of the working Mock Interview component with the broken ones to identify differences.
+     - **Why fix this issue and what will be achieved with the fix?**: This is a critical bug as it makes most of the application's features unusable. Fixing it will restore the core functionality of CareerGPT.
+     - **Status**: IN PROGRESS
+     - **Is recurring issue?**: N
+     - **Should Test frontend/backend/both after fix?**: Frontend
+     - **Blocked on other issue**: None
+
+**In progress Task List**:
+  - None
+
+**Upcoming and Future Tasks**
+- **Upcoming Tasks**:
+    - **P0: Refactor Frontend**: Break down the monolithic  file into smaller, reusable React components for each module (e.g., , , etc.). This will improve maintainability and help prevent bugs like the current one.
+    - **P1: Refactor Backend**: Decompose the single  file into a modular structure, with separate files for routes, services, and models.
+- **Future Tasks**:
+    - **P2: Implement Real ML Models**: Replace the LLM-based simulation for ATS scoring with actual ML models (e.g., BERT, SBERT) as per the user's original vision. This would require a Python environment.
+    - **P2: Integrate Vector Database**: Implement job matching using a real vector database (like Pinecone or Milvus) instead of the current LLM-based approach.
+    - **P3: Database Migration**: Plan and execute the migration from MongoDB to PostgreSQL to align with the user's long-term tech stack vision.
+
+**Completed work in this session**
+- **Recently completed**:
+  - Multi-model AI integration (GPT-4.1, Claude, Gemini) with fallback mechanisms.
+  - Complete user authentication (JWT-based Login/Register).
+  - Creation of a multi-page dashboard with Analytics, AI Chat, Resume Analyzer, Mock Interview, Job Match, and Profile sections.
+  - Implemented PDF upload for resume analysis.
+  - Implemented PDF export for resume results.
+  - Implemented voice recording for mock interviews.
+  - Resolved a critical Refused to connect error by fixing Next.js configuration for Turbopack and CORS.
+
+**Earlier issues found/mentioned but not fixed**
+   - None. The agent has been addressing issues as they arise.
+
+**Known issue recurrence from previous fork**
+  - None.
+
+**Code Architecture**
+- **Monolithic Structure**: The entire application logic is highly concentrated.
+  - **Backend**: A single file  handles all API routes, database interactions, and business logic.
+  - **Frontend**: A single file  contains all UI components, state management, and client-side logic for the entire multi-page application.
+
+**Key Technical Concepts**
+- **Frontend**: Next.js (App Router), React, Tailwind CSS. Client-side routing and state management are handled within a single large component.
+- **Backend**: Next.js API Routes, MongoDB (via Mongoose).
+- **Authentication**: JSON Web Tokens (JWT) stored in localStorage.
+- **AI Integration**: Asynchronous parallel API calls to multiple external LLM providers with timeout and error handling.
+
+**key DB schema**
+  - **User**: 
+  - **Profile**: 
+  - (Note: Other schemas for resume analysis, chat history, etc., are implicitly handled within the API logic but not formally defined as separate models).
+
+**changes in tech stack**
+  - None in this session. The project continues to use Next.js and MongoDB.
+
+**All files of reference**
+- : The single source of truth for all backend logic. It has been extensively modified to add auth, all feature endpoints, and the multi-model AI orchestrator.
+- : The single source of truth for all frontend components and logic. It has been rewritten multiple times to add the login page, the dashboard layout, and all feature modules.
+- : Was modified to resolve a runtime crash with Next.js v16 by adding a webpack config and  for CORS during development.
+- : Updated to include tests for the new authentication and feature endpoints.
+
+**Areas that need refactoring**:
+- The entire application. Both  and  are extremely large and complex, violating the single-responsibility principle. They urgently need to be broken down into smaller, manageable modules and components.
+
+**key api endpoints**
+-  (POST)
+-  (POST)
+-  (GET, POST)
+-  (POST)
+-  (POST)
+-  (POST)
+-  (POST)
+-  (GET)
+
+**Critical Info for New Agent**
+- The user's vision is a complex Python-based microservices architecture, but you are working in a Next.js/MongoDB monolith. Manage expectations and build incrementally.
+- The most recent critical bug was a refused to connect error caused by a Next.js version upgrade. It was fixed by editing . Be mindful of this file if server issues arise.
+- The current priority is a major frontend bug where multiple modules are failing. The backend APIs have been confirmed to be working, so your focus must be on debugging the frontend code in .
+
+**documents created in this job**
+  - : Updated with backend test results.
+
+**Last 10 User Messages and any pending HUMAN messages**
+1.   - **PENDING**. This is the active issue to be solved.
+2.   - User frustration during a previous debugging session. (Resolved)
+3.   - The bug report that led to the  fix. (Resolved)
+4.   - Request for a project overview. (Completed)
+5.   - User agreement to continue building out all features. (In Progress)
+6.   - User agreement to the phased approach. (In Progress)
+7.   - User asking for a gap analysis against their vision. (Completed)
+8.   - Feature request to add more models. (Completed)
+9.   - User prompt to continue working.
+10.  - Initial feature clarifications from the user. (Completed)
+
+**Project Health Check:**
+- **Broken**: Core features of the application are not working on the frontend, as reported by the user.
+
+**3rd Party Integrations**
+- **OpenAI GPT-4.1 Turbo**: Uses Emergent LLM Key.
+- **Google Gemini 2.5 Flash**: Uses Emergent LLM Key.
+- **Anthropic Claude 4 Sonnet**: Uses Emergent LLM Key.
+- **Grok 3 Mini**: Attempted integration, uses Emergent LLM Key, but is not available on the proxy.
+- **Perplexity Sonar Pro**: Attempted integration, uses Emergent LLM Key, but is not available on the proxy.
+- **bcryptjs**: For password hashing.
+- **jsonwebtoken**: For JWT management.
+- **jspdf**, **html2canvas**: For PDF export functionality.
+
+**Testing status**
+- **Testing agent used after significant changes**: YES, backend testing was used.
+- **Troubleshoot agent used after agent stuck in loop**: N/A
+- **Test files created**:
+    -  (was updated)
+- **Known regressions**: Yes, several frontend modules stopped working after the last set of feature additions.
+
+**Credentials to test flow:**
+- No specific credentials. The user can register a new account through the UI to test the application.
+
+**What agent forgot to execute**
+- The agent did not fully debug the frontend after the user reported that multiple modules were broken. It confirmed the backend was working but stopped before investigating the client-side code, which is the likely source of the problem.
+
+</analysis>
+<SYS_PROMPT_SEPARATOR>
+<workspace_dir>
+/app
+</workspace_dir>
+
