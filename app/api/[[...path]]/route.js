@@ -457,15 +457,8 @@ async function handleResumeUpload(request) {
         // Use PDFParse class from pdf-parse module
         const { PDFParse } = pdfParseModule;
         const parser = new PDFParse();
-        const pdfData = await parser.loadPDF(buffer);
-        // Extract text from pages
-        const pages = pdfData.pages || [];
-        textContent = pages.map(page => {
-          if (page.lines) {
-            return page.lines.map(line => line.text || '').join(' ');
-          }
-          return page.text || '';
-        }).join('\n');
+        await parser.load(buffer);
+        textContent = await parser.getText();
       } catch (pdfError) {
         console.error('PDF parsing error:', pdfError.message);
         // Try to extract any readable text from the buffer
