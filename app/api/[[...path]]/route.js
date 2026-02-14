@@ -454,7 +454,6 @@ async function handleResumeUpload(request) {
     
     if (file.name.toLowerCase().endsWith('.pdf')) {
       try {
-        const pdfParse = (await import('pdf-parse')).default;
         const pdfData = await pdfParse(buffer);
         textContent = pdfData.text || '';
       } catch (pdfError) {
