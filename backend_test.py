@@ -7,7 +7,7 @@ import os
 from typing import Dict, Any, Optional
 
 # Base URL from environment
-BASE_URL = "https://interview-prep-97.preview.emergentagent.com/api"
+BASE_URL = "https://jobseeker-ai-lab.preview.emergentagent.com/api"
 
 class CareerGPTTester:
     def __init__(self):

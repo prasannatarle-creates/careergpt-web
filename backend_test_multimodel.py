@@ -10,7 +10,7 @@ from typing import Dict, Any, List, Optional
 
 class MultiModelTester:
     def __init__(self):
-        self.base_url = "https://interview-prep-97.preview.emergentagent.com/api"
+        self.base_url = "https://jobseeker-ai-lab.preview.emergentagent.com/api"
         self.session = requests.Session()
         self.session.timeout = 90  # 90 second timeout for AI endpoints as specified
         self.test_session_id = None
