@@ -5,9 +5,11 @@ const nextConfig = {
   },
   serverExternalPackages: ['mongodb'],
   allowedDevOrigins: [
-    'interview-prep-97.preview.emergentagent.com',
-    'interview-prep-97.cluster-10.preview.emergentcf.cloud',
-    'localhost',
+    'https://interview-prep-97.preview.emergentagent.com',
+    'https://interview-prep-97.cluster-10.preview.emergentcf.cloud',
+    'http://interview-prep-97.preview.emergentagent.com',
+    'http://interview-prep-97.cluster-10.preview.emergentcf.cloud',
+    'http://localhost:3000',
   ],
   turbopack: {},
   onDemandEntries: {
