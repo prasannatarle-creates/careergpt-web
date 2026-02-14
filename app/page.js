@@ -30,13 +30,24 @@ const api = {
     const token = this.getToken();
     if (token) headers['Authorization'] = `Bearer ${token}`;
     if (options.body && !(options.body instanceof FormData)) headers['Content-Type'] = 'application/json';
-    const res = await fetch(`/api${url}`, { ...options, headers });
-    const data = await res.json();
-    if (res.status === 401 && url !== '/auth/login' && url !== '/auth/register') {
-      this.setToken(null);
-      window.location.reload();
+    try {
+      const res = await fetch(`/api${url}`, { ...options, headers });
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await res.text();
+        console.error('Non-JSON response from:', url, text.substring(0, 200));
+        return { error: `Server error (${res.status}): Non-JSON response` };
+      }
+      const data = await res.json();
+      if (res.status === 401 && url !== '/auth/login' && url !== '/auth/register') {
+        this.setToken(null);
+        window.location.reload();
+      }
+      return data;
+    } catch (err) {
+      console.error('API error for:', url, err);
+      return { error: `Request failed: ${err.message}` };
     }
-    return data;
   },
   get(url) { return this.fetch(url); },
   post(url, body) { return this.fetch(url, { method: 'POST', body: body instanceof FormData ? body : JSON.stringify(body) }); },
