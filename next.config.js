@@ -4,7 +4,11 @@ const nextConfig = {
     unoptimized: true,
   },
   serverExternalPackages: ['mongodb'],
-  allowedDevOrigins: ['*'],
+  allowedDevOrigins: [
+    'interview-prep-97.preview.emergentagent.com',
+    'interview-prep-97.cluster-10.preview.emergentcf.cloud',
+    'localhost',
+  ],
   turbopack: {},
   onDemandEntries: {
     maxInactiveAge: 10000,
