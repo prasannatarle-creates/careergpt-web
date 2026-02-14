@@ -454,7 +454,9 @@ async function handleResumeUpload(request) {
     
     if (file.name.toLowerCase().endsWith('.pdf')) {
       try {
-        const pdfData = await pdfParse(buffer);
+        // Use the pdf-parse module - it might be default or named export
+        const pdfParseFn = pdfParseModule.default || pdfParseModule;
+        const pdfData = await pdfParseFn(buffer);
         textContent = pdfData.text || '';
       } catch (pdfError) {
         console.error('PDF parsing error:', pdfError.message);
