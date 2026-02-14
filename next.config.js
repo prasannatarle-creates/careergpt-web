@@ -7,10 +7,12 @@ const nextConfig = {
   allowedDevOrigins: [
     'jobseeker-ai-lab.preview.emergentagent.com',
     'jobseeker-ai-lab.cluster-10.preview.emergentcf.cloud',
+    'jobseeker-ai-lab.cluster-0.preview.emergentcf.cloud',
     '*.preview.emergentagent.com',
     '*.emergentcf.cloud',
     '*.preview.emergentcf.cloud',
     '*.cluster-10.preview.emergentcf.cloud',
+    '*.cluster-0.preview.emergentcf.cloud',
     'localhost:3000',
   ],
   turbopack: {},
