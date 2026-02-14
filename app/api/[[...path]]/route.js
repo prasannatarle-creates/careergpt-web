@@ -446,19 +446,35 @@ async function handleResumeUpload(request) {
   try {
     const formData = await request.formData();
     const file = formData.get('file');
-    if (!file) return NextResponse.json({ error: 'No file' }, { status: 400 });
+    if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
 
     const buffer = Buffer.from(await file.arrayBuffer());
     let textContent = '';
+    
     if (file.name.toLowerCase().endsWith('.pdf')) {
-      const pdfParse = (await import('pdf-parse')).default;
-      textContent = (await pdfParse(buffer)).text;
+      try {
+        const pdfParse = (await import('pdf-parse')).default;
+        const pdfData = await pdfParse(buffer);
+        textContent = pdfData.text || '';
+      } catch (pdfError) {
+        console.error('PDF parsing error:', pdfError.message);
+        // Try to extract any readable text from the buffer
+        const rawText = buffer.toString('utf-8').replace(/[^\x20-\x7E\n\r]/g, ' ');
+        if (rawText.length > 100) {
+          textContent = rawText;
+        } else {
+          return NextResponse.json({ error: 'Failed to parse PDF. Please try a different file or use TXT format.' }, { status: 400 });
+        }
+      }
     } else {
       textContent = buffer.toString('utf-8');
     }
 
-    if (!textContent || textContent.trim().length < 20) {
-      return NextResponse.json({ error: 'Could not extract text' }, { status: 400 });
+    // Clean up text content
+    textContent = textContent.replace(/\s+/g, ' ').trim();
+
+    if (!textContent || textContent.length < 20) {
+      return NextResponse.json({ error: 'Could not extract enough text from the file. Please ensure the file contains readable text.' }, { status: 400 });
     }
 
     const auth = verifyToken(request);
@@ -471,6 +487,7 @@ async function handleResumeUpload(request) {
 
     return NextResponse.json({ resumeId, fileName: file.name, textPreview: textContent.substring(0, 300), charCount: textContent.length });
   } catch (error) {
+    console.error('Resume upload error:', error);
     return NextResponse.json({ error: 'Upload failed: ' + error.message }, { status: 500 });
   }
 }
