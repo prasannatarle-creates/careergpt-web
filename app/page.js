@@ -1343,11 +1343,14 @@ function UserProfile({ user, onUpdate }) {
 
 // ============ MAIN APP ============
 function App() {
+  const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState(undefined); // undefined = loading, null = guest
   const [page, setPage] = useState('dashboard');
   const [collapsed, setCollapsed] = useState(false);
 
+  // Handle hydration - only run client-side logic after mount
   useEffect(() => {
+    setMounted(true);
     const token = api.getToken();
     if (token) {
       api.get('/profile').then(d => {
@@ -1359,7 +1362,8 @@ function App() {
     }
   }, []);
 
-  if (user === undefined) return <div className="h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /></div>;
+  // Show loading during SSR and initial hydration
+  if (!mounted || user === undefined) return <div className="h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /></div>;
   if (user === null) return <AuthPage onAuth={(u) => { setUser(u || { name: 'Guest', role: 'guest' }); }} />;
 
   const logout = () => { api.setToken(null); setUser(null); };
