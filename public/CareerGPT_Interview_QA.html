@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>CareerGPT Interview Q&amp;A</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">CareerGPT Interview Q&amp;A</h1>
+</header>
+<h1 id="careergpt---complete-interview-qa-guide">CareerGPT - Complete
+Interview Q&amp;A Guide</h1>
+<hr />
+<h2 id="project-overview">1. PROJECT OVERVIEW</h2>
+<h3 id="purpose-problem-statement">Purpose &amp; Problem Statement</h3>
+<p><strong>Q: What problem does your app solve?</strong></p>
+<p>CareerGPT addresses the challenges faced by students and job seekers
+in career planning. Many people struggle with: - <strong>Uncertainty
+about career paths</strong> - They don’t know which career suits their
+skills - <strong>Resume optimization</strong> - Most resumes get
+rejected by ATS (Applicant Tracking Systems) before reaching human
+recruiters - <strong>Interview anxiety</strong> - Lack of practice leads
+to poor interview performance - <strong>Job-skill mismatch</strong> -
+Difficulty finding jobs that match their actual abilities</p>
+<p>Our platform uses AI to provide personalized guidance in all these
+areas, making career planning accessible and data-driven.</p>
+<p><strong>Q: Who are the target users?</strong></p>
+<p>Our primary target users are: 1. <strong>College students</strong> -
+Looking for first job/internship guidance 2. <strong>Fresh
+graduates</strong> - Need resume help and interview preparation 3.
+<strong>Career changers</strong> - Professionals switching industries 4.
+<strong>Job seekers</strong> - Anyone actively looking for
+employment</p>
+<p>Secondary users include career counselors who can use the platform to
+assist their clients.</p>
+<h3 id="core-features">Core Features</h3>
+<p><strong>Q: What are the main functionalities?</strong></p>
+<p>CareerGPT has 6 core modules:</p>
+<ol type="1">
+<li><strong>AI Career Chat</strong> - Conversational AI using GPT-4 for
+personalized career advice</li>
+<li><strong>Resume Analyzer</strong> - Upload resume, get ATS score
+(0-100), keyword analysis, and improvement suggestions</li>
+<li><strong>Career Path Generator</strong> - Input skills/interests,
+receive structured roadmap with timeline</li>
+<li><strong>Mock Interview</strong> - AI asks interview questions, user
+can respond via voice or text, gets scored feedback</li>
+<li><strong>Job Matching</strong> - AI analyzes profile and suggests
+matching roles with compatibility scores</li>
+<li><strong>Analytics Dashboard</strong> - Track usage, view statistics
+across the platform</li>
+</ol>
+<h3 id="user-flow">User Flow</h3>
+<p><strong>Q: Describe a typical user journey.</strong></p>
+<p><strong>Step 1: Registration</strong> - User visits the platform,
+sees login page - Creates account with name, email, password - Password
+is hashed with bcrypt, JWT token generated - User redirected to
+dashboard</p>
+<p><strong>Step 2: Profile Setup</strong> - User enters skills (Python,
+React, etc.) - Adds interests, education, experience - This data is
+stored in MongoDB for personalization</p>
+<p><strong>Step 3: Resume Analysis</strong> - User uploads PDF resume -
+System extracts text using pdf-parse library - GPT-4 analyzes against
+ATS criteria - User receives score with detailed feedback</p>
+<p><strong>Step 4: Career Exploration</strong> - User asks questions in
+AI Chat - Generates career path roadmap - Practices mock interviews</p>
+<p><strong>Step 5: Job Search</strong> - Uses Job Matching to find
+suitable roles - Gets match scores and skill gap analysis</p>
+<hr />
+<h2 id="technology-stack">2. TECHNOLOGY STACK</h2>
+<h3 id="frontend">Frontend</h3>
+<p><strong>Q: What frontend technologies did you use and
+why?</strong></p>
+<p><strong>Framework: Next.js 16 with React 18</strong> - Chose Next.js
+for its integrated full-stack capabilities - Server-side rendering
+improves SEO and initial load time - File-based routing simplifies
+navigation structure - API routes allow backend code in same project</p>
+<p><strong>State Management: React Hooks (useState, useEffect,
+useRef)</strong> - Used local state with useState for component-specific
+data - useEffect for side effects like API calls - useRef for DOM
+references (file input, voice recording) - Didn’t need Redux because
+state is mostly local to components</p>
+<p><strong>Styling: Tailwind CSS + shadcn/ui</strong> - Tailwind
+provides utility-first CSS for rapid development - shadcn/ui gives
+pre-built accessible components (buttons, cards, inputs) - Consistent
+design system across the application</p>
+<p><strong>Icons: Lucide React</strong> - Modern, customizable icon
+library - Tree-shakeable (only imports what we use)</p>
+<h3 id="backend">Backend</h3>
+<p><strong>Q: What backend technologies did you use?</strong></p>
+<p><strong>Runtime: Node.js with Next.js API Routes</strong> -
+JavaScript everywhere (frontend and backend) - Serverless functions -
+each API route is independent - No separate server setup required</p>
+<p><strong>Key Libraries:</strong> - <code>mongodb</code> - Database
+driver for MongoDB connection - <code>bcryptjs</code> - Password hashing
+with salt - <code>jsonwebtoken</code> - JWT token generation and
+verification - <code>openai</code> - Official SDK for GPT-4 API calls -
+<code>pdf-parse</code> - Extract text from PDF files - <code>uuid</code>
+- Generate unique identifiers</p>
+<h3 id="database">Database</h3>
+<p><strong>Q: Why did you choose MongoDB?</strong></p>
+<p><strong>Database: MongoDB (NoSQL Document Database)</strong></p>
+<p>Reasons for choosing MongoDB:</p>
+<ol type="1">
+<li><p><strong>Flexible Schema</strong> - User profiles, chat messages,
+resume analyses all have different structures. MongoDB’s document model
+handles this naturally without migrations.</p></li>
+<li><p><strong>JSON-like Documents</strong> - Our data (from JavaScript
+objects to AI responses) maps directly to MongoDB’s BSON
+format.</p></li>
+<li><p><strong>Scalability</strong> - Horizontal scaling for future
+growth, sharding capability.</p></li>
+<li><p><strong>Developer Experience</strong> - Easy to work with in
+Node.js, no ORM required.</p></li>
+</ol>
+<h3 id="other-tools">Other Tools</h3>
+<p><strong>Q: What other tools and services did you use?</strong></p>
+<p><strong>Authentication: JWT (JSON Web Tokens)</strong> - Stateless
+authentication - no server session storage - Token contains user ID and
+role - 7-day expiration for security - Stored in localStorage on
+client</p>
+<p><strong>AI Service: OpenAI GPT-4 API</strong> - Industry-leading
+language model - Structured JSON output capability - Reliable API with
+good documentation</p>
+<p><strong>PDF Processing:</strong> - <code>pdf-parse</code> for text
+extraction from resumes - <code>jspdf</code> for generating PDF
+reports</p>
+<hr />
+<h2 id="system-architecture">3. SYSTEM ARCHITECTURE</h2>
+<h3 id="high-level-diagram">High-level Diagram</h3>
+<p><strong>Q: Can you explain the system architecture?</strong></p>
+<p>Our application follows a 3-tier architecture:</p>
+<pre><code>CLIENT TIER
+├── Next.js React Frontend
+├── Single Page Application (SPA)
+├── Components: Auth, Dashboard, Modules
+└── State: React Hooks
+
+APPLICATION TIER
+├── Next.js API Routes
+├── Authentication Middleware
+├── Business Logic
+└── AI Integration Layer
+
+DATA TIER
+├── MongoDB Database
+│   ├── Users
+│   ├── Sessions
+│   ├── Resumes
+│   └── Analytics
+└── External APIs (OpenAI GPT-4)</code></pre>
+<h3 id="api-design">API Design</h3>
+<p><strong>Q: How did you design your APIs?</strong></p>
+<p>We use RESTful API design with JSON payloads.</p>
+<p><strong>API Endpoints:</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td>/api/auth/register</td>
+<td>Create new user</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td>/api/auth/login</td>
+<td>Login user</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td>/api/profile</td>
+<td>Get user profile</td>
+</tr>
+<tr class="even">
+<td>PUT</td>
+<td>/api/profile</td>
+<td>Update profile</td>
+</tr>
+<tr class="odd">
+<td>POST</td>
+<td>/api/chat/send</td>
+<td>Send message</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td>/api/chat/sessions</td>
+<td>List sessions</td>
+</tr>
+<tr class="odd">
+<td>POST</td>
+<td>/api/resume/upload</td>
+<td>Upload file</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td>/api/resume/analyze</td>
+<td>Analyze resume</td>
+</tr>
+<tr class="odd">
+<td>POST</td>
+<td>/api/career-path/generate</td>
+<td>Generate path</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td>/api/mock-interview/start</td>
+<td>Start interview</td>
+</tr>
+<tr class="odd">
+<td>POST</td>
+<td>/api/mock-interview/respond</td>
+<td>Submit answer</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td>/api/job-match</td>
+<td>Find matching jobs</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="database-design">4. DATABASE DESIGN</h2>
+<h3 id="schema">Schema</h3>
+<p><strong>Q: Explain your database schema.</strong></p>
+<p><strong>1. Users Collection</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;uuid-string&quot;</span><span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;John Doe&quot;</span><span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">email</span><span class="op">:</span> <span class="st">&quot;john@example.com&quot;</span><span class="op">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">password</span><span class="op">:</span> <span class="st">&quot;$2b$10$...&quot;</span><span class="op">,</span> <span class="co">// bcrypt hash</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">role</span><span class="op">:</span> <span class="st">&quot;user&quot;</span><span class="op">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">profile</span><span class="op">:</span> {</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">skills</span><span class="op">:</span> [<span class="st">&quot;Python&quot;</span><span class="op">,</span> <span class="st">&quot;React&quot;</span>]<span class="op">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">interests</span><span class="op">:</span> [<span class="st">&quot;AI&quot;</span><span class="op">,</span> <span class="st">&quot;Web Dev&quot;</span>]<span class="op">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">education</span><span class="op">:</span> <span class="st">&quot;B.Tech CS&quot;</span><span class="op">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">experience</span><span class="op">:</span> <span class="st">&quot;2 years&quot;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">createdAt</span><span class="op">:</span> <span class="st">&quot;2024-01-15T10:30:00Z&quot;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>2. Sessions Collection</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;uuid&quot;</span><span class="op">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">userId</span><span class="op">:</span> <span class="st">&quot;user-uuid&quot;</span><span class="op">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">&quot;career-chat&quot;</span><span class="op">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span><span class="op">:</span> <span class="st">&quot;Career advice chat&quot;</span><span class="op">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">messages</span><span class="op">:</span> [</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    { <span class="dt">role</span><span class="op">:</span> <span class="st">&quot;user&quot;</span><span class="op">,</span> <span class="dt">content</span><span class="op">:</span> <span class="st">&quot;...&quot;</span><span class="op">,</span> <span class="dt">timestamp</span><span class="op">:</span> <span class="st">&quot;...&quot;</span> }<span class="op">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    { <span class="dt">role</span><span class="op">:</span> <span class="st">&quot;assistant&quot;</span><span class="op">,</span> <span class="dt">content</span><span class="op">:</span> <span class="st">&quot;...&quot;</span><span class="op">,</span> <span class="dt">timestamp</span><span class="op">:</span> <span class="st">&quot;...&quot;</span> }</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">createdAt</span><span class="op">:</span> <span class="st">&quot;...&quot;</span><span class="op">,</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">updatedAt</span><span class="op">:</span> <span class="st">&quot;...&quot;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>3. Resumes Collection</strong></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;uuid&quot;</span><span class="op">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">userId</span><span class="op">:</span> <span class="st">&quot;user-uuid&quot;</span><span class="op">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fileName</span><span class="op">:</span> <span class="st">&quot;resume.pdf&quot;</span><span class="op">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">textContent</span><span class="op">:</span> <span class="st">&quot;Extracted text...&quot;</span><span class="op">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">analysis</span><span class="op">:</span> {</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">atsScore</span><span class="op">:</span> <span class="dv">75</span><span class="op">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">sections</span><span class="op">:</span> { <span class="dt">contact</span><span class="op">:</span> {}<span class="op">,</span> <span class="dt">experience</span><span class="op">:</span> {} }<span class="op">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">keywords</span><span class="op">:</span> { <span class="dt">found</span><span class="op">:</span> []<span class="op">,</span> <span class="dt">missing</span><span class="op">:</span> [] }</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">createdAt</span><span class="op">:</span> <span class="st">&quot;...&quot;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="indexes-optimization">Indexes &amp; Optimization</h3>
+<p><strong>Q: How do you optimize database performance?</strong></p>
+<p><strong>Indexes Created:</strong> - Email index (unique) - Fast login
+lookup - userId + updatedAt - Efficient session listing - userId +
+createdAt - Fast resume listing</p>
+<p><strong>Connection Pooling:</strong></p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> cachedDb <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">async</span> <span class="kw">function</span> <span class="fu">getDb</span>() {</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (cachedDb) <span class="cf">return</span> cachedDb<span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> client <span class="op">=</span> <span class="cf">await</span> MongoClient<span class="op">.</span><span class="fu">connect</span>(MONGO_URL)<span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  cachedDb <span class="op">=</span> client<span class="op">.</span><span class="fu">db</span>(DB_NAME)<span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> cachedDb<span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+<h2 id="frontend-details">5. FRONTEND DETAILS</h2>
+<h3 id="component-structure">Component Structure</h3>
+<p><strong>Q: How did you organize your React components?</strong></p>
+<pre><code>App (Main Container)
+├── AuthPage (Login/Register)
+├── Sidebar (Navigation)
+└── MainContent
+    ├── Dashboard
+    ├── AIChat
+    ├── ResumeAnalyzer
+    ├── CareerPath
+    ├── MockInterview
+    ├── JobMatching
+    └── Analytics</code></pre>
+<h3 id="state-management">State Management</h3>
+<p><strong>Q: How do you manage state?</strong></p>
+<p><strong>Local State (useState):</strong> - Form inputs (email,
+password, skills) - UI state (loading, error messages) -
+Component-specific data</p>
+<p><strong>Why no Redux/Context?</strong> - Application state is
+relatively simple - Most state is local to components - Props drilling
+is minimal (only 1-2 levels)</p>
+<hr />
+<h2 id="backend-details">6. BACKEND DETAILS</h2>
+<h3 id="authentication-authorization">Authentication &amp;
+Authorization</h3>
+<p><strong>Q: Explain your authentication system.</strong></p>
+<p><strong>Registration Process:</strong> 1. Validate input (email,
+password length) 2. Check if email exists 3. Hash password with bcrypt
+(salt rounds = 10) 4. Create user in database 5. Generate JWT token
+(7-day expiry) 6. Return token to client</p>
+<p><strong>Login Process:</strong> 1. Find user by email 2. Compare
+password hash with bcrypt 3. Generate new JWT token 4. Return token to
+client</p>
+<p><strong>Token Verification:</strong></p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">verifyToken</span>(request) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> authHeader <span class="op">=</span> request<span class="op">.</span><span class="at">headers</span><span class="op">.</span><span class="fu">get</span>(<span class="st">&#39;authorization&#39;</span>)<span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>authHeader<span class="op">?.</span><span class="fu">startsWith</span>(<span class="st">&#39;Bearer &#39;</span>)) <span class="cf">return</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> token <span class="op">=</span> authHeader<span class="op">.</span><span class="fu">split</span>(<span class="st">&#39; &#39;</span>)[<span class="dv">1</span>]<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> jwt<span class="op">.</span><span class="fu">verify</span>(token<span class="op">,</span> JWT_SECRET)<span class="op">;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="security">Security</h3>
+<p><strong>Q: What security measures did you implement?</strong></p>
+<ol type="1">
+<li><strong>Password Security</strong> - bcrypt hashing with salt</li>
+<li><strong>Authentication</strong> - JWT tokens with expiration</li>
+<li><strong>Input Validation</strong> - Email format, password
+length</li>
+<li><strong>NoSQL Injection Prevention</strong> - Parameterized
+queries</li>
+<li><strong>XSS Prevention</strong> - React auto-escapes content</li>
+<li><strong>CORS Configuration</strong> - Restricted origins</li>
+</ol>
+<hr />
+<h2 id="challenges-solutions">7. CHALLENGES &amp; SOLUTIONS</h2>
+<p><strong>Q: What technical hurdles did you face?</strong></p>
+<p><strong>Challenge 1: PDF Text Extraction</strong> - Problem:
+pdf-parse compatibility issues - Solution: Implemented fallback to
+extract raw ASCII text</p>
+<p><strong>Challenge 2: AI Response Parsing</strong> - Problem: GPT-4
+sometimes returns markdown code fences - Solution: Clean response before
+JSON parsing</p>
+<p><strong>Challenge 3: Voice Recording</strong> - Problem: Web Speech
+API browser differences - Solution: Check API availability, graceful
+degradation</p>
+<p><strong>Challenge 4: Database Connection</strong> - Problem: New
+connection per request was slow - Solution: Connection pooling with
+cached database reference</p>
+<hr />
+<h2 id="testing-quality-assurance">8. TESTING &amp; QUALITY
+ASSURANCE</h2>
+<p><strong>Q: How did you test your application?</strong></p>
+<p><strong>Manual Testing:</strong> - All user flows tested -
+Cross-browser testing - Mobile responsiveness</p>
+<p><strong>API Testing (curl):</strong></p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST http://localhost:3000/api/auth/register <span class="dt">\</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;name&quot;:&quot;Test&quot;,&quot;email&quot;:&quot;test@test.com&quot;,&quot;password&quot;:&quot;123456&quot;}&#39;</span></span></code></pre></div>
+<hr />
+<h2 id="deployment-devops">9. DEPLOYMENT &amp; DEVOPS</h2>
+<p><strong>Q: Where is the application deployed?</strong></p>
+<p><strong>For Local Development:</strong> - Runs on localhost:3000 -
+MongoDB on localhost:27017</p>
+<p><strong>For Production Options:</strong> - Vercel (recommended for
+Next.js) - MongoDB Atlas (cloud database)</p>
+<hr />
+<h2 id="future-improvements">10. FUTURE IMPROVEMENTS</h2>
+<p><strong>Q: How would you scale the app?</strong></p>
+<ol type="1">
+<li><strong>Database Scaling</strong> - MongoDB sharding, Redis
+caching</li>
+<li><strong>API Scaling</strong> - Rate limiting, queue system for AI
+calls</li>
+<li><strong>Performance</strong> - CDN, lazy loading</li>
+<li><strong>Features</strong> - Email notifications, social login, job
+tracking</li>
+</ol>
+<hr />
+<h2 id="questions-to-anticipate">11. QUESTIONS TO ANTICIPATE</h2>
+<p><strong>Q: Why did you choose this stack?</strong> Next.js provides
+integrated full-stack development with React. MongoDB offers schema
+flexibility for varied AI responses. OpenAI GPT-4 is the most capable
+language model for our use case.</p>
+<p><strong>Q: How did you ensure security?</strong> bcrypt password
+hashing, JWT authentication, input validation, parameterized queries,
+and CORS configuration.</p>
+<p><strong>Q: How would you scale the app?</strong> MongoDB sharding,
+Redis caching, rate limiting, load balancing, and CDN for static
+assets.</p>
+<p><strong>Q: What was the hardest part?</strong> Parsing AI responses
+reliably. GPT-4 sometimes returns varied formats, so I had to implement
+robust JSON cleaning and fallback handling.</p>
+<p><strong>Q: How do you handle concurrency?</strong> MongoDB handles
+concurrent writes with document-level locking. Each API request is
+independent. For AI calls, we use async/await to not block other
+requests.</p>
+<hr />
+<h2 id="demo-script-15-minutes">12. DEMO SCRIPT (15 minutes)</h2>
+<ol type="1">
+<li><strong>Introduction</strong> (1 min) - Show login page</li>
+<li><strong>Registration Demo</strong> (2 min) - Create account</li>
+<li><strong>Dashboard Tour</strong> (1 min) - Stats, modules</li>
+<li><strong>Resume Analyzer</strong> (3 min) - Upload, score,
+feedback</li>
+<li><strong>Career Path</strong> (2 min) - Generate roadmap</li>
+<li><strong>Mock Interview</strong> (3 min) - Voice demo, feedback</li>
+<li><strong>Code Walkthrough</strong> (3 min) - Project structure</li>
+</ol>
+<hr />
+<p><strong>Good luck with your presentation!</strong></p>
+</body>
+</html>
