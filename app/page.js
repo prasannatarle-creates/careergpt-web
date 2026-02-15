@@ -23,8 +23,22 @@ import {
 // ============ API HELPER ============
 const api = {
   token: null,
-  setToken(t) { this.token = t; if (t) localStorage.setItem('cgpt_token', t); else localStorage.removeItem('cgpt_token'); },
-  getToken() { if (!this.token) this.token = typeof window !== 'undefined' ? localStorage.getItem('cgpt_token') : null; return this.token; },
+  _initialized: false,
+  setToken(t) { 
+    this.token = t; 
+    if (typeof window !== 'undefined') {
+      if (t) localStorage.setItem('cgpt_token', t); 
+      else localStorage.removeItem('cgpt_token'); 
+    }
+  },
+  getToken() { 
+    // Only access localStorage after component mounts (client-side)
+    if (!this._initialized && typeof window !== 'undefined') {
+      this.token = localStorage.getItem('cgpt_token');
+      this._initialized = true;
+    }
+    return this.token; 
+  },
   async fetch(url, options = {}) {
     const headers = { ...options.headers };
     const token = this.getToken();
