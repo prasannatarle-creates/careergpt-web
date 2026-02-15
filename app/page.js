@@ -972,7 +972,7 @@ function MockInterview() {
               <span className="text-sm text-red-300">Recording... Speak your answer</span>
               <div className="flex-1 flex items-center gap-0.5 h-6">
                 {[...Array(20)].map((_, i) => (
-                  <div key={i} className="flex-1 bg-red-500/60 rounded-full transition-all duration-75" style={{ height: `${Math.max(4, Math.min(24, (audioLevel / 5) * Math.random() * 2))}px` }} />
+                  <div key={i} className="flex-1 bg-red-500/60 rounded-full transition-all duration-75" style={{ height: `${Math.max(4, Math.min(24, (audioLevel / 5) * (1 + (i % 3) * 0.5)))}px` }} />
                 ))}
               </div>
             </div>
