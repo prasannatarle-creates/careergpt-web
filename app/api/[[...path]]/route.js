@@ -4,16 +4,8 @@ import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { PDFParse } from 'pdf-parse';
-import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-// Configure PDF.js worker for serverless environment - use absolute path to the worker file
-if (typeof window === 'undefined') {
-  // For Node.js/server-side, disable the worker and use fake worker
-  pdfjs.GlobalWorkerOptions.workerSrc = '';
-}
+// PDF parse v1.x - compatible with serverless
+import pdf from 'pdf-parse/lib/pdf-parse.js';
 
 // ============ CONFIG ============
 const MONGO_URL = process.env.MONGO_URL;
