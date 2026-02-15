@@ -369,7 +369,7 @@ function AIChat() {
       {/* Session List */}
       <div className="w-64 border-r border-slate-800 bg-slate-900/30 flex flex-col">
         <div className="p-3">
-          <Button onClick={() => { setActiveSession(null); setMessages([]); }} className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0" size="sm">
+          <Button onClick={() => { setActiveSession(null); setMessages([]); }} className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0" size="sm" data-testid="new-chat-btn">
             <Plus className="w-4 h-4 mr-2" /> New Chat
           </Button>
         </div>
