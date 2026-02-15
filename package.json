@@ -1,6 +1,7 @@
 {
-    "name": "nextjs-mongo-template",
-    "version": "0.1.0",
+    "name": "careergpt",
+    "version": "1.0.0",
+    "description": "AI-Powered Career Guidance Platform",
     "private": true,
     "scripts": {
         "dev": "NODE_OPTIONS='--max-old-space-size=512' next dev --hostname 0.0.0.0 --port 3000",
