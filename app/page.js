@@ -439,7 +439,7 @@ function AIChat() {
                 <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                   {msg.role === 'assistant' && <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0 mt-1"><Bot className="w-4 h-4 text-white" /></div>}
                   <div className={`max-w-[80%] rounded-xl px-4 py-2.5 ${msg.role === 'user' ? 'bg-blue-600 text-white' : msg.isError ? 'bg-red-900/50 border border-red-700 text-red-200' : 'bg-slate-800 border border-slate-700 text-slate-200'}`}>
-                    {msg.role === 'assistant' ? <div className="prose prose-invert prose-sm max-w-none"><ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown></div> : <p className="text-sm">{msg.content}</p>}
+                    {msg.role === 'assistant' ? <div className="prose prose-invert prose-sm max-w-none [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-white"><ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown></div> : <p className="text-sm">{msg.content}</p>}
                     {msg.models && (
                       <div className="mt-2 pt-2 border-t border-slate-700/50 flex flex-wrap gap-1 items-center">
                         {msg.synthesized && <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30 text-[9px] px-1.5 py-0">SYNTHESIZED</Badge>}
