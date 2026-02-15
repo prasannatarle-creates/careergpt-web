@@ -5,6 +5,13 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { PDFParse } from 'pdf-parse';
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
+
+// Configure PDF.js worker for serverless environment
+if (typeof window === 'undefined') {
+  // Server-side: use the worker from public directory via URL
+  pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+}
 
 // ============ CONFIG ============
 const MONGO_URL = process.env.MONGO_URL;
