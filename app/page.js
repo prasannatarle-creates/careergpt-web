@@ -750,7 +750,7 @@ function CareerPath() {
         </div>
 
         {isRaw ? (
-          <Card className="bg-slate-900/60 border-slate-800"><CardContent className="p-6"><div className="prose prose-invert max-w-none"><ReactMarkdown remarkPlugins={[remarkGfm]}>{cp.summary}</ReactMarkdown></div></CardContent></Card>
+          <Card className="bg-slate-900/60 border-slate-800"><CardContent className="p-6"><div className="prose prose-invert max-w-none [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-white"><ReactMarkdown remarkPlugins={[remarkGfm]}>{cp.summary}</ReactMarkdown></div></CardContent></Card>
         ) : (
           <div className="space-y-6">
             {cp.summary && <Card className="bg-slate-900/60 border-slate-800"><CardContent className="p-6"><p className="text-slate-300">{cp.summary}</p>{cp.matchScore && <Badge className="mt-2 bg-green-500/20 text-green-300 border-green-500/30">{cp.matchScore}% Match</Badge>}</CardContent></Card>}
