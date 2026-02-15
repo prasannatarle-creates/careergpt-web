@@ -8,6 +8,9 @@ const nextConfig = {
   allowedDevOrigins: [
     'localhost:3000',
     '*.localhost',
+    // Production preview domains
+    '*.preview.emergentagent.com',
+    '*.emergentcf.cloud',
   ],
   turbopack: {},
   onDemandEntries: {
