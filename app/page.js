@@ -1353,7 +1353,7 @@ function UserProfile({ user, onUpdate }) {
                       <FileText className="w-4 h-4 text-teal-400 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-slate-200 truncate">{r.fileName}</p>
-                        <p className="text-[10px] text-slate-500">{new Date(r.createdAt).toLocaleDateString()}</p>
+                        <p className="text-[10px] text-slate-500">{formatDate(r.createdAt)}</p>
                       </div>
                       {r.analysis?.atsScore && (
                         <Badge className={`text-[10px] ${r.analysis.atsScore >= 70 ? 'bg-green-500/20 text-green-300' : r.analysis.atsScore >= 50 ? 'bg-yellow-500/20 text-yellow-300' : 'bg-red-500/20 text-red-300'}`}>
