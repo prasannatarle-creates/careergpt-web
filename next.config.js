@@ -4,7 +4,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  serverExternalPackages: ['mongodb'],
+  serverExternalPackages: ['mongodb', 'pdf-parse', 'pdfjs-dist'],
   allowedDevOrigins: [
     'localhost:3000',
     '*.localhost',
