@@ -8,9 +8,13 @@ const nextConfig = {
   allowedDevOrigins: [
     'localhost:3000',
     '*.localhost',
-    // Production preview domains
+    // Preview domains for testing
+    'careergpt-final.preview.emergentagent.com',
+    'careergpt-final.cluster-0.preview.emergentcf.cloud',
+    'careergpt-final.cluster-10.preview.emergentcf.cloud',
     '*.preview.emergentagent.com',
     '*.emergentcf.cloud',
+    '*.preview.emergentcf.cloud',
   ],
   turbopack: {},
   onDemandEntries: {
