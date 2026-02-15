@@ -6,11 +6,13 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { PDFParse } from 'pdf-parse';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-// Configure PDF.js worker for serverless environment
+// Configure PDF.js worker for serverless environment - use absolute path to the worker file
 if (typeof window === 'undefined') {
-  // Server-side: use the worker from public directory via URL
-  pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+  // For Node.js/server-side, disable the worker and use fake worker
+  pdfjs.GlobalWorkerOptions.workerSrc = '';
 }
 
 // ============ CONFIG ============
