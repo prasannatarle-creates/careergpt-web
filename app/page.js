@@ -1226,7 +1226,7 @@ function Analytics() {
               <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
                 <div className="w-2 h-2 rounded-full bg-cyan-400" />
                 <span className="text-xs text-slate-300 flex-1">{e.type.replace(/_/g, ' ')}</span>
-                <span className="text-[10px] text-slate-500">{new Date(e.createdAt).toLocaleString()}</span>
+                <span className="text-[10px] text-slate-500">{formatDateTime(e.createdAt)}</span>
               </div>
             ))}
           </div>
