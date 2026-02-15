@@ -1088,7 +1088,7 @@ function JobMatching() {
         {result.summary && <Card className="bg-slate-900/60 border-slate-800 mb-4"><CardContent className="p-4"><p className="text-slate-300 text-sm">{result.summary}</p></CardContent></Card>}
 
         {result.raw ? (
-          <Card className="bg-slate-900/60 border-slate-800"><CardContent className="p-6"><div className="prose prose-invert max-w-none"><ReactMarkdown remarkPlugins={[remarkGfm]}>{result.summary}</ReactMarkdown></div></CardContent></Card>
+          <Card className="bg-slate-900/60 border-slate-800"><CardContent className="p-6"><div className="prose prose-invert max-w-none [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-white"><ReactMarkdown remarkPlugins={[remarkGfm]}>{result.summary}</ReactMarkdown></div></CardContent></Card>
         ) : (
           <div className="space-y-4">
             {matches.map((m, i) => (
