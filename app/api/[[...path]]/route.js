@@ -459,14 +459,13 @@ async function handleResumeUpload(request) {
     
     if (file.name.toLowerCase().endsWith('.pdf')) {
       try {
-        // Use PDFParse class from pdf-parse module
-        const { PDFParse } = pdfParseModule;
-        const parser = new PDFParse();
-        await parser.load(buffer);
-        textContent = await parser.getText();
+        // Use pdf-parse library correctly - pass buffer directly to function
+        const pdfData = await pdfParse(buffer);
+        textContent = pdfData.text || '';
+        console.log(`PDF parsed successfully: ${pdfData.numpages} pages, ${textContent.length} chars`);
       } catch (pdfError) {
         console.error('PDF parsing error:', pdfError.message);
-        // Try to extract any readable text from the buffer
+        // Try to extract any readable text from the buffer as fallback
         const rawText = buffer.toString('utf-8').replace(/[^\x20-\x7E\n\r]/g, ' ');
         if (rawText.length > 100) {
           textContent = rawText;
