@@ -409,7 +409,7 @@ function AIChat() {
             <div key={s.id} onClick={() => loadSession(s.id)} className={`p-2.5 rounded-lg cursor-pointer mb-1 flex items-center justify-between group ${activeSession === s.id ? 'bg-blue-600/20 border border-blue-500/30' : 'hover:bg-slate-800'}`}>
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-slate-200 truncate">{s.title}</p>
-                <p className="text-[10px] text-slate-500">{new Date(s.updatedAt).toLocaleDateString()}</p>
+                <p className="text-[10px] text-slate-500">{formatDate(s.updatedAt)}</p>
               </div>
               <button onClick={(e) => { e.stopPropagation(); api.del(`/chat/sessions/${s.id}`); if (activeSession === s.id) { setActiveSession(null); setMessages([]); } setSessions(prev => prev.filter(x => x.id !== s.id)); }} className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 p-1">
                 <Trash2 className="w-3 h-3" />
