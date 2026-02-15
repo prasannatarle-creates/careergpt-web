@@ -33,16 +33,21 @@ async function getDb() {
 
 // ============ LLM SETUP ============
 function getOpenAIClient() {
-  const isEmergent = EMERGENT_KEY && EMERGENT_KEY.startsWith('sk-emergent-');
-  if (isEmergent) {
-    return new OpenAI({ apiKey: EMERGENT_KEY, baseURL: LLM_PROXY_URL });
+  // Support both direct OpenAI and proxy-based API access
+  const apiKey = OPENAI_API_KEY;
+  const isProxyMode = apiKey && apiKey.startsWith('sk-emergent-');
+  
+  if (isProxyMode) {
+    return new OpenAI({ apiKey, baseURL: LLM_BASE_URL });
   }
-  return new OpenAI({ apiKey: EMERGENT_KEY });
+  return new OpenAI({ apiKey });
 }
 
 function getModelStr(provider, model) {
-  const isEmergent = EMERGENT_KEY && EMERGENT_KEY.startsWith('sk-emergent-');
-  if (isEmergent) {
+  const apiKey = OPENAI_API_KEY;
+  const isProxyMode = apiKey && apiKey.startsWith('sk-emergent-');
+  
+  if (isProxyMode) {
     if (provider === 'gemini') return `gemini/${model}`;
     return model;
   }
