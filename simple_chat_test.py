@@ -3,7 +3,7 @@ import requests
 import json
 
 def test_chat_api():
-    base_url = "https://jobseeker-ai-lab.preview.emergentagent.com/api"
+    base_url = "https://careergpt-final.preview.emergentagent.com/api"
     
     try:
         print("Testing Chat Send API with simple message...")
@@ -35,7 +35,7 @@ def test_chat_api():
         return None
 
 def test_session_operations(session_id):
-    base_url = "https://jobseeker-ai-lab.preview.emergentagent.com/api"
+    base_url = "https://careergpt-final.preview.emergentagent.com/api"
     
     if not session_id:
         print("No session ID to test with")
