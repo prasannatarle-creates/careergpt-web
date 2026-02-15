@@ -9,9 +9,9 @@ import * as pdfParseModule from 'pdf-parse';
 // ============ CONFIG ============
 const MONGO_URL = process.env.MONGO_URL;
 const DB_NAME = process.env.DB_NAME || 'careergpt';
-const EMERGENT_KEY = process.env.EMERGENT_LLM_KEY;
-const LLM_PROXY_URL = process.env.LLM_PROXY_URL || 'https://integrations.emergentagent.com/llm';
-const JWT_SECRET = process.env.JWT_SECRET || 'careergpt-secret-key-2025';
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || process.env.EMERGENT_LLM_KEY;
+const LLM_BASE_URL = process.env.LLM_BASE_URL || process.env.LLM_PROXY_URL || 'https://api.openai.com/v1';
+const JWT_SECRET = process.env.JWT_SECRET || 'careergpt-jwt-secret-2025';
 
 let cachedDb = null;
 
