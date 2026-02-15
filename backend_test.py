@@ -13,7 +13,7 @@ from typing import Dict, Any, Optional
 
 class CareerGPTTester:
     def __init__(self):
-        self.base_url = "https://careergpt-final.preview.emergentagent.com/api"
+        self.base_url = "https://interview-prep-demo.preview.emergentagent.com/api"
         self.session = requests.Session()
         self.session.timeout = 90  # AI endpoints can take time
         self.auth_token = None
