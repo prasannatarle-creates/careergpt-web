@@ -1336,7 +1336,7 @@ function UserProfile({ user, onUpdate }) {
                 </div>
               ))}
               <div className="text-center pt-2">
-                <p className="text-[10px] text-slate-500">Member since {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</p>
+                <p className="text-[10px] text-slate-500">Member since {formatDate(user?.createdAt)}</p>
               </div>
             </CardContent>
           </Card>
