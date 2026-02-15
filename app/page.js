@@ -987,7 +987,7 @@ function MockInterview() {
       ) : (
         <Card className="bg-slate-900/60 border-slate-800 mb-4">
           <CardContent className="p-5">
-            <div className="prose prose-invert prose-sm max-w-none">
+            <div className="prose prose-invert prose-sm max-w-none [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>em]:text-slate-200">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{feedback?.feedback || currentContent}</ReactMarkdown>
             </div>
           </CardContent>
