@@ -151,8 +151,8 @@ function AuthPage({ onAuth }) {
           <p className="text-slate-400 mt-1">AI-Powered Career Guidance Platform</p>
         </div>
 
-        <Card className="bg-slate-900/80 border-slate-700">
-          <CardContent className="p-6">
+        <div className="card-premium bg-white/10 backdrop-blur-md border border-white/20">
+          <div className="p-6">
             <div className="flex gap-2 mb-6">
               <Button onClick={() => setMode('login')} variant={mode === 'login' ? 'default' : 'ghost'} className={`flex-1 ${mode === 'login' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>
                 <LogIn className="w-4 h-4 mr-2" /> Login
@@ -188,8 +188,8 @@ function AuthPage({ onAuth }) {
                 {mode === 'register' ? 'Create Account' : 'Sign In'}
               </Button>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <button onClick={() => onAuth(null)} className="mt-4 text-slate-500 hover:text-slate-300 text-sm flex items-center justify-center gap-1 w-full">
           Continue as Guest <ArrowRight className="w-3 h-3" />
@@ -294,54 +294,49 @@ function Dashboard({ user, onNavigate }) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
             { label: 'Chats', value: stats.chatCount, icon: MessageSquare, color: 'text-cyan-400' },
-            { label: 'Resumes', value: stats.resumeCount, icon: FileText, color: 'text-teal-400' },
+            { label: 'Resumes', value: stats.resumeCount, icon: FileText, color: 'text-teal-400', icon: FileText,color: 'text-teal-4 00' },
             { label: 'Interviews', value: stats.interviewCount, icon: Mic, color: 'text-violet-400' },
             { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, color: 'text-amber-400' },
           ].map((s, i) => (
-            <Card key={i} className="bg-slate-900/60 border-slate-800">
-              <CardContent className="p-4 flex items-center gap-3">
-                <s.icon className={`w-8 h-8 ${s.color}`} />
-                <div>
-                  <p className="text-2xl font-bold text-white">{s.value || 0}</p>
-                  <p className="text-xs text-slate-400">{s.label}</p>
-                </div>
-              </CardContent>
-            </Card>
+            <div key={i} className="card-premium p-4 flex items-center gap-3">
+              <s.icon className={`w-8 h-8 ${s.color}`} />
+              <div>
+                <p className="text-2xl font-bold text-white">{s.value || 0}</p>
+                <p className="text-xs text-slate-400">{s.label}</p>
+              </div>
+            </div>
           ))}
         </div>
       )}
 
       {/* Feature Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {features.map(f => (
-          <Card
+          <div
             key={f.id}
             onClick={() => onNavigate(f.id)}
-            className="bg-slate-900/60 border-slate-800 cursor-pointer hover:bg-slate-800/60 hover:border-slate-600 transition-all group"
+            className="card-premium card-hover cursor-pointer group"
           >
-            <CardContent className="p-6">
+            <div className="p-6">
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                 <f.icon className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-white font-semibold mb-1">{f.title}</h3>
               <p className="text-slate-400 text-sm">{f.desc}</p>
               {f.count !== undefined && f.count > 0 && (
-                <Badge className="mt-3 bg-slate-800 text-slate-300 border-slate-700">{f.count} completed</Badge>
+                <span className="badge-primary inline-block mt-3 text-xs">{f.count} completed</span>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
 
       {/* AI Models Status */}
-      <Card className="bg-slate-900/60 border-slate-800 mt-8">
-        <CardHeader>
-          <CardTitle className="text-white text-lg flex items-center gap-2">
-            <Zap className="w-5 h-5 text-cyan-400" /> AI Models Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-3">
+      <div className="card-premium mt-8 p-6">
+        <h3 className="heading-sm text-white flex items-center gap-2 mb-4">
+          <Zap className="w-5 h-5 text-accent-500" /> AI Models Status
+        </h3>
+        <div className="flex flex-wrap gap-3">
             {[
               { name: 'GPT-4.1', color: '#10a37f', status: 'active' },
               { name: 'Claude 4 Sonnet', color: '#d97706', status: 'active' },
@@ -356,8 +351,7 @@ function Dashboard({ user, onNavigate }) {
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
     </div>
   );
 }
