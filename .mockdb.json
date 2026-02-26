@@ -1,0 +1,2303 @@
+{
+  "users": [
+    {
+      "id": "8ae6098a-604c-4e6d-8794-f763446af158",
+      "name": "prasanna",
+      "email": "prasannatarle@gmail.com",
+      "password": "$2b$10$YrlUGFBaKI2Q889gBEOhmedW2HKEI80Rz3UeLo/kGDLzwfxRSRJ4e",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "createdAt": "2026-02-19T12:16:19.724Z"
+    },
+    {
+      "id": "63a9c9ae-4231-404b-a983-c34c5b96f82a",
+      "name": "Test User",
+      "email": "test_1771558472903@example.com",
+      "password": "$2b$10$rjJ/dNBwU3QEpQPfyPvc5uWUKqnpNdMqBnNwVaIl5gWCM5ORw3HRK",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": false,
+      "verificationToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfMTc3MTU1ODQ3MjkwM0BleGFtcGxlLmNvbSIsInR5cGUiOiJlbWFpbC12ZXJpZnkiLCJpYXQiOjE3NzE1NTg0NzIsImV4cCI6MTc3MTY0NDg3Mn0.gQqWwn4ZEBVLLYrTc6VYGqzp9Ij95OHpO0bIIauRyf0",
+      "createdAt": "2026-02-20T03:34:32.998Z"
+    },
+    {
+      "id": "9886c837-5825-4ab9-92ec-ccb1d21d897f",
+      "name": "Test User",
+      "email": "testlogin@example.com",
+      "password": "$2b$10$8IX4vgA.kDKSg9MUzOA48.ahodj1aPfS8lSmvJ4nW1mbW1T.NfVg.",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": false,
+      "verificationToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3Rsb2dpbkBleGFtcGxlLmNvbSIsInR5cGUiOiJlbWFpbC12ZXJpZnkiLCJpYXQiOjE3NzE1NTg0ODcsImV4cCI6MTc3MTY0NDg4N30.JnsBGdVeQl1NmLgSeOLQpr4BppDvSX7Pp95GvlioArI",
+      "createdAt": "2026-02-20T03:34:47.286Z"
+    },
+    {
+      "id": "2bde9df1-aa9c-4ab1-b7e8-85dd49061aac",
+      "name": "Test User",
+      "email": "test_1771558575928@example.com",
+      "password": "$2b$10$h5IZ1X5vw87F8YuIk.PuounBsmcJ74HfTy1pFoyIZkGss0c8Giham",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": false,
+      "verificationToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfMTc3MTU1ODU3NTkyOEBleGFtcGxlLmNvbSIsInR5cGUiOiJlbWFpbC12ZXJpZnkiLCJpYXQiOjE3NzE1NTg1NzYsImV4cCI6MTc3MTY0NDk3Nn0.qY1IhQ25xgZl6zHzoDxDJ6YEOF42gVt4jRkdOWFmaiY",
+      "createdAt": "2026-02-20T03:36:16.016Z"
+    },
+    {
+      "id": "2a30fdfe-6ab3-4681-bed4-ad695dd182c9",
+      "name": "Test User",
+      "email": "test_1771558676664@example.com",
+      "password": "$2b$10$tK1sdxBJq5pZwS4Ak4hrA.px3ktKiS7tmGzPyZ9R6CJxKNJ/Gg97K",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": false,
+      "verificationToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfMTc3MTU1ODY3NjY2NEBleGFtcGxlLmNvbSIsInR5cGUiOiJlbWFpbC12ZXJpZnkiLCJpYXQiOjE3NzE1NTg2NzYsImV4cCI6MTc3MTY0NTA3Nn0.bv9prPG1KQssD8rvSS-50q4ZA-IzzV6YdplI1cK-t8Y",
+      "createdAt": "2026-02-20T03:37:56.789Z"
+    },
+    {
+      "id": "ec9ff054-bc36-44a9-a3b8-26a93d306cb4",
+      "name": "Test User",
+      "email": "test_1771573467335@example.com",
+      "password": "$2b$10$xA6xgZVqRch4k.o6FydaSeSMbDup261UZTbjYiRoLnZrFqRL.GKue",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": false,
+      "verificationToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfMTc3MTU3MzQ2NzMzNUBleGFtcGxlLmNvbSIsInR5cGUiOiJlbWFpbC12ZXJpZnkiLCJpYXQiOjE3NzE1NzM0NjcsImV4cCI6MTc3MTY1OTg2N30.PJ40kl4mIoQttlgtlOZ3653GZ5-1Y2w8U8qvvx2QWVQ",
+      "createdAt": "2026-02-20T07:44:27.438Z"
+    },
+    {
+      "id": "d1b99df6-da59-4776-aba5-7a2581e69a93",
+      "name": "Test User",
+      "email": "test_1771574234670@example.com",
+      "password": "$2b$10$kNzONWJCEO7wxpmC5Oa56e.NtsaDHS1.yvzetXADVRvmgCvDsY4B6",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": false,
+      "verificationToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfMTc3MTU3NDIzNDY3MEBleGFtcGxlLmNvbSIsInR5cGUiOiJlbWFpbC12ZXJpZnkiLCJpYXQiOjE3NzE1NzQyMzQsImV4cCI6MTc3MTY2MDYzNH0.8sJpPzF3d8yztDXNJHHL1-xOYSSuMDktFRnCsBDKYnI",
+      "createdAt": "2026-02-20T07:57:14.775Z"
+    },
+    {
+      "id": "bc4782d8-4b7b-4147-8e85-ed6fc70d6485",
+      "name": "Test User",
+      "email": "test_1771574392875@example.com",
+      "password": "$2b$10$HKWY2BBT6TEtC7ZJ0ErjeOd10nUy.UGmqbSY4x96e5m0qhdzjJyna",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": false,
+      "verificationToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RfMTc3MTU3NDM5Mjg3NUBleGFtcGxlLmNvbSIsInR5cGUiOiJlbWFpbC12ZXJpZnkiLCJpYXQiOjE3NzE1NzQzOTIsImV4cCI6MTc3MTY2MDc5Mn0.eGSgLTCeWfd5S5Uqfo6UgYEo53jSYmhekYbWyfkBxNA",
+      "createdAt": "2026-02-20T07:59:52.985Z"
+    },
+    {
+      "id": "30c164b3-95dc-4f45-b599-c59fe7bf9d53",
+      "name": "prasanna",
+      "email": "prasannatarle1592003@gmail.com",
+      "password": "$2b$10$h3FPCbBF91qw.O5UoO8n9eGSL1NsKR0JEQvjt1VevYRZQK4IK6doS",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": false,
+      "verificationToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InByYXNhbm5hdGFybGUxNTkyMDAzQGdtYWlsLmNvbSIsInR5cGUiOiJlbWFpbC12ZXJpZnkiLCJpYXQiOjE3NzE1OTE5MjYsImV4cCI6MTc3MTY3ODMyNn0.KbP0a2VghXe1HXAYML6z9q_1V5eJiu_bFrrNm1_Zs4o",
+      "createdAt": "2026-02-20T12:52:06.337Z"
+    }
+  ],
+  "analytics": [
+    {
+      "id": "3ebe506d-309d-4ef3-8341-025adc32ad60",
+      "type": "user_register",
+      "data": {
+        "userId": "8ae6098a-604c-4e6d-8794-f763446af158"
+      },
+      "createdAt": "2026-02-19T12:16:19.730Z"
+    },
+    {
+      "id": "931f6bf4-80a7-4804-a166-3fcd255b46c3",
+      "type": "user_login",
+      "data": {
+        "userId": "8ae6098a-604c-4e6d-8794-f763446af158"
+      },
+      "createdAt": "2026-02-19T12:16:40.403Z"
+    },
+    {
+      "id": "62f4b7c5-7ddf-4417-bc45-c90a0a9f0d76",
+      "type": "user_login",
+      "data": {
+        "userId": "8ae6098a-604c-4e6d-8794-f763446af158"
+      },
+      "createdAt": "2026-02-19T12:34:33.261Z"
+    },
+    {
+      "id": "fa57be5e-6c88-4e4c-869b-89d01ad3cbf1",
+      "type": "user_login",
+      "data": {
+        "userId": "8ae6098a-604c-4e6d-8794-f763446af158"
+      },
+      "createdAt": "2026-02-19T12:34:49.833Z"
+    },
+    {
+      "id": "d6235e0d-8ae1-4853-9040-7f0b562cfe75",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T03:29:44.433Z"
+    },
+    {
+      "id": "c1676e8e-2209-4301-992e-3f44d2663b13",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T03:30:42.558Z"
+    },
+    {
+      "id": "59cbc129-f393-4c3e-82fc-dfd957eee8c4",
+      "type": "user_register",
+      "data": {
+        "userId": "63a9c9ae-4231-404b-a983-c34c5b96f82a"
+      },
+      "createdAt": "2026-02-20T03:34:33.003Z"
+    },
+    {
+      "id": "f080ec9f-23f1-401c-89ce-0f17fcc1c0f6",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T03:34:35.777Z"
+    },
+    {
+      "id": "efb027d3-1517-4590-aa66-9b3504719caa",
+      "type": "user_register",
+      "data": {
+        "userId": "9886c837-5825-4ab9-92ec-ccb1d21d897f"
+      },
+      "createdAt": "2026-02-20T03:34:47.289Z"
+    },
+    {
+      "id": "d3a7656e-35e2-4fec-9254-c95f75273361",
+      "type": "user_register",
+      "data": {
+        "userId": "2bde9df1-aa9c-4ab1-b7e8-85dd49061aac"
+      },
+      "createdAt": "2026-02-20T03:36:16.020Z"
+    },
+    {
+      "id": "a8072f03-68a4-47e3-be98-783864a090cb",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T03:36:22.691Z"
+    },
+    {
+      "id": "09e3d96a-fcde-4e07-a312-f04646f5170d",
+      "type": "user_register",
+      "data": {
+        "userId": "2a30fdfe-6ab3-4681-bed4-ad695dd182c9"
+      },
+      "createdAt": "2026-02-20T03:37:56.793Z"
+    },
+    {
+      "id": "c2a2f086-2231-4168-9726-4100c9dccd51",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T03:38:00.171Z"
+    },
+    {
+      "id": "3797f31c-7492-4599-8d5e-f8bee14c33a6",
+      "type": "user_register",
+      "data": {
+        "userId": "ec9ff054-bc36-44a9-a3b8-26a93d306cb4"
+      },
+      "createdAt": "2026-02-20T07:44:27.442Z"
+    },
+    {
+      "id": "be39e417-d5f6-4087-9d3a-365a65da3240",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T07:44:34.301Z"
+    },
+    {
+      "id": "87d6e988-18b0-48af-9a9d-d05f7289650e",
+      "type": "user_register",
+      "data": {
+        "userId": "d1b99df6-da59-4776-aba5-7a2581e69a93"
+      },
+      "createdAt": "2026-02-20T07:57:14.782Z"
+    },
+    {
+      "id": "c34679eb-0eab-4d3f-acd3-ca5900036bd8",
+      "type": "chat_message",
+      "data": {
+        "userId": "anonymous",
+        "models": [
+          "GPT-4 Turbo",
+          "Claude 3.5 Sonnet",
+          "Perplexity Sonar Pro"
+        ]
+      },
+      "createdAt": "2026-02-20T07:58:05.016Z"
+    },
+    {
+      "id": "b9a94fd0-e865-4013-a75b-4403cf95d3e1",
+      "type": "user_register",
+      "data": {
+        "userId": "bc4782d8-4b7b-4147-8e85-ed6fc70d6485"
+      },
+      "createdAt": "2026-02-20T07:59:52.990Z"
+    },
+    {
+      "id": "f4eb50ee-8047-4b9a-8b87-3c39d01609dd",
+      "type": "chat_message",
+      "data": {
+        "userId": "anonymous",
+        "models": [
+          "GPT-4 Turbo",
+          "Claude 3.5 Sonnet",
+          "Perplexity Sonar Pro"
+        ]
+      },
+      "createdAt": "2026-02-20T08:00:58.207Z"
+    },
+    {
+      "id": "bb425b7e-324d-492b-a39a-01de38702142",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T08:01:07.065Z"
+    },
+    {
+      "id": "03ee7cc3-6d71-48c1-9e78-539727ca46d6",
+      "type": "interview_started",
+      "data": {},
+      "createdAt": "2026-02-20T08:01:09.532Z"
+    },
+    {
+      "id": "8a7f461f-a04e-4abc-b072-d6831cc53196",
+      "type": "chat_message",
+      "data": {
+        "userId": "anonymous",
+        "models": [
+          "GPT-4 Turbo",
+          "Claude 3.5 Sonnet",
+          "Perplexity Sonar Pro"
+        ]
+      },
+      "createdAt": "2026-02-20T08:29:23.290Z"
+    },
+    {
+      "id": "7f9f8462-1ab8-4b0a-a142-9b281313710f",
+      "type": "interview_started",
+      "data": {},
+      "createdAt": "2026-02-20T08:29:25.904Z"
+    },
+    {
+      "id": "91c8c54e-41d0-499a-808a-42b47685a5ef",
+      "type": "chat_message",
+      "data": {
+        "userId": "anonymous",
+        "models": [
+          "GPT-4 Turbo",
+          "Claude 3.5 Sonnet",
+          "Perplexity Sonar Pro"
+        ]
+      },
+      "createdAt": "2026-02-20T08:30:06.776Z"
+    },
+    {
+      "id": "682a8717-4ba9-4d7d-a737-f58a20a51321",
+      "type": "chat_message",
+      "data": {
+        "userId": "anonymous",
+        "models": [
+          "GPT-4 Turbo",
+          "Claude 3.5 Sonnet",
+          "Perplexity Sonar Pro"
+        ]
+      },
+      "createdAt": "2026-02-20T08:43:20.665Z"
+    },
+    {
+      "id": "4172946a-7f84-49cf-a0dc-a301a985b20e",
+      "type": "resume_analyzed",
+      "data": {
+        "resumeId": "ef5517f4-c30a-4636-80c2-715a1b481f5f",
+        "atsScore": 72
+      },
+      "createdAt": "2026-02-20T09:11:30.004Z"
+    },
+    {
+      "id": "6c7e585a-9980-4218-bfe0-b5d091441ea9",
+      "type": "job_match",
+      "data": {
+        "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T09:13:24.812Z"
+    },
+    {
+      "id": "768a607b-122b-4dfa-904f-7fb36b19bcb6",
+      "type": "job_match",
+      "data": {
+        "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T09:14:21.160Z"
+    },
+    {
+      "id": "207a22c7-a794-4ad0-8b9a-8a514460ff54",
+      "type": "job_match",
+      "data": {
+        "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T09:28:40.939Z"
+    },
+    {
+      "id": "af54126e-cc26-477f-805e-e9a1f001d565",
+      "type": "job_match",
+      "data": {
+        "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T09:37:38.523Z"
+    },
+    {
+      "id": "f3f07076-15a1-4c70-8a46-9912cdf85f13",
+      "type": "job_match",
+      "data": {
+        "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T09:37:45.230Z"
+    },
+    {
+      "id": "ffa4f8a5-6897-419a-928c-740c97fb0699",
+      "type": "job_match",
+      "data": {
+        "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T09:37:58.246Z"
+    },
+    {
+      "id": "317c8348-b7eb-4b5f-8e79-8485a6d07cfa",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T09:40:12.962Z"
+    },
+    {
+      "id": "e40928d9-2230-4d31-877c-f926b7445500",
+      "type": "chat_message",
+      "data": {
+        "userId": "anonymous",
+        "models": [
+          "GPT-4 Turbo",
+          "Claude 3.5 Sonnet",
+          "Perplexity Sonar Pro"
+        ]
+      },
+      "createdAt": "2026-02-20T09:41:13.712Z"
+    },
+    {
+      "id": "336eac07-e733-473a-87c4-87e8ef938d74",
+      "type": "user_register",
+      "data": {
+        "userId": "30c164b3-95dc-4f45-b599-c59fe7bf9d53"
+      },
+      "createdAt": "2026-02-20T12:52:06.358Z"
+    },
+    {
+      "id": "8a704f06-1970-4dab-a73b-46e8cdd15adf",
+      "type": "chat_message",
+      "data": {
+        "userId": "anonymous",
+        "models": [
+          "GPT-4 Turbo",
+          "Claude 3.5 Sonnet",
+          "Perplexity Sonar Pro"
+        ]
+      },
+      "createdAt": "2026-02-20T13:35:58.791Z"
+    },
+    {
+      "id": "4d0fcf2f-def6-4fa7-aa81-01a69a62dde8",
+      "type": "career_path_generated",
+      "data": {},
+      "createdAt": "2026-02-20T13:39:46.435Z"
+    },
+    {
+      "id": "fce438b5-4c29-4c55-870c-4eea9046fd50",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T13:40:25.013Z"
+    },
+    {
+      "id": "640d2e01-6256-47a9-b3e4-90ae957e8d05",
+      "type": "career_path_generated",
+      "data": {},
+      "createdAt": "2026-02-20T13:42:07.100Z"
+    },
+    {
+      "id": "4c959f15-8da9-4a4b-8a24-f193828a5bc7",
+      "type": "interview_started",
+      "data": {},
+      "createdAt": "2026-02-20T13:43:32.257Z"
+    },
+    {
+      "id": "b404da2c-c897-4017-bdaf-b9d1cb762107",
+      "type": "interview_started",
+      "data": {},
+      "createdAt": "2026-02-20T13:45:02.702Z"
+    },
+    {
+      "id": "c8503b3b-0891-40bf-9938-6d91372a6955",
+      "type": "career_path_generated",
+      "data": {},
+      "createdAt": "2026-02-20T13:45:51.529Z"
+    },
+    {
+      "id": "308207e7-5f4f-496f-bd44-ca0b44b23f7c",
+      "type": "interview_started",
+      "data": {},
+      "createdAt": "2026-02-20T13:46:38.009Z"
+    },
+    {
+      "id": "52d2c470-ab3c-4c60-b17b-82b96ce90fea",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-20T13:46:38.366Z"
+    },
+    {
+      "id": "2927f40a-eb30-4462-a1aa-9169507bdb63",
+      "type": "chat_message",
+      "data": {
+        "userId": "anonymous",
+        "models": [
+          "GPT-4 Turbo",
+          "Claude 3.5 Sonnet",
+          "Perplexity Sonar Pro"
+        ]
+      },
+      "createdAt": "2026-02-20T13:46:52.228Z"
+    }
+  ],
+  "resumes": [
+    {
+      "id": "ef5517f4-c30a-4636-80c2-715a1b481f5f",
+      "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+      "fileName": "Document from Prasanna (1).pdf",
+      "fileSize": 457987,
+      "textContent": "Prasanna Tarle Software Developer +91 901283681 | prasannatarle@gmail.com | Nashik, India | Professional Summary Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset. Technical Skills Languages: Python, JavaScript, C++, Java Web Development: FastAPI, HTML5, CSS3, React.js, Tailwind CSS Database: MongoDB, PostgreSQL AI & ML: OpenAI GPT-4 API, Prompt Engineering, Resume Parsing (PyMuPDF, docx2txt), LangChain Tools: Git, GitHub, Postman, Vercel, Render, VS Code APIs: RESTful API, Axios Soft Skills Communication, Problem Solving, Stress Management, Decision Making, Team Collaboration Core Competency Data Structures & Algorithms (DSA), DBMS, Operating System, Computer Networks, REST API Design Projects CareerGPT – AI-based Career Guidance Platform Developed a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job- role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage. Tech Stack: FastAPI, React.js, OpenAI GPT-4, MongoDB, Tailwind CSS, Python, JavaScript Education Sandip University, Nashik – B.Tech in Computer Science & Engineering (Expected 2025) K.K. Wagh Polytechnic, Nashik – Diploma in Computer Technology (Completed 2022)",
+      "analysis": {
+        "atsScore": 72,
+        "sections": {
+          "contact": {
+            "score": 90,
+            "feedback": "All necessary contact details are present. Consider including a LinkedIn profile link.",
+            "present": true
+          },
+          "summary": {
+            "score": 70,
+            "feedback": "The summary is detailed and showcases relevant skills and project experience. However, it could be more concise.",
+            "present": true
+          },
+          "experience": {
+            "score": 80,
+            "feedback": "Detailed project descriptions highlight technical skills and achievements, but could benefit from more quantifiable results.",
+            "present": true
+          },
+          "education": {
+            "score": 85,
+            "feedback": "Education details are clearly listed, including ongoing and completed qualifications.",
+            "present": true
+          },
+          "skills": {
+            "score": 60,
+            "feedback": "Comprehensive list of technical and soft skills, but organizing into categories would enhance readability.",
+            "present": true
+          },
+          "projects": {
+            "score": 50,
+            "feedback": "Projects are mentioned under experience, but could be separated into its own section for better visibility.",
+            "present": false
+          }
+        },
+        "keywords": {
+          "found": [
+            "Python",
+            "FastAPI",
+            "React.js",
+            "OpenAI GPT-4",
+            "MongoDB"
+          ],
+          "missing": [
+            "cloud deployment",
+            "unit testing"
+          ],
+          "suggestions": [
+            "Include specific examples of cloud deployment",
+            "Mention any experience with unit testing or other testing frameworks"
+          ]
+        },
+        "strengths": [
+          "AI integration",
+          "Full-stack development"
+        ],
+        "weaknesses": [
+          "Lack of professional experience",
+          "No mention of agile methodologies"
+        ],
+        "rewrittenBullets": [
+          {
+            "original": "Developed a full-stack AI web application using Python (FastAPI) and React.js.",
+            "improved": "Engineered a scalable AI web application utilizing Python via FastAPI and enhanced front-end interactivity with React.js.",
+            "reason": "Highlights technical proficiency and emphasizes the scalability and interactivity of the project."
+          }
+        ],
+        "experienceLevel": "entry",
+        "matchingRoles": [
+          "Junior Software Developer",
+          "Full-Stack Developer",
+          "AI Application Developer"
+        ],
+        "overallFeedback": "The resume effectively highlights technical expertise and project experience but could improve by quantifying achievements and adding a projects section. Enhancing the organization of skills and including more about methodologies like Agile could also be beneficial.",
+        "structuredData": {
+          "contact": {
+            "name": "Prasanna Tarle",
+            "email": "prasannatarle@gmail.com",
+            "phone": "+91 901283681",
+            "location": "Nashik, India",
+            "website": null,
+            "linkedin": null
+          },
+          "experience": [
+            {
+              "company": "CareerGPT",
+              "role": "Software Developer",
+              "startDate": "unknown",
+              "endDate": "Present",
+              "description": "Developed a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.",
+              "durationMonths": 24
+            }
+          ],
+          "education": [
+            {
+              "school": "Sandip University",
+              "degree": "B.Tech",
+              "fieldOfStudy": "Computer Science & Engineering",
+              "graduationDate": "2025",
+              "gpa": null
+            },
+            {
+              "school": "K.K. Wagh Polytechnic",
+              "degree": "Diploma",
+              "fieldOfStudy": "Computer Technology",
+              "graduationDate": "2022",
+              "gpa": null
+            }
+          ],
+          "skills": [
+            "Python",
+            "JavaScript",
+            "C++",
+            "Java",
+            "FastAPI",
+            "HTML5",
+            "CSS3",
+            "React.js",
+            "Tailwind CSS",
+            "MongoDB",
+            "PostgreSQL",
+            "OpenAI GPT-4 API",
+            "Prompt Engineering",
+            "Resume Parsing",
+            "Git",
+            "GitHub",
+            "Postman",
+            "Vercel",
+            "Render",
+            "VS Code",
+            "RESTful API",
+            "Axios",
+            "Go",
+            "React"
+          ],
+          "totalExperienceYears": 2,
+          "seniority": "mid",
+          "focusArea": "Full-Stack Engineer",
+          "certifications": [],
+          "metadata": {
+            "totalExperienceYears": 2,
+            "projectsCount": 1,
+            "languagesCount": 4,
+            "certificationCount": 0,
+            "pages": 1
+          }
+        }
+      },
+      "createdAt": "2026-02-20T09:10:49.069Z",
+      "structured": {
+        "contact": {
+          "name": "Prasanna Tarle",
+          "email": "prasannatarle@gmail.com",
+          "phone": "+91 901283681",
+          "location": "Nashik, India",
+          "website": null,
+          "linkedin": null
+        },
+        "summary": "Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset.",
+        "experience": [
+          {
+            "company": "CareerGPT",
+            "role": "Software Developer",
+            "startDate": "unknown",
+            "endDate": "Present",
+            "description": "Developed a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.",
+            "durationMonths": 24
+          }
+        ],
+        "education": [
+          {
+            "school": "Sandip University",
+            "degree": "B.Tech",
+            "fieldOfStudy": "Computer Science & Engineering",
+            "graduationDate": "2025",
+            "gpa": null
+          },
+          {
+            "school": "K.K. Wagh Polytechnic",
+            "degree": "Diploma",
+            "fieldOfStudy": "Computer Technology",
+            "graduationDate": "2022",
+            "gpa": null
+          }
+        ],
+        "skills": [
+          "Python",
+          "JavaScript",
+          "C++",
+          "Java",
+          "FastAPI",
+          "HTML5",
+          "CSS3",
+          "React.js",
+          "Tailwind CSS",
+          "MongoDB",
+          "PostgreSQL",
+          "OpenAI GPT-4 API",
+          "Prompt Engineering",
+          "Resume Parsing",
+          "Git",
+          "GitHub",
+          "Postman",
+          "Vercel",
+          "Render",
+          "VS Code",
+          "RESTful API",
+          "Axios"
+        ],
+        "certifications": [],
+        "metadata": {
+          "totalExperienceYears": 2,
+          "projectsCount": 1,
+          "languagesCount": 4,
+          "certificationCount": 0,
+          "pages": 1
+        }
+      },
+      "analyzedAt": "2026-02-20T09:11:30.003Z",
+      "targetRole": ""
+    }
+  ],
+  "sessions": [
+    {
+      "id": "07460042-2b34-42a1-9ab7-1f3f101d0b0b",
+      "userId": "anonymous",
+      "title": "What skills should I learn for Python development?",
+      "type": "career-chat",
+      "messages": [],
+      "createdAt": "2026-02-20T03:29:41.355Z",
+      "updatedAt": "2026-02-20T03:29:41.355Z"
+    },
+    {
+      "id": "80ca6698-9fac-4553-8c92-5f77723a306f",
+      "userId": "anonymous",
+      "title": "What skills should I learn for Python development?",
+      "type": "career-chat",
+      "messages": [],
+      "createdAt": "2026-02-20T03:30:39.812Z",
+      "updatedAt": "2026-02-20T03:30:39.812Z"
+    },
+    {
+      "id": "fb3f7141-d610-4e12-9988-0b4bcedee342",
+      "userId": "anonymous",
+      "title": "What skills should I learn for Python development?",
+      "type": "career-chat",
+      "messages": [],
+      "createdAt": "2026-02-20T03:34:33.101Z",
+      "updatedAt": "2026-02-20T03:34:33.101Z"
+    },
+    {
+      "id": "73485746-56eb-422c-8c67-efb7bb05e49f",
+      "userId": "anonymous",
+      "title": "What skills should I learn for Python development?",
+      "type": "career-chat",
+      "messages": [],
+      "createdAt": "2026-02-20T03:36:19.771Z",
+      "updatedAt": "2026-02-20T03:36:19.771Z"
+    },
+    {
+      "id": "9315858b-73e9-48cc-a244-073c9be9d837",
+      "userId": "anonymous",
+      "title": "What skills should I learn for Python development?",
+      "type": "career-chat",
+      "messages": [],
+      "createdAt": "2026-02-20T03:37:57.191Z",
+      "updatedAt": "2026-02-20T03:37:57.191Z"
+    },
+    {
+      "id": "ffac0202-bf70-4709-84fa-4820781e1723",
+      "userId": "anonymous",
+      "title": "What skills should I learn for Python development?",
+      "type": "career-chat",
+      "messages": [],
+      "createdAt": "2026-02-20T07:44:31.402Z",
+      "updatedAt": "2026-02-20T07:44:31.402Z"
+    },
+    {
+      "id": "f3e877ec-94d8-4101-b12e-df37745e43e1",
+      "userId": "anonymous",
+      "title": "What skills should I learn for Python development?",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What skills should I learn for Python development?",
+          "timestamp": "2026-02-20T07:57:18.615Z"
+        },
+        {
+          "role": "assistant",
+          "content": "### Comprehensive Guide to Becoming a Proficient Python Developer\n\nPython development is a dynamic and lucrative field, offering myriad opportunities across web development, data science, machine learning, and automation. Whether you're a beginner or looking to advance your skills, mastering both core concepts and specialized technologies is essential. Here's a detailed breakdown of the skills and practices you should focus on:\n\n#### Core Python Skills\n- **Fundamentals**: Understand basic data types, control structures, functions, and modules. Embrace object-oriented programming with classes, inheritance, and polymorphism.\n- **Error Handling and File I/O**: Learn to manage files and handle errors gracefully to write robust programs.\n\n#### Advanced Python Skills\n- **Libraries and Frameworks**:\n  - **Web Development**: Gain proficiency in Django, Flask, and FastAPI for crafting scalable web applications.\n  - **Data Science**: Use NumPy, Pandas, and Matplotlib for data analysis and visualization.\n  - **Machine Learning**: Explore libraries like Scikit-learn, TensorFlow, and PyTorch to build predictive models.\n  - **Automation/Scripting**: Automate tasks and process data with Selenium, Requests, and Beautiful Soup.\n\n- **Asynchronous Programming**: Leverage `asyncio` and `aiohttp` for efficient network operations and improve performance of I/O bound tasks.\n\n#### Development Tools and Practices\n- **Version Control**: Master Git and familiarize yourself with platforms like GitHub or GitLab for collaboration and versioning.\n- **Virtual Environments and Package Management**: Effectively use tools like `venv`, `pipenv`, and `conda` to manage dependencies.\n- **Testing and Debugging**: Develop proficiency in writing tests with frameworks like `unittest` or `pytest` and debugging with tools like `pdb`.\n\n#### Database Knowledge\n- **SQL and NoSQL Databases**: Integrate Python applications with databases like PostgreSQL, MySQL, and MongoDB. Understand ORM tools like SQLAlchemy for efficient database management.\n\n#### DevOps and Deployment\n- **Containerization and Cloud Platforms**: Get accustomed to using Docker for containerization and familiarize yourself with cloud services from AWS, Azure, or Google Cloud to deploy applications.\n\n#### Soft Skills\n- **Problem Solving and Communication**: Sharpen your ability to tackle complex problems and effectively communicate solutions and ideas, particularly to non-technical stakeholders.\n- **Team Collaboration**: Engage in agile methodologies and utilize tools like Jira or Trello to enhance team collaboration.\n\n#### Learning and Career Development\n- **Build and Showcase Projects**: Apply your skills in practical projects and contribute to open source to build a compelling portfolio.\n- **Continuous Learning**: Stay updated with the latest Python trends and updates. Utilize platforms like LeetCode, HackerRank, and participate in community forums like Stack Overflow.\n- **Courses and Books**: Enroll in online courses from platforms like Coursera and Udemy, and read seminal books such as \"Automate the Boring Stuff with Python\" by Al Sweigart.\n\n### Actionable Steps\n1. **Start with Basic Concepts**: Use resources like python.org to grasp fundamental concepts.\n2. **Engage in Daily Practice**: Apply concepts in small daily tasks to build fluency and confidence.\n3. **Develop Small Projects**: Start with simple applications like a web scraper or a personal blog to apply your learning.\n4. **Participate in the Community**: Join Python meetups, forums, and GitHub projects to learn from others and get feedback.\n5. **Review and Iterate**: Regularly revisit and refine your skills as you advance to more complex topics and projects.\n\nBy following this structured approach, dedicating time to practice, and actively engaging with the Python community, you'll enhance your skills and increase your employability in the tech industry.",
+          "timestamp": "2026-02-20T07:58:05.014Z",
+          "models": [
+            "GPT-4 Turbo",
+            "Claude 3.5 Sonnet",
+            "Perplexity Sonar Pro"
+          ],
+          "synthesized": true
+        }
+      ],
+      "createdAt": "2026-02-20T07:57:18.614Z",
+      "updatedAt": "2026-02-20T07:58:05.015Z"
+    },
+    {
+      "id": "56e1db98-32c2-4008-bfc2-04729194c43a",
+      "userId": "anonymous",
+      "title": "What skills should I learn for Python development?",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What skills should I learn for Python development?",
+          "timestamp": "2026-02-20T07:59:56.130Z"
+        },
+        {
+          "role": "assistant",
+          "content": "### Comprehensive Guide to Becoming a Proficient Python Developer\n\nEmbarking on a Python development career can lead you into various domains such as web development, data science, automation, and more. Here's a structured approach to mastering Python and related technologies:\n\n#### **1. Core Python Fundamentals**\n- **Syntax and Semantics**: Learn Python's structure and execution flow.\n- **Data Types**: Master basic types like integers, floats, strings, and collections (lists, tuples, sets, dictionaries).\n- **Control Structures**: Dive into if statements, loops (for, while), and handling exceptions to manage the flow of your programs.\n- **Functions and Modules**: Understand how to create reusable code components and organize them effectively.\n- **File Handling**: Gain skills in reading and writing files, crucial for data-driven applications.\n\n#### **2. Advanced Python**\n- **Object-Oriented Programming (OOP)**: Get comfortable with classes, inheritance, polymorphism, and encapsulation.\n- **Decorators, Generators, and Context Managers**: These advanced features will help you write more efficient and maintainable code.\n\n#### **3. Web Development Libraries and Frameworks**\n- **Django, Flask, and FastAPI**: Learn these frameworks to handle everything from simple web page applications to complex RESTful APIs.\n\n#### **4. Data Science and Machine Learning**\n- **Libraries**: NumPy for numerical operations, Pandas for data manipulation, and Matplotlib/Seaborn for visualizations.\n- **Machine Learning**: Utilize Scikit-Learn for traditional algorithms and TensorFlow or PyTorch for deep learning applications.\n\n#### **5. Database Knowledge**\n- **SQL and NoSQL**: Understand relational databases using SQL and explore NoSQL options like MongoDB for more flexible data structures.\n- **SQLAlchemy**: Learn this ORM to integrate Python applications seamlessly with databases.\n\n#### **6. Version Control**\n- **Git**: Essential for tracking changes, collaborating with others, and maintaining a history of your project developments.\n\n#### **7. Testing and Debugging**\n- **Testing Frameworks**: Use Pytest or unittest to ensure your code works as expected.\n- **Debugging**: Master debugging tools within your development environment to quickly identify and fix bugs.\n\n#### **8. Development Tools and Best Practices**\n- **IDEs and Editors**: Familiarize yourself with tools like PyCharm and Visual Studio Code.\n- **Virtual Environments and Package Managers**: Learn to use pip, virtualenv, and others to manage dependencies.\n- **Code Quality**: Adhere to PEP 8 style guide, utilize linters, and format your code properly to maintain readability.\n\n#### **9. DevOps and Deployment**\n- **Docker**: Understand containerization to deploy applications consistently across different environments.\n- **CI/CD**: Implement continuous integration and deployment to automate the release process.\n\n#### **10. Soft Skills and Professional Growth**\n- **Problem-Solving**: Enhance your ability to think logically and solve programming challenges.\n- **Communication**: Develop your skills to articulate ideas clearly and collaborate effectively with teams.\n- **Time Management**: Prioritize tasks and manage your time to meet project deadlines.\n\n#### **Learning Path and Community Engagement**\n- **Start with Basics**: Ground yourself in Python fundamentals through interactive platforms like DataCamp or freeCodeCamp.\n- **Specialization**: Depending on your interest, delve deeper into web development, data science, or automation.\n- **Build Projects**: Apply what you've learned by building a range of projects from simple utilities to complex applications.\n- **Contribute to Open Source**: This can bolster your resume and provide real-world experience.\n- **Engage with the Community**: Participate in forums like Reddit's r/learnpython or join Python meetups and conferences.\n\n### **Conclusion**\nBy following this comprehensive guide, you can build a strong foundation in Python, specialize in a field of your choice, and become job-ready. Remember, the key to success is consistent practice and continual learning.",
+          "timestamp": "2026-02-20T08:00:58.203Z",
+          "models": [
+            "GPT-4 Turbo",
+            "Claude 3.5 Sonnet",
+            "Perplexity Sonar Pro"
+          ],
+          "synthesized": true
+        }
+      ],
+      "createdAt": "2026-02-20T07:59:56.128Z",
+      "updatedAt": "2026-02-20T08:00:58.203Z"
+    },
+    {
+      "id": "748be0f1-438f-44b3-856f-0679f921502d",
+      "userId": "anonymous",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "mid-level",
+      "interviewType": "behavioral",
+      "questionCount": 1,
+      "scores": [],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock behavioral interview for a mid-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Certainly! Let's begin with a common behavioral interview question:\n\n**\"Can you tell me about a time when you had to quickly adapt to a significant change in a project? How did you handle the situation and what was the outcome?\"**",
+          "timestamp": "2026-02-20T08:01:09.531Z"
+        }
+      ],
+      "createdAt": "2026-02-20T08:01:09.531Z",
+      "updatedAt": "2026-02-20T08:01:09.531Z"
+    },
+    {
+      "id": "6a33847e-7a0a-42ad-bdc6-da5b8fb39078",
+      "userId": "anonymous",
+      "title": "What are effective career development strategies in tech?",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What are effective career development strategies in tech?",
+          "timestamp": "2026-02-20T08:24:34.744Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Navigating a career in technology requires a strategic approach, blending continuous learning, networking, and personal branding to adapt to the rapidly evolving landscape. Here’s a consolidated guide to developing a successful career in tech:\n\n### Continuous Learning and Skill Development\n- **Master the Fundamentals:** Start with core skills like programming basics, data structures, and algorithms. Regularly update your skills in high-demand areas such as AI, data science, cybersecurity, and cloud computing through courses and certifications from platforms like Coursera, Udemy, and edX.\n- **Microlearning and Specialization:** Engage in short learning modules and pursue micro-credentials in niche areas to quickly adapt to market needs. This targeted learning helps maintain relevancy in specialized fields that are less susceptible to automation.\n- **Practical Application:** Build personal projects and contribute to open-source projects to apply your learning and enhance your portfolio. This practical experience is crucial in demonstrating your skills to potential employers.\n\n### Networking and Professional Development\n- **Build a Robust Online Presence:** Maintain active profiles on LinkedIn, GitHub, and participate in tech-specific social media to showcase your skills and projects.\n- **Engage with the Community:** Join professional groups like IEEE, ACM, and participate in tech meetups and conferences. Engage in online communities and forums such as Discord and Stack Overflow to exchange knowledge and connect with peers.\n- **Mentorship:** Both finding a mentor and being a mentor are invaluable for growth. Mentors can provide guidance and open doors, while teaching others can solidify your own knowledge and enhance leadership skills.\n\n### Personal Branding and Career Strategy\n- **Tailor Your Job Application Materials:** Customize your resume and cover letter for each job application, highlighting relevant skills and experiences. Use keywords to optimize for Applicant Tracking Systems (ATS) and focus on skills-based narratives.\n- **Public Documentation of Projects:** Maintain a tech blog, document your projects, and share your technical experiences through case studies or presentations. This not only enhances your visibility but also demonstrates your ongoing commitment to learning and professional development.\n\n### Goal Setting and Work-Life Integration\n- **Set Clear, Achievable Goals:** Define short-term and long-term career objectives, and regularly assess your progress. This helps in maintaining a focused path towards your desired career outcomes.\n- **Maintain Balance:** Avoid burnout by setting boundaries and ensuring a healthy work-life balance. Continuous learning is important, but it should not be overwhelming.\n\n### Adaptability and Future Preparedness\n- **Embrace Emerging Technologies:** Stay flexible and open to learning new technologies and tools. Adaptability is crucial in a field as dynamic as technology.\n- **Ethical Use of AI and Tech Tools:** Integrate AI tools for career planning and skill development but balance it with insights from human advisors to navigate the tech industry effectively.\n\nBy focusing on these areas, you can build a dynamic and resilient career in technology. Start with setting small, manageable learning goals and gradually expand your skills and network to propel your career forward. Remember, consistent progress, adaptability, and a proactive approach are key to thriving in the tech industry.",
+          "timestamp": "2026-02-20T08:30:06.775Z",
+          "models": [
+            "GPT-4 Turbo",
+            "Claude 3.5 Sonnet",
+            "Perplexity Sonar Pro"
+          ],
+          "synthesized": true
+        }
+      ],
+      "createdAt": "2026-02-20T08:24:34.743Z",
+      "updatedAt": "2026-02-20T08:30:06.775Z"
+    },
+    {
+      "id": "39f8467e-d5d0-4931-b57e-d91634995515",
+      "userId": "anonymous",
+      "title": "What are key career development strategies?",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What are key career development strategies?",
+          "timestamp": "2026-02-20T08:28:36.746Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Career development is an ongoing journey that involves a strategic blend of self-assessment, goal setting, continuous learning, and proactive networking. Here’s a comprehensive guide to navigate your path toward a successful and fulfilling career.\n\n## **1. Self-Assessment and Goal Setting**\n- **Identify Your Strengths and Weaknesses:** Understanding your skills and areas for improvement is crucial.\n- **Define Your Interests and Values:** Determine what you are passionate about and what values are important to you in a job.\n- **Set SMART Goals:** Develop Specific, Measurable, Achievable, Relevant, and Time-bound goals. Break these into short-term and long-term objectives to keep your career journey focused and manageable.\n\n## **2. Skill Development**\n- **Continuous Learning:** Stay updated with industry trends through formal education, workshops, or self-study. Online platforms like Coursera or LinkedIn Learning are valuable resources.\n- **Develop Technical and Soft Skills:** Enhance industry-specific skills and cultivate soft skills like communication, leadership, problem-solving, and adaptability.\n\n## **3. Networking and Mentorship**\n- **Build and Maintain a Professional Network:** Engage with industry events, professional associations, and online platforms like LinkedIn.\n- **Seek Mentorship:** Connect with mentors who can provide guidance, feedback, and insights into career paths. Participate in formal mentorship programs if available.\n\n## **4. Professional Branding**\n- **Online Presence and Personal Branding:** Ensure your online profiles reflect your professional image and align with your career goals. Regularly update your LinkedIn profile and consider maintaining a professional blog or portfolio.\n- **Resume and Cover Letter:** Tailor these documents to highlight your skills and experiences pertinent to the job you are applying for.\n\n## **5. Practical Experience**\n- **Internships, Volunteering, and Part-Time Jobs:** These opportunities provide practical experience and insights into your chosen field, as well as expand your network.\n\n## **6. Feedback and Reflection**\n- **Seek and Utilize Feedback:** Regularly ask for constructive feedback from peers, mentors, and supervisors to enhance your performance.\n- **Reflect on Your Career Progress:** Keep a career journal to reflect on your experiences and the skills you’ve acquired.\n\n## **7. Job Search Strategies**\n- **Stay Informed:** Monitor job openings and industry news to identify opportunities.\n- **Apply Strategically:** Customize your application materials and prepare thoroughly for interviews.\n\n## **8. Work-Life Balance**\n- **Manage Stress and Set Boundaries:** Apply stress management techniques and maintain a healthy balance between professional and personal life.\n\n## **Action Steps to Get Started:**\n1. **Assess your current position and skills.**\n2. **Define clear career goals and write them down.**\n3. **Develop a personalized learning plan.**\n4. **Engage in networking events and update your LinkedIn profile.**\n5. **Begin tracking your achievements and milestones.**\n\nRemember, career development is a personal and evolving process. Stay flexible, adapt to changes, and consistently evaluate your progress to ensure alignment with your overarching career aspirations.",
+          "timestamp": "2026-02-20T08:29:23.288Z",
+          "models": [
+            "GPT-4 Turbo",
+            "Claude 3.5 Sonnet",
+            "Perplexity Sonar Pro"
+          ],
+          "synthesized": true
+        }
+      ],
+      "createdAt": "2026-02-20T08:28:36.745Z",
+      "updatedAt": "2026-02-20T08:29:23.288Z"
+    },
+    {
+      "id": "6509b680-2e8a-4681-ba37-a7773d14856a",
+      "userId": "anonymous",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "mid-level",
+      "interviewType": "behavioral",
+      "questionCount": 1,
+      "scores": [],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock behavioral interview for a mid-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Certainly! Here's the first question for our behavioral interview:\n\n\"Can you describe a challenging project you worked on recently? Specifically, explain the difficulties you faced, how you addressed them, and what the outcomes were.\"",
+          "timestamp": "2026-02-20T08:29:25.902Z"
+        }
+      ],
+      "createdAt": "2026-02-20T08:29:25.902Z",
+      "updatedAt": "2026-02-20T08:29:25.902Z"
+    },
+    {
+      "id": "cc5c607c-4516-4f3a-aa0d-ee375c20c9c7",
+      "userId": "anonymous",
+      "title": "What are key career development strategies?",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What are key career development strategies?",
+          "timestamp": "2026-02-20T08:42:17.934Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Career development is a dynamic and ongoing process that involves continuous learning, goal-setting, skill enhancement, and strategic networking. To navigate this journey effectively, consider integrating the following comprehensive strategies into your career plan:\n\n### 1. **Self-Assessment**\n   - **Identify Your Strengths and Weaknesses:** Regularly evaluate your skills and areas for improvement.\n   - **Define Your Interests and Values:** Align your career path with what you value and enjoy.\n   - **Use Personality and Skill Assessments:** Tools like Myers-Briggs or StrengthsFinder can offer valuable insights.\n\n### 2. **Goal Setting**\n   - **Establish Clear Career Goals:** Set both short-term and long-term objectives using the S.M.A.R.T framework (Specific, Measurable, Achievable, Relevant, Time-bound).\n   - **Regularly Review and Adjust Goals:** Keep your goals aligned with your evolving career aspirations and industry changes.\n\n### 3. **Skill Development**\n   - **Continuous Learning:** Engage in formal education, online courses, workshops, and read extensively.\n   - **Develop Hard and Soft Skills:** Depending on your field, focus on technical skills like data analysis and soft skills such as communication and adaptability.\n\n### 4. **Networking and Mentorship**\n   - **Build and Maintain Professional Relationships:** Utilize platforms like LinkedIn, attend industry events, and join professional associations.\n   - **Seek Mentorship:** Find mentors who can provide guidance, feedback, and expose you to new opportunities.\n\n### 5. **Personal Branding**\n   - **Maintain a Professional Online Presence:** Update your LinkedIn profile and consider starting a professional blog or portfolio.\n   - **Public Speaking and Presentations:** Enhance your visibility and establish yourself as a thought leader through public engagements.\n\n### 6. **Strategic Career Moves**\n   - **Explore Growth Opportunities:** Look for roles within your company or elsewhere that offer new challenges and learning opportunities.\n   - **Document Achievements:** Keep a record of your successes and milestones as they can be crucial for your resume and interviews.\n\n### 7. **Work-Life Balance**\n   - **Manage Your Time and Set Boundaries:** Effective time management and setting clear boundaries are essential to prevent burnout and maintain productivity.\n   - **Maintain Physical and Mental Health:** Engage in activities that support a healthy lifestyle, such as regular exercise and proper diet.\n\n### 8. **Regular Feedback and Evaluation**\n   - **Seek and Use Feedback:** Regular feedback from peers and supervisors can provide crucial insights into your performance and development needs.\n   - **Adjust Your Career Path as Needed:** Be flexible and ready to pivot your strategies based on feedback and changing industry trends.\n\n### 9. **Financial Planning**\n   - **Understand Your Market Value:** Stay informed about the compensation trends in your industry to negotiate effectively.\n   - **Invest in Your Professional Development:** Allocate resources for training and courses that enhance your marketability and career growth.\n\n### 10. **Stay Informed**\n   - **Follow Industry Trends and Economic Factors:** Keeping abreast of developments in your field helps you anticipate changes and position yourself advantageously.\n\nImplementing these strategies involves dedication and adaptability but can significantly enhance your career satisfaction and success. Start with clear goals, create a realistic plan, and remember that career development is an ever-evolving process.",
+          "timestamp": "2026-02-20T08:43:20.664Z",
+          "models": [
+            "GPT-4 Turbo",
+            "Claude 3.5 Sonnet",
+            "Perplexity Sonar Pro"
+          ],
+          "synthesized": true
+        }
+      ],
+      "createdAt": "2026-02-20T08:42:17.932Z",
+      "updatedAt": "2026-02-20T08:43:20.664Z"
+    },
+    {
+      "id": "82763813-a2c6-4beb-88f6-9f3916ffe3d9",
+      "userId": "anonymous",
+      "title": "Hello",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello",
+          "timestamp": "2026-02-20T09:40:59.398Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! 👋 I'm here to assist you with a wide range of career-related inquiries and guidance. Whether you're just starting out or looking to make a transition, I can help with:\n\n- **Career planning and exploration**: Discovering the right path based on your interests and skills.\n- **Resume and cover letter writing**: Crafting documents that effectively highlight your qualifications and accomplishments.\n- **Interview preparation**: Techniques and tips to confidently present yourself and your experiences.\n- **Job search strategies**: Effective methods to identify and secure opportunities in your desired field.\n- **Skills development advice**: Identifying and improving the skills necessary for your career growth.\n- **Career transitions**: Guidance on navigating the change smoothly and successfully.\n- **Professional development**: Strategies for continuous learning and advancement in your career.\n\nFeel free to ask about any of these topics or anything else related to your career aspirations!",
+          "timestamp": "2026-02-20T09:41:13.711Z",
+          "models": [
+            "GPT-4 Turbo",
+            "Claude 3.5 Sonnet",
+            "Perplexity Sonar Pro"
+          ],
+          "synthesized": true
+        }
+      ],
+      "createdAt": "2026-02-20T09:40:59.396Z",
+      "updatedAt": "2026-02-20T09:41:13.711Z"
+    },
+    {
+      "id": "d62c74db-9259-4a67-af48-cba4e530beca",
+      "userId": "anonymous",
+      "title": "Hello, what's your name?",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello, what's your name?",
+          "timestamp": "2026-02-20T13:35:45.077Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello! I'm CareerGPT, your AI career guidance counselor. I'm here to assist you with a comprehensive range of services tailored to help you navigate and succeed in your career journey. Whether you're just starting out, looking for a change, or aiming to advance in your current path, I can offer specific, actionable advice on:\n\n- **Career Path Exploration and Planning:** Let's discover and evaluate potential career options that align with your interests, skills, and goals.\n- **Skills Development Recommendations:** I'll provide insights on the essential skills required for your chosen field and suggest resources to help you develop or refine these skills.\n- **Resume and Cover Letter Writing:** Get personalized assistance in crafting compelling resumes and cover letters that highlight your strengths and qualifications.\n- **Interview Preparation:** Prepare for interviews with confidence by learning effective strategies and practicing responses to common questions.\n- **Job Search Strategies:** Learn how to effectively search for job opportunities using various tools and techniques tailored to your industry and career level.\n- **Professional Development Advice:** Gain insights on how to continuously grow professionally, whether through additional training, networking, or other activities.\n\nFeel free to ask about any of these topics or any other career-related questions you might have. I'm here to provide you with the guidance you need to achieve your professional goals. What specific area can I help you with today?",
+          "timestamp": "2026-02-20T13:35:58.790Z",
+          "models": [
+            "GPT-4 Turbo",
+            "Claude 3.5 Sonnet",
+            "Perplexity Sonar Pro"
+          ],
+          "synthesized": true
+        }
+      ],
+      "createdAt": "2026-02-20T13:35:45.074Z",
+      "updatedAt": "2026-02-20T13:35:58.790Z"
+    },
+    {
+      "id": "1bc66fe3-c581-4b89-b0c9-57e97c60b25a",
+      "userId": "anonymous",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "mid-level",
+      "interviewType": "behavioral",
+      "questionCount": 1,
+      "scores": [],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock behavioral interview for a mid-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Great! Let's get started. Can you tell me about a time when you had to learn a new programming language or technology to complete a project? What was the project and how did you go about learning?",
+          "timestamp": "2026-02-20T13:43:32.254Z"
+        }
+      ],
+      "createdAt": "2026-02-20T13:43:32.255Z",
+      "updatedAt": "2026-02-20T13:43:32.255Z"
+    },
+    {
+      "id": "adb93655-0ae8-4ba4-b590-b35fb241092b",
+      "userId": "anonymous",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "mid-level",
+      "interviewType": "behavioral",
+      "questionCount": 1,
+      "scores": [],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock behavioral interview for a mid-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Certainly! Let's begin.\n\n\"Can you describe a time when you had to solve a particularly challenging technical problem? What was the issue, and how did you approach it?\"",
+          "timestamp": "2026-02-20T13:45:02.701Z"
+        }
+      ],
+      "createdAt": "2026-02-20T13:45:02.701Z",
+      "updatedAt": "2026-02-20T13:45:02.701Z"
+    },
+    {
+      "id": "fa0ecd47-061a-4f96-bdd5-7e2d6d4df9ae",
+      "userId": "anonymous",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "mid-level",
+      "interviewType": "behavioral",
+      "questionCount": 1,
+      "scores": [],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock behavioral interview for a mid-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Certainly! Let's begin with the first question:\n\n\"Can you describe a challenging project you've worked on recently? What were the biggest obstacles you faced, and how did you overcome them?\"",
+          "timestamp": "2026-02-20T13:46:38.008Z"
+        }
+      ],
+      "createdAt": "2026-02-20T13:46:38.008Z",
+      "updatedAt": "2026-02-20T13:46:38.008Z"
+    },
+    {
+      "id": "1e4f543e-6269-481e-96e7-a098bb4fc363",
+      "userId": "anonymous",
+      "title": "Hello!",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello!",
+          "timestamp": "2026-02-20T13:46:38.662Z"
+        },
+        {
+          "role": "assistant",
+          "content": "**Welcome to Your AI Career Guidance Hub!** 👋\n\nI'm here to assist you with a comprehensive range of career-related inquiries and tasks. Whether you're just starting out or looking to grow further in your professional journey, I've got you covered. Here’s how I can help:\n\n- **Career Planning and Exploration:** Let's map out your career path together, exploring various industries and roles that align with your interests and skills.\n  \n- **Resume and Interview Preparation:** From crafting a compelling resume to mastering the art of the interview, I'll provide you with tailored tips and strategies to make you stand out in the competitive job market.\n  \n- **Job Search Strategies:** Discover effective techniques to search for jobs efficiently. I'll guide you through leveraging online platforms, networking effectively, and utilizing job alerts to your advantage.\n  \n- **Skill Development Recommendations:** Stay relevant in your field with advice on essential skills and continuous learning opportunities. I'll suggest courses, workshops, and readings that can boost your professional value.\n  \n- **Professional Growth Advice:** Gain insights into advancing in your career, whether it’s climbing the corporate ladder or making a significant career shift.\n\n**How can I assist you with your career journey today?**",
+          "timestamp": "2026-02-20T13:46:52.226Z",
+          "models": [
+            "GPT-4 Turbo",
+            "Claude 3.5 Sonnet",
+            "Perplexity Sonar Pro"
+          ],
+          "synthesized": true
+        }
+      ],
+      "createdAt": "2026-02-20T13:46:38.660Z",
+      "updatedAt": "2026-02-20T13:46:52.226Z"
+    }
+  ],
+  "career_paths": [
+    {
+      "id": "b761f728-4611-4100-aa77-9e6267dc4d6f",
+      "userId": "anonymous",
+      "input": {
+        "skills": "Python,JavaScript",
+        "experience": 5
+      },
+      "result": {
+        "title": "Full-Stack Developer Career Path",
+        "summary": "Leveraging your 5 years of experience with Python and JavaScript, this roadmap accelerates your transition to a full-stack developer role, focusing on integrating frontend and backend skills with modern frameworks and deployment practices. It builds on your foundation through targeted projects, certifications, and interview preparation for mid-level positions in 2026's high-demand tech market. Expect rapid progression to senior roles with hands-on portfolio development.",
+        "matchScore": 92,
+        "timeline": [
+          {
+            "phase": "Phase 1: Skill Assessment & Frontend Enhancement",
+            "duration": "0-2 months",
+            "goals": [
+              "Assess current proficiency in Python/JS via projects",
+              "Master advanced frontend with React/Next.js",
+              "Build responsive portfolio site"
+            ],
+            "skills": [
+              "React.js, Next.js, TypeScript",
+              "HTML/CSS/JS optimization",
+              "State management (Redux/Zustand)"
+            ],
+            "resources": [
+              "freeCodeCamp React course",
+              "Next.js official docs",
+              "Build 3 frontend projects on GitHub"
+            ]
+          },
+          {
+            "phase": "Phase 2: Backend Deep Dive & Full-Stack Integration",
+            "duration": "2-4 months",
+            "goals": [
+              "Strengthen Python backend with Django/FastAPI",
+              "Integrate JS/Node.js for full-stack apps",
+              "Implement databases and APIs"
+            ],
+            "skills": [
+              "Django/FastAPI, Node.js/Express",
+              "REST/GraphQL APIs",
+              "Authentication (JWT/OAuth)"
+            ],
+            "resources": [
+              "Django official tutorial",
+              "FastAPI docs",
+              "Build CRUD apps with Python/JS"
+            ]
+          },
+          {
+            "phase": "Phase 3: Databases, Deployment & Projects",
+            "duration": "4-6 months",
+            "goals": [
+              "Master SQL/NoSQL databases",
+              "Deploy full-stack apps to cloud",
+              "Complete 3-5 real-world projects"
+            ],
+            "skills": [
+              "PostgreSQL/MySQL/MongoDB",
+              "Docker, AWS/Heroku/Vercel",
+              "Git/GitHub workflows"
+            ],
+            "resources": [
+              "PostgreSQL tutorial",
+              "Docker for Developers",
+              "Full-stack project repos on GitHub"
+            ]
+          },
+          {
+            "phase": "Phase 4: Career Optimization & Job Prep",
+            "duration": "6-9 months",
+            "goals": [
+              "Polish resume/portfolio",
+              "Practice coding interviews",
+              "Network and apply to mid-level roles"
+            ],
+            "skills": [
+              "System design, LeetCode mediums",
+              "Behavioral interviews",
+              "Open-source contributions"
+            ],
+            "resources": [
+              "LeetCode, HackerRank",
+              "Cracking the Coding Interview",
+              "LinkedIn/Indeed job search"
+            ]
+          }
+        ],
+        "certifications": [
+          {
+            "name": "AWS Certified Developer - Associate",
+            "provider": "Amazon Web Services",
+            "priority": "high"
+          },
+          {
+            "name": "Google Professional Cloud Developer",
+            "provider": "Google Cloud",
+            "priority": "medium"
+          },
+          {
+            "name": "Microsoft Certified: Azure Developer Associate",
+            "provider": "Microsoft",
+            "priority": "medium"
+          },
+          {
+            "name": "PCAP - Certified Associate in Python Programming",
+            "provider": "Python Institute",
+            "priority": "low"
+          }
+        ],
+        "salaryRange": {
+          "entry": "$70k-90k",
+          "mid": "$100k-150k",
+          "senior": "$160k-220k"
+        },
+        "topRoles": [
+          "Full-Stack Developer",
+          "Python Backend Developer",
+          "JavaScript Full-Stack Engineer",
+          "Software Engineer (Python/JS)",
+          "Web Application Developer"
+        ],
+        "industryOutlook": "Python and JavaScript remain dominant in 2026, with full-stack roles in high demand due to AI integration, edge computing, and SaaS growth; expect 15-20% annual job increase per BLS projections, favoring versatile developers with deployment and cloud skills.[1][2][4]"
+      },
+      "models": [
+        "Perplexity Sonar Pro"
+      ],
+      "synthesized": false,
+      "createdAt": "2026-02-20T13:39:46.431Z"
+    },
+    {
+      "id": "2a437b93-da76-45a9-b5d1-aa6d295e6a85",
+      "userId": "anonymous",
+      "input": {
+        "skills": "Python",
+        "experience": 5
+      },
+      "result": {
+        "title": "Career Path",
+        "summary": "### Advanced Python Developer Career Path\n\n#### Summary\nThis comprehensive career path is designed for individuals who have foundational knowledge in Python and are aiming to advance to expert-level programming, system design, and project leadership. This progression not only deepens technical expertise in Python but also introduces skills in web development, data engineering, and software architecture, providing a broad spectrum of opportunities for specialization.\n\n#### Career Timeline and Objectives\n\n- **Phase 1: Core Python Mastery and Advanced Programming (0-6 months)**\n  - **Goals:** Master advanced Python concepts, understand asynchronous programming, multi-threading, and OOP principles.\n  - **Skills:** Asynchronous programming, multi-threading, Python basics, data structures, and algorithms.\n  - **Resources:** Advanced Python books, online courses (Coursera, Udemy), Python.org documentation, and Real Python tutorials.\n\n- **Phase 2: System Design, Architecture & Web Development Focus (6-12 months)**\n  - **Goals:** Learn system architecture principles, design scalable systems using Python, understand web frameworks, and database integration.\n  - **Skills:** System architecture, scalability principles, Django/Flask, SQL, RESTful APIs.\n  - **Resources:** \"Designing Data-Intensive Applications\" by Martin Kleppmann, system design primer on GitHub, Django and Flask tutorials.\n\n- **Phase 3: Leadership, Development & Advanced Applications (12-24 months)**\n  - **Goals:** Lead software projects, mentor junior developers, master cloud deployment, and testing automation.\n  - **Skills:** Project management, team leadership, AWS/Azure, Docker, Microservices, pytest.\n  - **Resources:** Management training workshops, Agile methodology courses, AWS Certified Developer path, Docker documentation.\n\n#### Certifications\n- **High Priority:** Certified Python Programmer (Python Institute), Python Institute PCEP\n- **Medium Priority:** System Design Interview Prep (Educative.io), AWS Certified Developer Associate\n- **Low Priority:** Professional Scrum Developer (Scrum.org)\n\n#### Salary Range\n- **Entry-Level:** $65k-90k\n- **Mid-Level:** $85k-140k\n- **Senior-Level:** $130k-200k\n\n#### Top Roles\n- Senior Python Developer, Python Architect, Software Development Manager, Python Backend Developer, Full Stack Python Developer, Python Data Engineer, DevOps Engineer, Software Architect\n\n#### Industry Outlook\nPython continues to be a dominant language in software development with applications in web development, data science, artificial intelligence, and more. The language's versatility and large ecosystem make it an excellent choice for career stability and growth, with increasing demand across various industries.\n\nThis path equips individuals with the skills necessary to navigate the evolving landscape of technology and prepares them to take on senior and leadership roles in their respective fields.",
+        "raw": true
+      },
+      "models": [
+        "GPT-4 Turbo",
+        "Claude 3.5 Sonnet"
+      ],
+      "synthesized": true,
+      "createdAt": "2026-02-20T13:42:07.098Z"
+    },
+    {
+      "id": "7e008a6d-ea11-40d5-b190-55e6063bc4b7",
+      "userId": "anonymous",
+      "input": {
+        "skills": "Python,JavaScript",
+        "experience": 5
+      },
+      "result": {
+        "title": "Full-Stack Developer Career Path",
+        "summary": "Leveraging your existing Python and JavaScript skills with 5 years of experience, this roadmap advances you to a proficient full-stack developer role. It focuses on integrating frontend and backend technologies, building real-world projects, and preparing for senior positions in high-demand web development. Python and JavaScript dominance in 2026 ensures strong job market fit for full-stack expertise.[1][2][5]",
+        "matchScore": 92,
+        "timeline": [
+          {
+            "phase": "Phase 1: Skill Deepening & Framework Mastery",
+            "duration": "0-3 months",
+            "goals": [
+              "Master Python backend frameworks like Django/FastAPI and JavaScript frontend with React/Next.js.",
+              "Build foundational full-stack projects integrating both languages.",
+              "Strengthen version control with Git/GitHub."
+            ],
+            "skills": [
+              "Django/FastAPI",
+              "React/Next.js/Node.js",
+              "Git/GitHub"
+            ],
+            "resources": [
+              "Apponix 6-Month Python Full-Stack Roadmap[1]",
+              "Dev.to Full-Stack Roadmap[5]"
+            ]
+          },
+          {
+            "phase": "Phase 2: Advanced Backend & Databases",
+            "duration": "3-6 months",
+            "goals": [
+              "Implement databases (PostgreSQL/MySQL) and APIs.",
+              "Develop full-stack applications with deployment (Heroku/AWS).",
+              "Practice CRUD operations and responsive design."
+            ],
+            "skills": [
+              "PostgreSQL/MySQL",
+              "APIs/REST",
+              "Deployment & Hosting"
+            ],
+            "resources": [
+              "Coursera Python Back-end Path[3]",
+              "igmGuru Python Developer Guide[4]"
+            ]
+          },
+          {
+            "phase": "Phase 3: Projects, Optimization & Job Prep",
+            "duration": "6-12 months",
+            "goals": [
+              "Build and deploy 3-5 portfolio projects.",
+              "Learn refactoring, design patterns, and interview prep.",
+              "Target junior-to-mid full-stack roles or promotions."
+            ],
+            "skills": [
+              "Refactoring",
+              "Design Patterns",
+              "Interview Coding Challenges"
+            ],
+            "resources": [
+              "Apponix Month 5-6 Roadmap[1]",
+              "YouTube Developer Roadmap 2026[6]"
+            ]
+          },
+          {
+            "phase": "Phase 4: Senior Specialization",
+            "duration": "12+ months",
+            "goals": [
+              "Optimize architecture, explore AI integrations with Python.",
+              "Lead projects, mentor juniors, aim for senior roles."
+            ],
+            "skills": [
+              "System Architecture",
+              "Performance Optimization",
+              "Team Leadership"
+            ],
+            "resources": [
+              "MRJ Python vs JS Guide[2]",
+              "Apponix Senior Roadmap[1]"
+            ]
+          }
+        ],
+        "certifications": [
+          {
+            "name": "AWS Certified Developer - Associate",
+            "provider": "Amazon Web Services",
+            "priority": "high"
+          },
+          {
+            "name": "Google Professional Cloud Developer",
+            "provider": "Google Cloud",
+            "priority": "medium"
+          },
+          {
+            "name": "Meta Frontend Developer Professional Certificate",
+            "provider": "Coursera",
+            "priority": "high"
+          },
+          {
+            "name": "PCAP - Certified Associate in Python Programming",
+            "provider": "Python Institute",
+            "priority": "medium"
+          }
+        ],
+        "salaryRange": {
+          "entry": "$70k-100k",
+          "mid": "$110k-150k",
+          "senior": "$160k-220k+"
+        },
+        "topRoles": [
+          "Full-Stack Developer",
+          "Python Back-End Developer",
+          "JavaScript Frontend Engineer",
+          "Full-Stack Python Developer"
+        ],
+        "industryOutlook": "Python and JavaScript full-stack roles dominate 2026 with high demand in startups, SaaS, and enterprises due to AI, web apps, and versatility. Job growth exceeds average at 356k+ annual openings; full-stack skills command 20% salary premiums in interactive web and edge computing.[1][2][4][5]"
+      },
+      "models": [
+        "Perplexity Sonar Pro"
+      ],
+      "synthesized": false,
+      "createdAt": "2026-02-20T13:45:51.527Z"
+    }
+  ],
+  "job_matches": [
+    {
+      "id": "6ec49bf2-9a73-4a2d-b6b4-aa0701c5cba6",
+      "userId": "anonymous",
+      "input": {
+        "skills": [
+          "Python",
+          "JavaScript",
+          "AWS"
+        ],
+        "experience": "3-5 years",
+        "location": "Remote"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T03:29:43.167Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T03:29:43.167Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T03:29:43.167Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T03:29:44.431Z",
+      "expiresAt": "2026-02-27T03:29:44.431Z"
+    },
+    {
+      "id": "ebe37cac-e8c8-4681-b579-7cefb6b58870",
+      "userId": "anonymous",
+      "input": {
+        "skills": [
+          "Python",
+          "JavaScript",
+          "AWS"
+        ],
+        "experience": "3-5 years",
+        "location": "Remote"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T03:30:41.381Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T03:30:41.381Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T03:30:41.381Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T03:30:42.557Z",
+      "expiresAt": "2026-02-27T03:30:42.557Z"
+    },
+    {
+      "id": "31447675-bf35-42f3-8699-887390f48ba8",
+      "userId": "anonymous",
+      "input": {
+        "skills": [
+          "Python",
+          "JavaScript",
+          "AWS"
+        ],
+        "experience": "3-5 years",
+        "location": "Remote"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T03:34:34.638Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T03:34:34.638Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T03:34:34.638Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T03:34:35.777Z",
+      "expiresAt": "2026-02-27T03:34:35.777Z"
+    },
+    {
+      "id": "8161a5d3-3006-4d66-978f-4d6489198c47",
+      "userId": "anonymous",
+      "input": {
+        "skills": [
+          "Python",
+          "JavaScript",
+          "AWS"
+        ],
+        "experience": "3-5 years",
+        "location": "Remote"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T03:36:21.448Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T03:36:21.448Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T03:36:21.448Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T03:36:22.691Z",
+      "expiresAt": "2026-02-27T03:36:22.691Z"
+    },
+    {
+      "id": "3d9a71f5-4fb5-4ab6-acf6-f199a7a4cf0f",
+      "userId": "anonymous",
+      "input": {
+        "skills": [
+          "Python",
+          "JavaScript",
+          "AWS"
+        ],
+        "experience": "3-5 years",
+        "location": "Remote"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T03:37:58.836Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T03:37:58.836Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T03:37:58.836Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T03:38:00.165Z",
+      "expiresAt": "2026-02-27T03:38:00.165Z"
+    },
+    {
+      "id": "05d947fc-e18c-4875-b747-0ca75a7e6d53",
+      "userId": "anonymous",
+      "input": {
+        "skills": [
+          "Python",
+          "JavaScript",
+          "AWS"
+        ],
+        "experience": "3-5 years",
+        "location": "Remote"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T07:44:33.061Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T07:44:33.061Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T07:44:33.061Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T07:44:34.300Z",
+      "expiresAt": "2026-02-27T07:44:34.300Z"
+    },
+    {
+      "id": "45a7f697-9ccf-419d-98bf-7fa415a2e07e",
+      "userId": "anonymous",
+      "input": {
+        "skills": [
+          "Python",
+          "JavaScript",
+          "AWS"
+        ],
+        "experience": "3-5 years",
+        "location": "Remote"
+      },
+      "matches": [
+        {
+          "matchScore": 95,
+          "keyReasons": [
+            "Direct match with Python skill",
+            "Experience level matches job requirements"
+          ],
+          "skillGaps": [],
+          "rank": 1
+        },
+        {
+          "matchScore": 85,
+          "keyReasons": [
+            "Relevant Python and AWS skills",
+            "Experience level appropriate"
+          ],
+          "skillGaps": [
+            "Specific data engineering tools or techniques may be required"
+          ],
+          "rank": 2
+        },
+        {
+          "matchScore": 75,
+          "keyReasons": [
+            "Python and AWS skills are relevant",
+            "High compensation range"
+          ],
+          "skillGaps": [
+            "Specific machine learning skills or frameworks not mentioned in user profile"
+          ],
+          "rank": 3
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T08:01:07.065Z",
+      "expiresAt": "2026-02-27T08:01:07.065Z"
+    },
+    {
+      "id": "26868dae-07d5-454d-b7a1-8f1961f6c73f",
+      "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+      "input": {
+        "skills": "python , ML",
+        "interests": "Full stack developer",
+        "experience": "fresher",
+        "targetIndustry": "tech"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T09:13:24.808Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T09:13:24.808Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T09:13:24.808Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T09:13:24.811Z",
+      "expiresAt": "2026-02-27T09:13:24.811Z"
+    },
+    {
+      "id": "9cec51db-88f9-432a-86c4-f841c2c3a3b0",
+      "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+      "input": {
+        "skills": "python , ML",
+        "interests": "Full stack developer",
+        "experience": "fresher",
+        "targetIndustry": "tech"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T09:14:21.156Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T09:14:21.156Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T09:14:21.156Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T09:14:21.158Z",
+      "expiresAt": "2026-02-27T09:14:21.158Z"
+    },
+    {
+      "id": "d782161c-186d-4361-847f-d86f277420c7",
+      "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+      "input": {
+        "skills": "python ",
+        "interests": "developer",
+        "experience": "fresher",
+        "targetIndustry": "tech"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T09:28:40.931Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T09:28:40.931Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T09:28:40.931Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T09:28:40.936Z",
+      "expiresAt": "2026-02-27T09:28:40.936Z"
+    },
+    {
+      "id": "166d3b78-234c-4b2d-ab67-2e41ad679773",
+      "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+      "input": {
+        "skills": "python , machine learning",
+        "interests": "ai developer",
+        "experience": "fresher",
+        "targetIndustry": "tech"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T09:37:38.516Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T09:37:38.516Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T09:37:38.516Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T09:37:38.520Z",
+      "expiresAt": "2026-02-27T09:37:38.520Z"
+    },
+    {
+      "id": "783e3b1d-01b5-4ec5-a19d-e23c2754cf75",
+      "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+      "input": {
+        "skills": "python , machine learning",
+        "interests": "ai developer",
+        "experience": "fresher",
+        "targetIndustry": "tech"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T09:37:45.228Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T09:37:45.228Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T09:37:45.228Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T09:37:45.229Z",
+      "expiresAt": "2026-02-27T09:37:45.229Z"
+    },
+    {
+      "id": "ab64a159-9da1-4801-96d5-03048ea61ae4",
+      "userId": "8ae6098a-604c-4e6d-8794-f763446af158",
+      "input": {
+        "skills": "python , machine learning",
+        "interests": "ai developer",
+        "experience": "2 years",
+        "targetIndustry": "tech"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T09:37:58.243Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T09:37:58.243Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T09:37:58.243Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T09:37:58.245Z",
+      "expiresAt": "2026-02-27T09:37:58.245Z"
+    },
+    {
+      "id": "c37058d1-2b32-467f-b758-7995d8554aca",
+      "userId": "anonymous",
+      "input": {
+        "skills": "Python,JavaScript,React",
+        "experience": "5"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T09:40:12.959Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T09:40:12.959Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T09:40:12.959Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T09:40:12.961Z",
+      "expiresAt": "2026-02-27T09:40:12.961Z"
+    },
+    {
+      "id": "647a574a-2d51-4fc3-a021-a88e23b09b8c",
+      "userId": "anonymous",
+      "input": {
+        "skills": "Python,JavaScript",
+        "experience": 5
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T13:40:25.007Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T13:40:25.007Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T13:40:25.007Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T13:40:25.010Z",
+      "expiresAt": "2026-02-27T13:40:25.010Z"
+    },
+    {
+      "id": "5f89b5c0-426b-4c1b-aca6-402050d042f4",
+      "userId": "anonymous",
+      "input": {
+        "skills": "Python,JavaScript",
+        "experience": 5
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-20T13:46:38.361Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-20T13:46:38.361Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-20T13:46:38.361Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-20T13:46:38.363Z",
+      "expiresAt": "2026-02-27T13:46:38.363Z"
+    }
+  ]
+}
