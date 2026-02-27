@@ -1020,45 +1020,104 @@ Return 7-10 matching roles with match scores (0-100), suggested salary ranges, r
 
       const result = await callMultiModel(JOB_MATCH_SYSTEM, prompt, ['GPT-4 Turbo', 'Claude 3.5 Sonnet', 'Gemini 2.0 Flash']);
 
+      let llmSummary = '';
+      let topSkillGaps = [];
+      let recommendations = [];
+
       if (result && result.combinedResponse) {
         let parsed;
         try {
           const jsonStr = result.combinedResponse.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
           parsed = JSON.parse(jsonStr);
           finalMatches = parsed.matches || [];
+          llmSummary = parsed.summary || '';
+          topSkillGaps = parsed.topSkillGaps || [];
+          recommendations = parsed.recommendations || [];
         } catch {
-          console.warn('Failed to parse LLM response as JSON');
-          finalMatches = getMockJobs(skills || 'Software Engineer', { location: location || 'Remote' });
+          console.warn('Failed to parse LLM response as JSON, returning raw');
+          llmSummary = result.combinedResponse;
+          finalMatches = [];
         }
       } else {
         // Fallback to mock jobs
         finalMatches = getMockJobs(skills || 'Software Engineer', { location: location || 'Remote' });
       }
+
+      // Build response with LLM extras
+      var responseSummary = llmSummary;
+      var responseTopSkillGaps = topSkillGaps;
+      var responseRecommendations = recommendations;
+      var responseRaw = finalMatches.length === 0 && llmSummary;
     }
 
+    // Normalize real job fields to match display schema
+    finalMatches = finalMatches.map(m => ({
+      role: m.role || m.jobTitle || 'Unknown Role',
+      company_type: m.company_type || m.company || 'Company',
+      matchScore: m.matchScore || 0,
+      salary: m.salary || 'Not specified',
+      skills_matched: m.skills_matched || m.keyReasons || [],
+      skills_gap: m.skills_gap || m.skillGaps || [],
+      why_match: m.why_match || (m.keyReasons ? m.keyReasons.join('. ') : `Matches your ${skills ? 'skills' : 'profile'}`),
+      growth_potential: m.growth_potential || 'medium',
+      demand: m.demand || 'medium',
+      jobUrl: m.jobUrl || null,
+      postedDate: m.postedDate || null,
+      employmentType: m.employmentType || 'FULLTIME',
+      source: m.source || 'ai',
+      location: m.location || location || 'Remote'
+    }));
+
+    const dataSource = realJobs.length > 0 ? 'real_jobs_ranked_by_ai' : 'ai_generated';
+
     // Store results for analytics and user history
+    const searchId = uuidv4();
     await db.collection('job_matches').insertOne({
-      id: uuidv4(),
+      id: searchId,
       userId,
       input: { skills, interests, experience, targetIndustry, location, minSalary },
       matches: finalMatches,
       totalMatches: finalMatches.length,
       dataSource: realJobs.length > 0 ? 'REAL_JOBS' : 'LLM_GENERATED',
       createdAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // Cache for 7 days
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
 
     await logAnalytics(db, 'job_match', { userId, matchCount: finalMatches.length, source: realJobs.length > 0 ? 'real_api' : 'llm' });
 
     return NextResponse.json({
+      searchId,
       matches: finalMatches,
       totalMatches: finalMatches.length,
-      dataSource: realJobs.length > 0 ? 'real_jobs_ranked_by_ai' : 'ai_generated',
+      summary: responseSummary || '',
+      topSkillGaps: responseTopSkillGaps || [],
+      recommendations: responseRecommendations || [],
+      raw: responseRaw || false,
+      dataSource,
       message: realJobs.length > 0 ? 'Top job matches from real job boards, ranked using AI' : 'Job matches generated using AI'
     });
   } catch (error) {
     console.error('Job match error:', error.message);
     return NextResponse.json({ error: 'Failed: ' + error.message }, { status: 500 });
+  }
+}
+
+// --- JOB MATCH HISTORY ---
+async function handleJobMatchHistory(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  
+  try {
+    const db = await getDb();
+    const history = await db.collection('job_matches')
+      .find({ userId: auth.id })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .toArray();
+    
+    return NextResponse.json({ history: history.map(h => ({ id: h.id, input: h.input, totalMatches: h.totalMatches, dataSource: h.dataSource, createdAt: h.createdAt })) });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
@@ -1988,6 +2047,7 @@ export async function POST(request) {
     if (path === '/mock-interview/start') return handleInterviewStart(request);
     if (path === '/mock-interview/respond') return handleInterviewRespond(request);
     if (path === '/job-match') return handleJobMatch(request);
+    if (path === '/job-match/history') return handleJobMatchHistory(request);
     if (path === '/saved-jobs/save') return handleSaveJob(request);
     if (path === '/saved-jobs') return handleGetSavedJobs(request);
     
