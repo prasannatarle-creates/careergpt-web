@@ -12,7 +12,9 @@
         "education": "",
         "experience": ""
       },
-      "createdAt": "2026-02-19T12:16:19.724Z"
+      "createdAt": "2026-02-19T12:16:19.724Z",
+      "verified": true,
+      "verificationToken": null
     },
     {
       "id": "63a9c9ae-4231-404b-a983-c34c5b96f82a",
@@ -327,6 +329,38 @@
       "createdAt": "2026-02-27T12:07:02.336Z",
       "resetToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QtMTc3MjE5NDAyMTg4N0BjYXJlZXJncHQtdGVzdC5jb20iLCJ0eXBlIjoicGFzc3dvcmQtcmVzZXQiLCJpYXQiOjE3NzIxOTQwMjIsImV4cCI6MTc3MjE5NTgyMn0.rXdyDkKsqvuZMK9dwGSLn9Oa1OIOR6OQw9qX2qFDfMU",
       "resetTokenCreatedAt": "2026-02-27T12:07:02.561Z"
+    },
+    {
+      "id": "faa621f2-89b7-4093-8f49-e620eccd02e4",
+      "name": "Test NoEmail",
+      "email": "test-noemail@test.com",
+      "password": "$2b$10$QatZOZiIBp.c69AdUe585.R9j1GcrMFvgjpI.6JTlLHfRc2o7q3y2",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": true,
+      "verificationToken": null,
+      "createdAt": "2026-02-27T12:42:34.563Z"
+    },
+    {
+      "id": "f38d7621-b3a6-4c01-96ef-607b7f261d6c",
+      "name": "Test NoEmail",
+      "email": "test-noemail-1772215961.31212@test.com",
+      "password": "$2b$10$F0bVOc5X8YFep/LJsiu3s.UI8CKEp0JgaIlRRFnr3EpabU0xatn.K",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": true,
+      "verificationToken": null,
+      "createdAt": "2026-02-27T12:42:41.396Z"
     }
   ],
   "analytics": [
@@ -1879,6 +1913,24 @@
         "shareCode": "8B9D7A10"
       },
       "createdAt": "2026-02-27T12:08:21.549Z"
+    },
+    {
+      "id": "b4cc6b2d-12cb-45da-ac50-dc8de9c1aeae",
+      "type": "user_register",
+      "data": {
+        "userId": "faa621f2-89b7-4093-8f49-e620eccd02e4",
+        "autoVerified": true
+      },
+      "createdAt": "2026-02-27T12:42:34.571Z"
+    },
+    {
+      "id": "61c60926-4d78-4fa8-8f2c-75f3002e3ab8",
+      "type": "user_register",
+      "data": {
+        "userId": "f38d7621-b3a6-4c01-96ef-607b7f261d6c",
+        "autoVerified": true
+      },
+      "createdAt": "2026-02-27T12:42:41.405Z"
     }
   ],
   "resumes": [
