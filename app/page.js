@@ -21,7 +21,7 @@ import {
   MapPin, ExternalLink, Clock, Bell, Bookmark, Globe,
   Filter, Building2, XCircle, MoreVertical, Heart,
   Copy, Check, Share2, Edit2, Link2,
-  BookOpen, GraduationCap, Download
+  BookOpen, GraduationCap, Download, RefreshCw
 } from 'lucide-react';
 
 // ============ HYDRATION-SAFE DATE FORMATTER ============
@@ -125,18 +125,86 @@ function AuthPage({ onAuth }) {
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState('');
+  const [resending, setResending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+
+  // Handle ?verify=TOKEN in URL (email verification link)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const verifyToken = params.get('verify');
+    if (verifyToken) {
+      setVerifying(true);
+      setSuccess('Verifying your email...');
+      api.post('/auth/verify-email', { token: verifyToken }).then(data => {
+        if (data.error) {
+          setError(data.error);
+          setSuccess('');
+        } else if (data.token && data.user) {
+          api.setToken(data.token);
+          onAuth(data.user);
+        } else {
+          setSuccess(data.message || 'Email verified! You can now sign in.');
+        }
+        // Clean URL
+        window.history.replaceState({}, '', window.location.pathname);
+      }).catch(err => {
+        setError(err.message);
+        setSuccess('');
+      }).finally(() => setVerifying(false));
+    }
+  }, []);
+
+  const handleResendVerification = async () => {
+    setResending(true);
+    setError('');
+    try {
+      const data = await api.post('/auth/resend-verification', { email: verificationEmail });
+      if (data.error) throw new Error(data.error);
+      if (data.token && data.user) {
+        // Auto-verified (no email provider)
+        api.setToken(data.token);
+        onAuth(data.user);
+        return;
+      }
+      setSuccess(data.message || 'Verification email sent!');
+      setNeedsVerification(false);
+    } catch (err) { setError(err.message); }
+    finally { setResending(false); }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
+    setNeedsVerification(false);
     setLoading(true);
     try {
       const data = mode === 'register'
         ? await api.post('/auth/register', { name, email, password })
         : await api.post('/auth/login', { email, password });
-      if (data.error) throw new Error(data.error);
-      api.setToken(data.token);
-      onAuth(data.user);
+      if (data.error) {
+        if (data.requiresVerification || data.error.includes('not verified')) {
+          setNeedsVerification(true);
+          setVerificationEmail(data.email || email);
+          setError(data.error);
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
+      if (data.requiresVerification && !data.token) {
+        // Email provider is configured, user must check email
+        setSuccess(data.message);
+        setMode('login');
+        return;
+      }
+      if (data.token && data.user) {
+        api.setToken(data.token);
+        onAuth(data.user);
+      }
     } catch (err) { setError(err.message); }
     finally { setLoading(false); }
   };
@@ -194,11 +262,32 @@ function AuthPage({ onAuth }) {
                   </button>
                 </div>
               </div>
-              {error && <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-xl flex items-center gap-2 animate-scale-in"><AlertCircle className="w-4 h-4 flex-shrink-0" />{error}</div>}
-              <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 text-white border-0 h-12 rounded-xl text-sm font-semibold btn-glow shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all">
-                {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                {mode === 'register' ? 'Create Account' : 'Sign In'}
-              </Button>
+              {error && (
+                <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-xl animate-scale-in">
+                  <div className="flex items-center gap-2"><AlertCircle className="w-4 h-4 flex-shrink-0" />{error}</div>
+                  {needsVerification && (
+                    <button
+                      type="button"
+                      onClick={handleResendVerification}
+                      disabled={resending}
+                      className="mt-2 w-full text-center text-xs text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-lg py-2 px-3 transition-all flex items-center justify-center gap-1.5"
+                    >
+                      {resending ? <><Loader2 className="w-3 h-3 animate-spin" /> Verifying...</> : <><RefreshCw className="w-3 h-3" /> Click here to verify your account</>}
+                    </button>
+                  )}
+                </div>
+              )}
+              {success && <div className="text-green-400 text-sm bg-green-500/10 border border-green-500/20 p-3 rounded-xl flex items-center gap-2 animate-scale-in"><CheckCircle2 className="w-4 h-4 flex-shrink-0" />{success}</div>}
+              {verifying ? (
+                <Button disabled className="w-full bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 text-white border-0 h-12 rounded-xl text-sm font-semibold">
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" /> Verifying Email...
+                </Button>
+              ) : (
+                <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 text-white border-0 h-12 rounded-xl text-sm font-semibold btn-glow shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all">
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                  {mode === 'register' ? 'Create Account' : 'Sign In'}
+                </Button>
+              )}
             </form>
           </div>
         </div>

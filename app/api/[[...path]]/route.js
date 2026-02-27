@@ -418,18 +418,43 @@ async function handleRegister(body, clientIp) {
 
     await db.collection('users').insertOne(user);
 
-    // Send verification email
-    const verificationLink = `${process.env.APP_URL || 'http://localhost:3000'}/verify-email?token=${verificationToken}`;
-    const { subject, html, text } = emailTemplates.verifyEmail(verificationLink);
-    await sendEmail(email.toLowerCase(), subject, html, text);
+    // Check if a real email provider is configured
+    const hasEmailProvider = !!(process.env.SENDGRID_API_KEY || process.env.SMTP_HOST);
 
-    await logAnalytics(db, 'user_register', { userId });
+    if (hasEmailProvider) {
+      // Send verification email via configured provider
+      const verificationLink = `${process.env.APP_URL || 'http://localhost:3000'}?verify=${verificationToken}`;
+      const { subject, html, text } = emailTemplates.verifyEmail(verificationLink);
+      await sendEmail(email.toLowerCase(), subject, html, text);
 
-    return NextResponse.json({
-      message: 'Registration successful. Please check your email to verify your account.',
-      email: email.toLowerCase(),
-      requiresVerification: true
-    });
+      await logAnalytics(db, 'user_register', { userId });
+
+      return NextResponse.json({
+        message: 'Registration successful. Please check your email to verify your account.',
+        email: email.toLowerCase(),
+        requiresVerification: true
+      });
+    } else {
+      // No email provider configured — auto-verify the user for seamless dev experience
+      await db.collection('users').updateOne(
+        { id: userId },
+        { $set: { verified: true, verificationToken: null } }
+      );
+      console.log(`✓ Auto-verified user ${email.toLowerCase()} (no email provider configured)`);
+
+      // Auto-login: generate token immediately
+      const verifiedUser = await db.collection('users').findOne({ id: userId });
+      const token = generateToken(verifiedUser);
+
+      await logAnalytics(db, 'user_register', { userId, autoVerified: true });
+
+      return NextResponse.json({
+        message: 'Account created successfully!',
+        token,
+        user: { id: verifiedUser.id, name: verifiedUser.name, email: verifiedUser.email, role: verifiedUser.role, profile: verifiedUser.profile },
+        autoVerified: true
+      });
+    }
   } catch (error) {
     console.error('Registration error:', error.message);
     return NextResponse.json({ error: 'Registration failed: ' + error.message }, { status: 500 });
@@ -459,13 +484,72 @@ async function handleVerifyEmail(token) {
 
     await logAnalytics(db, 'email_verified', { userId: user.id });
 
-    return NextResponse.json({ message: 'Email verified successfully. You can now login.', redirectUrl: '/login' });
+    // Auto-login after verification: generate token
+    const updatedUser = await db.collection('users').findOne({ email: decoded.email });
+    const token = generateToken(updatedUser);
+
+    return NextResponse.json({
+      message: 'Email verified successfully!',
+      verified: true,
+      token,
+      user: { id: updatedUser.id, name: updatedUser.name, email: updatedUser.email, role: updatedUser.role, profile: updatedUser.profile }
+    });
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       return NextResponse.json({ error: 'Verification link has expired. Please register again.' }, { status: 400 });
     }
     console.error('Email verification error:', error.message);
     return NextResponse.json({ error: 'Verification failed: ' + error.message }, { status: 500 });
+  }
+}
+
+// Resend verification email
+async function handleResendVerification(body) {
+  try {
+    const { email } = body;
+    if (!email) return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+
+    const db = await getDb();
+    const user = await db.collection('users').findOne({ email: email.toLowerCase() });
+    if (!user) return NextResponse.json({ message: 'If an account exists, a verification email has been sent.' });
+    if (user.verified) return NextResponse.json({ message: 'Email is already verified. You can login now.', alreadyVerified: true });
+
+    const hasEmailProvider = !!(process.env.SENDGRID_API_KEY || process.env.SMTP_HOST);
+
+    if (!hasEmailProvider) {
+      // No email provider — auto-verify
+      await db.collection('users').updateOne(
+        { email: email.toLowerCase() },
+        { $set: { verified: true, verificationToken: null } }
+      );
+      console.log(`✓ Auto-verified user ${email.toLowerCase()} via resend (no email provider configured)`);
+
+      const verifiedUser = await db.collection('users').findOne({ email: email.toLowerCase() });
+      const token = generateToken(verifiedUser);
+
+      return NextResponse.json({
+        message: 'Account verified successfully!',
+        autoVerified: true,
+        token,
+        user: { id: verifiedUser.id, name: verifiedUser.name, email: verifiedUser.email, role: verifiedUser.role, profile: verifiedUser.profile }
+      });
+    }
+
+    // Generate new verification token
+    const verificationToken = jwt.sign({ email: email.toLowerCase(), type: 'email-verify' }, process.env.JWT_SECRET || 'careergpt-jwt-secret-2025', { expiresIn: '24h' });
+    await db.collection('users').updateOne(
+      { email: email.toLowerCase() },
+      { $set: { verificationToken } }
+    );
+
+    const verificationLink = `${process.env.APP_URL || 'http://localhost:3000'}?verify=${verificationToken}`;
+    const { subject, html, text } = emailTemplates.verifyEmail(verificationLink);
+    await sendEmail(email.toLowerCase(), subject, html, text);
+
+    return NextResponse.json({ message: 'Verification email sent. Please check your inbox.' });
+  } catch (error) {
+    console.error('Resend verification error:', error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
@@ -2418,6 +2502,7 @@ export async function POST(request) {
     if (path === '/auth/login') return handleLogin(await request.json(), clientIp);
     if (path === '/auth/guest') return handleGuestLogin();
     if (path === '/auth/verify-email') return handleVerifyEmail((await request.json()).token);
+    if (path === '/auth/resend-verification') return handleResendVerification(await request.json());
     if (path === '/auth/forgot-password') return handleForgotPassword(await request.json());
     if (path === '/auth/reset-password') return handleResetPassword(await request.json());
     if (path === '/auth/change-password') return handleChangePassword(request);
