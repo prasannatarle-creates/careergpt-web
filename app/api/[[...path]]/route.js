@@ -820,9 +820,9 @@ async function handleChatSend(request) {
 
 async function handleGetSessions(request) {
   const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const db = await getDb();
-  const filter = auth ? { userId: auth.id } : {};
-  const sessions = await db.collection('sessions').find(filter, { projection: { messages: 0 } }).sort({ updatedAt: -1 }).limit(50).toArray();
+  const sessions = await db.collection('sessions').find({ userId: auth.id }, { projection: { messages: 0 } }).sort({ updatedAt: -1 }).limit(50).toArray();
   return NextResponse.json({ sessions });
 }
 
@@ -1125,9 +1125,9 @@ async function handleResumeAnalyze(request) {
 
 async function handleGetResumes(request) {
   const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const db = await getDb();
-  const filter = auth ? { userId: auth.id } : {};
-  const resumes = await db.collection('resumes').find(filter, { projection: { textContent: 0 } }).sort({ createdAt: -1 }).limit(20).toArray();
+  const resumes = await db.collection('resumes').find({ userId: auth.id }, { projection: { textContent: 0 } }).sort({ createdAt: -1 }).limit(20).toArray();
   return NextResponse.json({ resumes });
 }
 
