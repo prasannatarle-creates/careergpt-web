@@ -327,9 +327,35 @@ function Sidebar({ currentPage, onNavigate, user, onLogout, collapsed, onToggle 
 // ============ DASHBOARD ============
 function Dashboard({ user, onNavigate }) {
   const [stats, setStats] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [savedJobsCount, setSavedJobsCount] = useState(0);
   useEffect(() => {
-    if (user) api.get('/profile').then(d => setStats(d.stats));
+    if (user) {
+      api.get('/profile').then(d => { setStats(d.stats); setProfile(d.profile); });
+      api.get('/saved-jobs').then(d => { if (d.jobs) setSavedJobsCount(d.jobs.length); }).catch(() => {});
+    }
   }, [user]);
+
+  // Profile completeness
+  const profileFields = profile ? [profile.skills, profile.interests, profile.education, profile.experience, user?.name, user?.email] : [];
+  const filledFields = profileFields.filter(f => f && f.trim && f.trim().length > 0).length;
+  const profileCompleteness = profileFields.length > 0 ? Math.round((filledFields / profileFields.length) * 100) : 0;
+
+  // Activity totals
+  const totalActivity = stats ? (stats.chatCount || 0) + (stats.resumeCount || 0) + (stats.interviewCount || 0) + (stats.careerPathCount || 0) : 0;
+
+  // Smart suggestions based on usage
+  const getSuggestions = () => {
+    if (!stats) return [];
+    const tips = [];
+    if (profileCompleteness < 100) tips.push({ text: 'Complete your profile for better AI recommendations', action: 'profile', icon: User, color: 'text-violet-400' });
+    if ((stats.resumeCount || 0) === 0) tips.push({ text: 'Upload your resume for ATS scoring & feedback', action: 'resume', icon: FileText, color: 'text-teal-400' });
+    if ((stats.interviewCount || 0) === 0) tips.push({ text: 'Practice with an AI mock interview', action: 'interview', icon: Mic, color: 'text-purple-400' });
+    if ((stats.careerPathCount || 0) === 0) tips.push({ text: 'Generate a personalized career roadmap', action: 'career', icon: Compass, color: 'text-amber-400' });
+    if (savedJobsCount === 0) tips.push({ text: 'Search and save jobs to track applications', action: 'livejobs', icon: Briefcase, color: 'text-green-400' });
+    if ((stats.chatCount || 0) === 0) tips.push({ text: 'Ask AI for career guidance and advice', action: 'chat', icon: MessageSquare, color: 'text-cyan-400' });
+    return tips.slice(0, 3);
+  };
 
   const features = [
     { id: 'chat', title: 'AI Career Chat', desc: '5-model AI guidance', icon: MessageSquare, color: 'from-blue-500 to-cyan-500', count: stats?.chatCount },
@@ -338,35 +364,77 @@ function Dashboard({ user, onNavigate }) {
     { id: 'interview', title: 'Mock Interview', desc: 'AI interview practice', icon: Mic, color: 'from-violet-500 to-purple-500', count: stats?.interviewCount },
     { id: 'jobs', title: 'Job Matching', desc: 'AI skill matching', icon: Briefcase, color: 'from-green-500 to-emerald-500' },
     { id: 'livejobs', title: 'Job Board', desc: 'Live job openings', icon: Globe, color: 'from-emerald-500 to-teal-500' },
-    { id: 'savedjobs', title: 'Saved Jobs', desc: 'Track applications', icon: Bookmark, color: 'from-yellow-500 to-amber-500' },
+    { id: 'savedjobs', title: 'Saved Jobs', desc: 'Track applications', icon: Bookmark, color: 'from-yellow-500 to-amber-500', count: savedJobsCount },
     { id: 'analytics', title: 'Analytics', desc: 'Usage insights', icon: BarChart3, color: 'from-pink-500 to-rose-500' },
   ];
 
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto page-transition">
       {/* Hero Section */}
-      <div className="mb-10 relative">
+      <div className="mb-8 relative">
         <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-xs text-slate-500 uppercase tracking-wider font-medium">Welcome back</span>
+        <div className="relative flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-xs text-slate-500 uppercase tracking-wider font-medium">Welcome back</span>
+            </div>
+            <h1 className="text-3xl lg:text-4xl font-extrabold text-white mb-2 tracking-tight">
+              {user ? `Hello, ${user.name}` : 'Welcome'}! <span className="inline-block animate-float" style={{ animationDuration: '3s' }}>👋</span>
+            </h1>
+            <p className="text-slate-400 text-base">Your AI-powered career guidance hub</p>
           </div>
-          <h1 className="text-3xl lg:text-4xl font-extrabold text-white mb-2 tracking-tight">
-            {user ? `Hello, ${user.name}` : 'Welcome'}! <span className="inline-block animate-float" style={{ animationDuration: '3s' }}>👋</span>
-          </h1>
-          <p className="text-slate-400 text-base">Your AI-powered career guidance hub</p>
+          {/* Profile Completeness Ring */}
+          {stats && (
+            <div className="hidden md:flex items-center gap-3 glass-card-static px-4 py-3 rounded-xl">
+              <div className="relative w-12 h-12">
+                <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
+                  <circle cx="24" cy="24" r="18" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="4" />
+                  <circle cx="24" cy="24" r="18" fill="none" stroke={profileCompleteness >= 80 ? '#22c55e' : profileCompleteness >= 50 ? '#eab308' : '#ef4444'} strokeWidth="4"
+                    strokeDasharray={`${(profileCompleteness / 100) * 113} 113`} strokeLinecap="round" />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs font-bold text-white">{profileCompleteness}%</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-white font-medium">Profile</p>
+                <p className="text-[10px] text-slate-400">{profileCompleteness >= 100 ? 'Complete!' : 'Finish setup'}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
+      {/* Smart Suggestions */}
+      {getSuggestions().length > 0 && (
+        <div className="mb-8 animate-slide-up">
+          <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-amber-400" /> Recommended Next Steps
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {getSuggestions().map((tip, i) => (
+              <div key={i} onClick={() => onNavigate(tip.action)} className="glass-card cursor-pointer group p-4 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-white/[0.05] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <tip.icon className={`w-4 h-4 ${tip.color}`} />
+                </div>
+                <p className="text-xs text-slate-300 leading-snug">{tip.text}</p>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-cyan-400 flex-shrink-0 ml-auto" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Quick Stats */}
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
           {[
-            { label: 'Chat Sessions', value: stats.chatCount, icon: MessageSquare, color: 'from-cyan-500 to-blue-500', bgColor: 'bg-cyan-500/10', textColor: 'text-cyan-400' },
-            { label: 'Resumes', value: stats.resumeCount, icon: FileText, color: 'from-teal-500 to-cyan-500', bgColor: 'bg-teal-500/10', textColor: 'text-teal-400' },
-            { label: 'Interviews', value: stats.interviewCount, icon: Mic, color: 'from-violet-500 to-purple-500', bgColor: 'bg-violet-500/10', textColor: 'text-violet-400' },
-            { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, color: 'from-amber-500 to-orange-500', bgColor: 'bg-amber-500/10', textColor: 'text-amber-400' },
+            { label: 'Chat Sessions', value: stats.chatCount, icon: MessageSquare, bgColor: 'bg-cyan-500/10', textColor: 'text-cyan-400' },
+            { label: 'Resumes', value: stats.resumeCount, icon: FileText, bgColor: 'bg-teal-500/10', textColor: 'text-teal-400' },
+            { label: 'Interviews', value: stats.interviewCount, icon: Mic, bgColor: 'bg-violet-500/10', textColor: 'text-violet-400' },
+            { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, bgColor: 'bg-amber-500/10', textColor: 'text-amber-400' },
+            { label: 'Saved Jobs', value: savedJobsCount, icon: Bookmark, bgColor: 'bg-yellow-500/10', textColor: 'text-yellow-400' },
           ].map((s, i) => (
             <div key={i} className="glass-card p-5 group" style={{ animationDelay: `${i * 80}ms` }}>
               <div className="flex items-center justify-between mb-3">
@@ -389,7 +457,7 @@ function Dashboard({ user, onNavigate }) {
         </h2>
         <p className="text-sm text-slate-500 mb-5">Jump into any tool to supercharge your career</p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {features.map((f, i) => (
           <div
             key={f.id}
@@ -397,21 +465,20 @@ function Dashboard({ user, onNavigate }) {
             className="glass-card cursor-pointer group overflow-hidden relative"
             style={{ animationDelay: `${i * 60}ms` }}
           >
-            {/* Hover gradient overlay */}
             <div className={`absolute inset-0 bg-gradient-to-br ${f.color} opacity-0 group-hover:opacity-[0.06] transition-opacity duration-500`} />
-            <div className="p-6 relative z-10">
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:shadow-xl transition-all duration-300`}>
-                  <f.icon className="w-6 h-6 text-white" />
+            <div className="p-5 relative z-10">
+              <div className="flex items-start justify-between mb-3">
+                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:shadow-xl transition-all duration-300`}>
+                  <f.icon className="w-5 h-5 text-white" />
                 </div>
                 <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all duration-300" />
               </div>
-              <h3 className="text-white font-semibold text-base mb-1">{f.title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
+              <h3 className="text-white font-semibold text-sm mb-0.5">{f.title}</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">{f.desc}</p>
               {f.count !== undefined && f.count > 0 && (
-                <div className="mt-4">
-                  <span className="badge-primary text-[11px]">
-                    <CheckCircle2 className="w-3 h-3" /> {f.count} completed
+                <div className="mt-3">
+                  <span className="badge-primary text-[10px]">
+                    <CheckCircle2 className="w-3 h-3" /> {f.count} {f.id === 'savedjobs' ? 'saved' : 'completed'}
                   </span>
                 </div>
               )}
@@ -1897,6 +1964,13 @@ function MockInterview() {
   const [level, setLevel] = useState('mid-level');
   const [type, setType] = useState('behavioral');
   const [allFeedback, setAllFeedback] = useState([]);
+  const [allQuestions, setAllQuestions] = useState([]);
+  const [allAnswers, setAllAnswers] = useState([]);
+  const [error, setError] = useState('');
+  const [timer, setTimer] = useState(0);
+  const [timerActive, setTimerActive] = useState(false);
+  const timerRef = useRef(null);
+  const [showTips, setShowTips] = useState(false);
 
   // Voice recording state
   const [isRecording, setIsRecording] = useState(false);
@@ -1908,6 +1982,18 @@ function MockInterview() {
   const analyserRef = useRef(null);
   const animFrameRef = useRef(null);
   const streamRef = useRef(null);
+
+  // Timer
+  useEffect(() => {
+    if (timerActive) {
+      timerRef.current = setInterval(() => setTimer(t => t + 1), 1000);
+    } else {
+      clearInterval(timerRef.current);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [timerActive]);
+
+  const formatTimer = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
   // Check voice support
   useEffect(() => {
@@ -1947,7 +2033,6 @@ function MockInterview() {
     setIsRecording(true);
     setIsListening(true);
 
-    // Audio visualization
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
       streamRef.current = stream;
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1982,28 +2067,82 @@ function MockInterview() {
   const toggleVoice = () => { isRecording ? stopVoice() : startVoice(); };
 
   const startInterview = async () => {
-    setLoading(true);
+    setLoading(true); setError('');
     try {
       const d = await api.post('/mock-interview/start', { role, level, type });
       if (d.error) throw new Error(d.error);
       setSessionId(d.sessionId); setCurrentContent(d.question); setQuestionNum(1); setStarted(true);
-    } catch (e) { console.error(e); } finally { setLoading(false); }
+      setAllQuestions([d.question]);
+      setTimer(0); setTimerActive(true);
+    } catch (e) { setError(e.message); } finally { setLoading(false); }
   };
 
   const submitAnswer = async () => {
     if (!answer.trim()) return;
-    setLoading(true); setFeedback(null);
+    setLoading(true); setFeedback(null); setError('');
     try {
       const d = await api.post('/mock-interview/respond', { sessionId, answer });
       if (d.error) throw new Error(d.error);
       const fb = d.feedback;
       setFeedback(fb);
       setAllFeedback(prev => [...prev, fb]);
+      setAllAnswers(prev => [...prev, answer]);
       setQuestionNum(d.questionNumber);
       setIsComplete(d.isComplete);
       setAnswer('');
-      if (!d.isComplete && fb.nextQuestion) setCurrentContent(fb.nextQuestion);
-    } catch (e) { console.error(e); } finally { setLoading(false); }
+      if (!d.isComplete && fb.nextQuestion) {
+        setCurrentContent(fb.nextQuestion);
+        setAllQuestions(prev => [...prev, fb.nextQuestion]);
+        setTimer(0);
+      } else {
+        setTimerActive(false);
+      }
+    } catch (e) { setError(e.message); } finally { setLoading(false); }
+  };
+
+  const downloadReport = async () => {
+    const { default: jsPDF } = await import('jspdf');
+    const doc = new jsPDF();
+    let y = 20;
+    doc.setFontSize(18); doc.setTextColor(0, 120, 200);
+    doc.text('CareerGPT Mock Interview Report', 20, y); y += 10;
+    doc.setFontSize(12); doc.setTextColor(0, 0, 0);
+    doc.text(`Role: ${role} | Level: ${level} | Type: ${type}`, 20, y); y += 8;
+
+    const avgScore = allFeedback.length > 0 ? (allFeedback.reduce((a, b) => a + (b.score || 0), 0) / allFeedback.length).toFixed(1) : 'N/A';
+    doc.text(`Average Score: ${avgScore}/10`, 20, y); y += 10;
+
+    allFeedback.forEach((fb, i) => {
+      if (y > 250) { doc.addPage(); y = 20; }
+      doc.setFontSize(11); doc.setTextColor(0, 80, 150);
+      doc.text(`Question ${i + 1} (Score: ${fb.score || '?'}/10)`, 20, y); y += 6;
+
+      if (allQuestions[i]) {
+        doc.setFontSize(9); doc.setTextColor(60, 60, 60);
+        const qLines = doc.splitTextToSize(`Q: ${allQuestions[i].substring(0, 200)}`, 160);
+        doc.text(qLines, 25, y); y += qLines.length * 4 + 2;
+      }
+      if (allAnswers[i]) {
+        const aLines = doc.splitTextToSize(`A: ${allAnswers[i].substring(0, 200)}`, 160);
+        doc.text(aLines, 25, y); y += aLines.length * 4 + 2;
+      }
+      if (fb.feedback) {
+        doc.setTextColor(0, 100, 0);
+        const fLines = doc.splitTextToSize(`Feedback: ${fb.feedback.substring(0, 300)}`, 155);
+        doc.text(fLines, 25, y); y += fLines.length * 4 + 4;
+      }
+      y += 4;
+    });
+
+    doc.setFontSize(8); doc.setTextColor(150, 150, 150);
+    doc.text('Generated by CareerGPT - AI-Powered Career Guidance', 20, 285);
+    doc.save('CareerGPT_Interview_Report.pdf');
+  };
+
+  const resetInterview = () => {
+    stopVoice(); setStarted(false); setFeedback(null); setAllFeedback([]);
+    setAllQuestions([]); setAllAnswers([]); setTimer(0); setTimerActive(false);
+    setIsComplete(false); setError('');
   };
 
   if (!started) {
@@ -2017,7 +2156,7 @@ function MockInterview() {
           <div className="p-6 space-y-5">
             <div>
               <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Job Role</label>
-              <Input value={role} onChange={e => setRole(e.target.value)} className="input-glass h-11" />
+              <Input value={role} onChange={e => setRole(e.target.value)} className="input-glass h-11" placeholder="e.g., Software Engineer, Product Manager" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -2028,6 +2167,8 @@ function MockInterview() {
                     <SelectItem value="entry-level">Entry Level</SelectItem>
                     <SelectItem value="mid-level">Mid Level</SelectItem>
                     <SelectItem value="senior">Senior</SelectItem>
+                    <SelectItem value="lead">Lead / Staff</SelectItem>
+                    <SelectItem value="manager">Manager</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -2040,10 +2181,38 @@ function MockInterview() {
                     <SelectItem value="technical">Technical</SelectItem>
                     <SelectItem value="system-design">System Design</SelectItem>
                     <SelectItem value="mixed">Mixed</SelectItem>
+                    <SelectItem value="case-study">Case Study</SelectItem>
+                    <SelectItem value="coding">Coding</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
+
+            {/* Interview Tips */}
+            <div className="p-4 rounded-xl bg-violet-500/[0.05] border border-violet-500/10">
+              <button onClick={() => setShowTips(!showTips)} className="w-full flex items-center justify-between">
+                <span className="text-sm font-medium text-violet-300 flex items-center gap-2"><Sparkles className="w-4 h-4" />Interview Tips</span>
+                <ChevronDown className={`w-4 h-4 text-violet-400 transition-transform ${showTips ? 'rotate-180' : ''}`} />
+              </button>
+              {showTips && (
+                <div className="mt-3 space-y-2 animate-slide-up">
+                  {[
+                    { title: 'STAR Method', desc: 'Structure answers: Situation → Task → Action → Result' },
+                    { title: 'Be Specific', desc: 'Use real examples with numbers and outcomes' },
+                    { title: 'Stay Concise', desc: 'Aim for 2-3 minute answers — quality over quantity' },
+                    { title: 'Ask Clarifying Questions', desc: 'Show critical thinking by asking before answering' },
+                    { title: 'Show Impact', desc: 'Focus on what YOU did and the measurable results' },
+                  ].map((tip, i) => (
+                    <div key={i} className="flex gap-2 items-start">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-violet-400 flex-shrink-0 mt-0.5" />
+                      <div><span className="text-xs text-white font-medium">{tip.title}: </span><span className="text-xs text-slate-400">{tip.desc}</span></div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {error && <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-xl flex items-center gap-2"><AlertCircle className="w-4 h-4" />{error}</p>}
             <Button onClick={startInterview} disabled={loading} className="w-full bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 h-12 rounded-xl btn-glow shadow-lg shadow-violet-500/15">
               {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Starting...</> : <><Mic className="w-4 h-4 mr-2" />Start Interview</>}
             </Button>
@@ -2056,8 +2225,20 @@ function MockInterview() {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold text-white">Mock Interview: {role}</h1>
-        <Badge className="bg-violet-500/20 text-violet-300 border-violet-500/30">Q{Math.min(questionNum, 5)}/5</Badge>
+        <div>
+          <h1 className="text-xl font-bold text-white">Mock Interview: {role}</h1>
+          <div className="flex items-center gap-2 mt-1">
+            <Badge className="bg-violet-500/20 text-violet-300 border-violet-500/30 text-[10px]">{level}</Badge>
+            <Badge className="bg-slate-500/20 text-slate-300 border-slate-500/30 text-[10px]">{type}</Badge>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06]">
+            <Clock className="w-3.5 h-3.5 text-cyan-400" />
+            <span className={`text-sm font-mono font-bold ${timer > 180 ? 'text-red-400' : timer > 120 ? 'text-yellow-400' : 'text-white'}`}>{formatTimer(timer)}</span>
+          </div>
+          <Badge className="bg-violet-500/20 text-violet-300 border-violet-500/30">Q{Math.min(questionNum, 5)}/5</Badge>
+        </div>
       </div>
       <Progress value={Math.min(questionNum, 5) * 20} className="h-2 mb-4" />
 
@@ -2066,8 +2247,15 @@ function MockInterview() {
         <div className="glass-card-static mb-4">
           <div className="p-5">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-full border-4 flex items-center justify-center animate-scale-in" style={{ borderColor: feedback.score >= 7 ? '#22c55e' : feedback.score >= 5 ? '#eab308' : '#ef4444' }}>
-                <span className="text-xl font-bold text-white">{feedback.score}/{feedback.maxScore || 10}</span>
+              <div className="relative w-16 h-16 flex-shrink-0">
+                <svg className="w-16 h-16 -rotate-90" viewBox="0 0 68 68">
+                  <circle cx="34" cy="34" r="28" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="5" />
+                  <circle cx="34" cy="34" r="28" fill="none" stroke={(feedback.score||0) >= 7 ? '#22c55e' : (feedback.score||0) >= 5 ? '#eab308' : '#ef4444'} strokeWidth="5"
+                    strokeDasharray={`${((feedback.score||0) / 10) * 176} 176`} strokeLinecap="round" />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-lg font-bold text-white">{feedback.score}/{feedback.maxScore || 10}</span>
+                </div>
               </div>
               <div className="flex-1 grid grid-cols-2 gap-2">
                 {[['Technical', feedback.technicalAccuracy], ['Communication', feedback.communicationScore], ['Structure', feedback.structureScore], ['Confidence', feedback.confidenceScore]].map(([l, v]) => (
@@ -2075,7 +2263,25 @@ function MockInterview() {
                 ))}
               </div>
             </div>
+            {feedback.usedSTAR !== undefined && (
+              <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg mb-3 text-[10px] font-medium ${feedback.usedSTAR ? 'bg-green-500/10 text-green-300 border border-green-500/20' : 'bg-amber-500/10 text-amber-300 border border-amber-500/20'}`}>
+                {feedback.usedSTAR ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
+                {feedback.usedSTAR ? 'STAR Method Used' : 'Try using STAR Method'}
+              </div>
+            )}
             <p className="text-sm text-slate-300 mb-3 leading-relaxed">{feedback.feedback}</p>
+            {feedback.strengths?.length > 0 && (
+              <div className="mb-3">
+                <p className="text-[10px] text-green-400 font-medium mb-1">Strengths:</p>
+                <div className="flex flex-wrap gap-1">{feedback.strengths.map((s, i) => <Badge key={i} className="bg-green-500/10 text-green-300 border-green-500/20 text-[9px]">{s}</Badge>)}</div>
+              </div>
+            )}
+            {feedback.improvements?.length > 0 && (
+              <div className="mb-3">
+                <p className="text-[10px] text-amber-400 font-medium mb-1">Areas to Improve:</p>
+                <div className="flex flex-wrap gap-1">{feedback.improvements.map((s, i) => <Badge key={i} className="bg-amber-500/10 text-amber-300 border-amber-500/20 text-[9px]">{s}</Badge>)}</div>
+              </div>
+            )}
             {feedback.sampleAnswer && <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-xl"><p className="text-[10px] text-green-400 mb-1 font-medium">Sample Better Answer:</p><p className="text-xs text-slate-300">{feedback.sampleAnswer}</p></div>}
             {feedback.nextQuestion && !isComplete && <div className="mt-4 p-3 bg-white/[0.03] rounded-xl border border-white/[0.06]"><p className="text-[10px] text-cyan-400 mb-1 font-medium">Next Question:</p><p className="text-sm text-white">{feedback.nextQuestion}</p></div>}
           </div>
@@ -2090,9 +2296,10 @@ function MockInterview() {
         </div>
       )}
 
+      {error && <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-xl flex items-center gap-2 mb-4"><AlertCircle className="w-4 h-4" />{error}</p>}
+
       {!isComplete ? (
         <div className="space-y-3">
-          {/* Voice recording indicator */}
           {isRecording && (
             <div className="flex items-center gap-3 p-3 bg-red-900/20 border border-red-500/30 rounded-xl">
               <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
@@ -2112,6 +2319,7 @@ function MockInterview() {
                 <Mic className="w-5 h-5" />
               </button>
             )}
+            <div className="absolute right-3 bottom-3 text-[10px] text-slate-500">{answer.split(/\s+/).filter(w => w).length} words</div>
           </div>
 
           {voiceSupported && !isRecording && (
@@ -2122,7 +2330,7 @@ function MockInterview() {
             <Button onClick={() => { stopVoice(); submitAnswer(); }} disabled={!answer.trim() || loading} className="flex-1 bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 py-4 rounded-xl">
               {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Evaluating...</> : <><Send className="w-4 h-4 mr-2" />Submit Answer</>}
             </Button>
-            <Button onClick={() => { stopVoice(); setStarted(false); setFeedback(null); setAllFeedback([]); }} variant="outline" className="border-slate-600 text-slate-300">End</Button>
+            <Button onClick={resetInterview} variant="outline" className="border-slate-600 text-slate-300">End</Button>
           </div>
         </div>
       ) : (
@@ -2131,8 +2339,8 @@ function MockInterview() {
           {allFeedback.length > 0 && (
             <div className="glass-card-bright">
               <div className="p-5">
-                <h3 className="text-white font-semibold mb-3">Interview Performance Summary</h3>
-                <div className="grid grid-cols-5 gap-2">
+                <h3 className="text-white font-semibold mb-4 flex items-center gap-2"><Award className="w-5 h-5 text-amber-400" />Interview Performance Summary</h3>
+                <div className="grid grid-cols-5 gap-2 mb-4">
                   {allFeedback.map((fb, i) => (
                     <div key={i} className="text-center p-2 rounded-xl bg-white/[0.04] border border-white/[0.06]">
                       <p className="text-[10px] text-slate-400">Q{i+1}</p>
@@ -2140,14 +2348,54 @@ function MockInterview() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-3 text-center">
+
+                <div className="text-center mb-4">
                   <p className="text-slate-400 text-xs">Average Score</p>
-                  <p className="text-2xl font-bold text-gradient">{(allFeedback.reduce((a, b) => a + (b.score || 0), 0) / allFeedback.length).toFixed(1)}/10</p>
+                  <p className="text-3xl font-bold text-gradient">{(allFeedback.reduce((a, b) => a + (b.score || 0), 0) / allFeedback.length).toFixed(1)}/10</p>
+                </div>
+
+                {/* Category Averages */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                  {['technicalAccuracy', 'communicationScore', 'structureScore', 'confidenceScore'].map(key => {
+                    const vals = allFeedback.filter(fb => fb[key] != null).map(fb => fb[key]);
+                    if (vals.length === 0) return null;
+                    const avg = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1);
+                    const label = key.replace(/([A-Z])/g, ' $1').replace('Score', '').trim();
+                    return (
+                      <div key={key} className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] text-center">
+                        <p className={`text-lg font-bold ${avg >= 7 ? 'text-green-400' : avg >= 5 ? 'text-yellow-400' : 'text-red-400'}`}>{avg}</p>
+                        <p className="text-[10px] text-slate-500 capitalize">{label}</p>
+                      </div>
+                    );
+                  }).filter(Boolean)}
+                </div>
+
+                {/* Question Review */}
+                <div className="space-y-3 border-t border-white/[0.05] pt-4">
+                  <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Question Review</p>
+                  {allFeedback.map((fb, i) => (
+                    <div key={i} className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-slate-400">Question {i + 1}</span>
+                        <Badge className={`text-[9px] ${(fb.score||0) >= 7 ? 'bg-green-500/15 text-green-300 border-green-500/20' : (fb.score||0) >= 5 ? 'bg-yellow-500/15 text-yellow-300 border-yellow-500/20' : 'bg-red-500/15 text-red-300 border-red-500/20'}`}>{fb.score}/10</Badge>
+                      </div>
+                      {allQuestions[i] && <p className="text-xs text-white mb-1 font-medium">{allQuestions[i].substring(0, 150)}...</p>}
+                      {allAnswers[i] && <p className="text-[10px] text-slate-400 italic">Your answer: {allAnswers[i].substring(0, 100)}...</p>}
+                      {fb.feedback && <p className="text-[10px] text-slate-500 mt-1">{fb.feedback.substring(0, 150)}...</p>}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           )}
-          <Button onClick={() => { stopVoice(); setStarted(false); setFeedback(null); setAllFeedback([]); }} className="w-full bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 py-4 rounded-xl">Start New Interview</Button>
+          <div className="flex gap-3">
+            <Button onClick={downloadReport} className="flex-1 bg-gradient-to-r from-green-600 to-emerald-500 text-white border-0 py-4 rounded-xl">
+              <FileText className="w-4 h-4 mr-2" />Download Report
+            </Button>
+            <Button onClick={resetInterview} className="flex-1 bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 py-4 rounded-xl">
+              <Mic className="w-4 h-4 mr-2" />New Interview
+            </Button>
+          </div>
         </div>
       )}
     </div>
@@ -2533,6 +2781,10 @@ function SavedJobs() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [updating, setUpdating] = useState(null);
+  const [sortBy, setSortBy] = useState('date-desc');
+  const [editingNotes, setEditingNotes] = useState(null);
+  const [noteText, setNoteText] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const loadJobs = async () => {
     const d = await api.get('/saved-jobs');
@@ -2549,10 +2801,32 @@ function SavedJobs() {
     setUpdating(null);
   };
 
+  const updateNotes = async (jobId) => {
+    setUpdating(jobId);
+    await api.post('/saved-jobs/update', { jobId, notes: noteText });
+    await loadJobs();
+    setEditingNotes(null);
+    setUpdating(null);
+  };
+
   const removeJob = async (jobId) => {
     await api.post('/saved-jobs/delete', { jobId });
     setJobs(prev => prev.filter(j => j.jobId !== jobId));
     setStats(prev => ({ ...prev, total: (prev.total || 1) - 1 }));
+  };
+
+  const exportCSV = () => {
+    const headers = ['Job Title', 'Company', 'Location', 'Salary', 'Status', 'Notes', 'Saved Date', 'Applied Date', 'URL'];
+    const rows = jobs.map(j => [
+      j.jobTitle, j.company, j.location || '', j.salary || '', j.status,
+      (j.notes || '').replace(/,/g, ';'), j.savedAt ? new Date(j.savedAt).toLocaleDateString() : '',
+      j.appliedAt ? new Date(j.appliedAt).toLocaleDateString() : '', j.jobUrl || ''
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'saved_jobs.csv'; a.click();
+    URL.revokeObjectURL(url);
   };
 
   const statusConfig = {
@@ -2563,15 +2837,37 @@ function SavedJobs() {
     rejected: { label: 'Rejected', color: 'bg-red-500/15 text-red-300 border-red-500/20', icon: XCircle }
   };
 
-  const filtered = filter === 'all' ? jobs : jobs.filter(j => j.status === filter);
+  let filtered = filter === 'all' ? jobs : jobs.filter(j => j.status === filter);
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(j => (j.jobTitle || '').toLowerCase().includes(q) || (j.company || '').toLowerCase().includes(q));
+  }
+
+  // Sort
+  filtered = [...filtered].sort((a, b) => {
+    switch (sortBy) {
+      case 'date-desc': return new Date(b.savedAt || 0) - new Date(a.savedAt || 0);
+      case 'date-asc': return new Date(a.savedAt || 0) - new Date(b.savedAt || 0);
+      case 'company': return (a.company || '').localeCompare(b.company || '');
+      case 'title': return (a.jobTitle || '').localeCompare(b.jobTitle || '');
+      default: return 0;
+    }
+  });
 
   if (loading) return <div className="p-6 flex items-center justify-center h-full"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /></div>;
 
   return (
     <div className="p-6 lg:p-8 max-w-5xl mx-auto page-transition">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-1">Saved Jobs</h1>
-        <p className="text-sm text-slate-400">Track your job applications and progress</p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-1">Saved Jobs</h1>
+          <p className="text-sm text-slate-400">Track your job applications and progress</p>
+        </div>
+        {jobs.length > 0 && (
+          <Button onClick={exportCSV} variant="outline" className="border-slate-600 text-slate-300 rounded-xl text-xs">
+            <FileText className="w-3.5 h-3.5 mr-1.5" />Export CSV
+          </Button>
+        )}
       </div>
 
       {/* Stats Pipeline */}
@@ -2590,16 +2886,30 @@ function SavedJobs() {
         ))}
       </div>
 
-      {/* Filter Bar */}
-      <div className="flex items-center gap-2 mb-4">
-        <button onClick={() => setFilter('all')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${filter === 'all' ? 'bg-cyan-500/15 text-cyan-300' : 'text-slate-400 hover:text-white'}`}>
-          All ({stats.total || 0})
-        </button>
-        {Object.entries(statusConfig).map(([key, cfg]) => (
-          <button key={key} onClick={() => setFilter(key)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${filter === key ? cfg.color : 'text-slate-400 hover:text-white'}`}>
-            {cfg.label}
+      {/* Filter & Sort Bar */}
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+          <button onClick={() => setFilter('all')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${filter === 'all' ? 'bg-cyan-500/15 text-cyan-300' : 'text-slate-400 hover:text-white'}`}>
+            All ({stats.total || 0})
           </button>
-        ))}
+          {Object.entries(statusConfig).map(([key, cfg]) => (
+            <button key={key} onClick={() => setFilter(key)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all hidden md:inline-flex ${filter === key ? cfg.color : 'text-slate-400 hover:text-white'}`}>
+              {cfg.label}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
+            <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search jobs..." className="input-glass text-xs h-8 pl-8 pr-3 rounded-lg w-40" />
+          </div>
+          <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="input-glass text-[10px] py-1.5 px-2 rounded-lg">
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="company">Company A-Z</option>
+            <option value="title">Title A-Z</option>
+          </select>
+        </div>
       </div>
 
       {/* Job List */}
@@ -2611,6 +2921,7 @@ function SavedJobs() {
         </div>
       ) : (
         <div className="space-y-3">
+          <p className="text-xs text-slate-500">{filtered.length} job{filtered.length !== 1 ? 's' : ''} shown</p>
           {filtered.map((job, i) => {
             const cfg = statusConfig[job.status] || statusConfig.saved;
             return (
@@ -2627,14 +2938,33 @@ function SavedJobs() {
                         {job.location && <><span className="text-slate-600">|</span><MapPin className="w-3 h-3" /><span>{job.location}</span></>}
                         {job.salary && <><span className="text-slate-600">|</span><span className="text-green-400">{job.salary}</span></>}
                       </div>
-                      {job.notes && <p className="text-xs text-slate-500 italic mb-2">{job.notes}</p>}
+
+                      {/* Inline Notes Edit */}
+                      {editingNotes === job.jobId ? (
+                        <div className="flex items-center gap-2 mb-2">
+                          <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add notes..." className="input-glass flex-1 text-xs h-8 px-3 rounded-lg" autoFocus />
+                          <button onClick={() => updateNotes(job.jobId)} className="p-1.5 rounded-lg bg-green-500/15 text-green-400 hover:bg-green-500/25"><Check className="w-3 h-3" /></button>
+                          <button onClick={() => setEditingNotes(null)} className="p-1.5 rounded-lg bg-red-500/15 text-red-400 hover:bg-red-500/25"><X className="w-3 h-3" /></button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 mb-2 group/notes">
+                          {job.notes ? (
+                            <p className="text-xs text-slate-500 italic flex-1">{job.notes}</p>
+                          ) : (
+                            <p className="text-xs text-slate-600 flex-1">No notes</p>
+                          )}
+                          <button onClick={() => { setEditingNotes(job.jobId); setNoteText(job.notes || ''); }} className="p-1 rounded text-slate-600 hover:text-cyan-400 opacity-0 group-hover/notes:opacity-100 transition-opacity">
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      )}
+
                       <div className="flex items-center gap-2 text-[10px] text-slate-500">
                         <span>Saved {job.savedAt ? new Date(job.savedAt).toLocaleDateString() : 'N/A'}</span>
                         {job.appliedAt && <><span>•</span><span>Applied {new Date(job.appliedAt).toLocaleDateString()}</span></>}
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
-                      {/* Status update dropdown */}
                       <select
                         value={job.status}
                         onChange={e => updateStatus(job.jobId, e.target.value)}
@@ -2678,26 +3008,44 @@ function LiveJobBoard() {
   const [savedSet, setSavedSet] = useState(new Set());
   const [savingId, setSavingId] = useState(null);
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
-  // Load previously saved jobs to mark them
+  // Enhanced state
+  const [sortBy, setSortBy] = useState('relevance');
+  const [filterType, setFilterType] = useState('all');
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
+
+  // Load recently saved and recent searches
   useEffect(() => {
     api.get('/saved-jobs').then(d => {
       if (d.jobs) setSavedSet(new Set(d.jobs.map(j => j.jobTitle)));
     }).catch(() => {});
+    try {
+      const saved = JSON.parse(localStorage.getItem('cgpt_recent_job_searches') || '[]');
+      setRecentSearches(saved);
+    } catch(e) {}
   }, []);
 
   const search = async () => {
     if (!keywords.trim()) return;
     setLoading(true);
     setSearched(true);
+    setError('');
     try {
       const d = await api.post('/jobs/live-search', { keywords, location });
       if (d.error) throw new Error(d.error);
       setJobs(d.jobs || []);
       setHasRealJobs(d.hasRealJobs || false);
       setMessage(d.message || '');
+
+      // Save to recent searches
+      const newSearch = { keywords, location, count: (d.jobs || []).length, ts: Date.now() };
+      const updated = [newSearch, ...recentSearches.filter(s => s.keywords !== keywords)].slice(0, 5);
+      setRecentSearches(updated);
+      try { localStorage.setItem('cgpt_recent_job_searches', JSON.stringify(updated)); } catch(e) {}
     } catch (e) {
-      console.error(e);
+      setError(e.message);
       setJobs([]);
     } finally { setLoading(false); }
   };
@@ -2714,6 +3062,19 @@ function LiveJobBoard() {
     finally { setSavingId(null); }
   };
 
+  // Filter & sort
+  let displayJobs = [...jobs];
+  if (filterType !== 'all') {
+    displayJobs = displayJobs.filter(j => {
+      if (filterType === 'remote') return (j.location || '').toLowerCase().includes('remote');
+      if (filterType === 'fulltime') return (j.type || '').toLowerCase().includes('full');
+      if (filterType === 'parttime') return (j.type || '').toLowerCase().includes('part');
+      return true;
+    });
+  }
+  if (sortBy === 'date') displayJobs.sort((a, b) => new Date(b.postedDate || 0) - new Date(a.postedDate || 0));
+  if (sortBy === 'company') displayJobs.sort((a, b) => (a.company || '').localeCompare(b.company || ''));
+
   return (
     <div className="p-6 lg:p-8 max-w-5xl mx-auto page-transition">
       <div className="mb-6">
@@ -2727,7 +3088,7 @@ function LiveJobBoard() {
       </div>
 
       {/* Search Bar */}
-      <div className="glass-card overflow-hidden mb-6">
+      <div className="glass-card overflow-hidden mb-4">
         <div className="p-5">
           <div className="flex gap-3">
             <div className="flex-1">
@@ -2741,8 +3102,50 @@ function LiveJobBoard() {
             </Button>
           </div>
           {message && <p className="text-[10px] text-slate-500 mt-2 flex items-center gap-1"><Globe className="w-3 h-3" />{message}</p>}
+          {error && <p className="text-xs text-red-400 mt-2 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{error}</p>}
         </div>
       </div>
+
+      {/* Recent Searches */}
+      {!searched && recentSearches.length > 0 && (
+        <div className="mb-4">
+          <p className="text-[10px] text-slate-500 mb-2 uppercase tracking-wider">Recent Searches</p>
+          <div className="flex flex-wrap gap-2">
+            {recentSearches.map((s, i) => (
+              <button key={i} onClick={() => { setKeywords(s.keywords); setLocation(s.location || ''); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs text-slate-400 hover:text-white hover:bg-white/[0.06] transition-colors">
+                <Clock className="w-3 h-3" />
+                {s.keywords}{s.location ? ` • ${s.location}` : ''}
+                <span className="text-[9px] text-slate-600">({s.count})</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Filters & Sort (shown after search) */}
+      {searched && jobs.length > 0 && (
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-slate-500">{displayJobs.length} of {jobs.length} jobs</p>
+            <div className="flex items-center gap-1 ml-2">
+              {[
+                { label: 'All', value: 'all' },
+                { label: 'Remote', value: 'remote' },
+                { label: 'Full-time', value: 'fulltime' },
+              ].map(f => (
+                <button key={f.value} onClick={() => setFilterType(f.value)} className={`px-2.5 py-1 rounded-lg text-[10px] font-medium transition-all ${filterType === f.value ? 'bg-cyan-500/15 text-cyan-300' : 'text-slate-500 hover:text-white'}`}>
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="input-glass text-[10px] py-1.5 px-2 rounded-lg">
+            <option value="relevance">Relevance</option>
+            <option value="date">Newest</option>
+            <option value="company">Company A-Z</option>
+          </select>
+        </div>
+      )}
 
       {/* Results */}
       {!searched ? (
@@ -2763,8 +3166,7 @@ function LiveJobBoard() {
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-sm text-slate-500 mb-2">{jobs.length} jobs found</p>
-          {jobs.map((job, i) => (
+          {displayJobs.map((job, i) => (
             <div key={job.id || i} className="glass-card overflow-hidden animate-slide-up" style={{ animationDelay: `${i * 0.04}s` }}>
               <div className="p-5">
                 <div className="flex items-start justify-between gap-4">
@@ -2814,20 +3216,85 @@ function LiveJobBoard() {
 function Analytics() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    api.get('/admin/analytics').then(d => { setData(d); setLoading(false); }).catch(() => setLoading(false));
-  }, []);
+  const loadData = async (isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
+    try {
+      const d = await api.get('/admin/analytics');
+      setData(d);
+    } catch(e) {}
+    setLoading(false);
+    setRefreshing(false);
+  };
+
+  useEffect(() => { loadData(); }, []);
+
+  const exportData = () => {
+    if (!data) return;
+    const s = data.stats;
+    const lines = [
+      'CareerGPT Analytics Report',
+      `Generated: ${new Date().toLocaleString()}`,
+      '',
+      'Key Metrics:',
+      `Total Users: ${s.totalUsers || 0}`,
+      `Resumes Analyzed: ${s.totalResumes || 0}`,
+      `Mock Interviews: ${s.totalInterviews || 0}`,
+      `Average ATS Score: ${s.avgAtsScore || 0}`,
+      `Chat Sessions: ${s.totalChats || 0}`,
+      `Career Paths: ${s.totalCareerPaths || 0}`,
+      `Job Matches: ${s.totalJobMatches || 0}`,
+      '',
+      'Module Usage:',
+      ...Object.entries(data.moduleUsage || {}).map(([mod, count]) => `  ${mod}: ${count}`),
+      '',
+      'Daily Activity (Last 7 Days):',
+      ...(data.dailyActivity || []).map(d => `  ${d.date}: ${d.count} events`),
+    ];
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'careergpt_analytics.txt'; a.click();
+    URL.revokeObjectURL(url);
+  };
 
   if (loading) return <div className="p-6 flex items-center justify-center h-full"><div className="flex flex-col items-center gap-3"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /><p className="text-sm text-slate-500">Loading analytics...</p></div></div>;
   if (!data) return <div className="p-6 text-slate-400 text-center">No analytics data</div>;
 
   const s = data.stats;
+  const totalActivity = (data.dailyActivity || []).reduce((a, b) => a + b.count, 0);
+  const avgDaily = (data.dailyActivity || []).length > 0 ? (totalActivity / (data.dailyActivity || []).length).toFixed(1) : 0;
+
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto page-transition">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-1">Analytics Dashboard</h1>
-        <p className="text-sm text-slate-400">Track usage and performance insights</p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-1">Analytics Dashboard</h1>
+          <p className="text-sm text-slate-400">Track usage and performance insights</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button onClick={() => loadData(true)} disabled={refreshing} variant="outline" className="border-slate-600 text-slate-300 rounded-xl text-xs h-9">
+            {refreshing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><BarChart3 className="w-3.5 h-3.5 mr-1.5" />Refresh</>}
+          </Button>
+          <Button onClick={exportData} variant="outline" className="border-slate-600 text-slate-300 rounded-xl text-xs h-9">
+            <FileText className="w-3.5 h-3.5 mr-1.5" />Export
+          </Button>
+        </div>
+      </div>
+      {/* Engagement Summary */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="glass-card-static p-4 text-center">
+          <p className="text-2xl font-bold text-gradient">{totalActivity}</p>
+          <p className="text-[10px] text-slate-500">Total Events (7d)</p>
+        </div>
+        <div className="glass-card-static p-4 text-center">
+          <p className="text-2xl font-bold text-cyan-400">{avgDaily}</p>
+          <p className="text-[10px] text-slate-500">Avg Daily Activity</p>
+        </div>
+        <div className="glass-card-static p-4 text-center">
+          <p className="text-2xl font-bold text-violet-400">{Object.keys(data.moduleUsage || {}).length}</p>
+          <p className="text-[10px] text-slate-500">Active Modules</p>
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -2918,15 +3385,25 @@ function UserProfile({ user, onUpdate }) {
   const [interests, setInterests] = useState((user?.profile?.interests || []).join(', '));
   const [education, setEducation] = useState(user?.profile?.education || '');
   const [experience, setExperience] = useState(user?.profile?.experience || '');
+  const [careerGoal, setCareerGoal] = useState(user?.profile?.careerGoal || '');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [resumes, setResumes] = useState([]);
   const [stats, setStats] = useState(null);
+  const [savedJobsCount, setSavedJobsCount] = useState(0);
 
   useEffect(() => {
     api.get('/resumes').then(d => setResumes(d.resumes || []));
     api.get('/profile').then(d => setStats(d.stats));
+    api.get('/saved-jobs').then(d => { if (d.jobs) setSavedJobsCount(d.jobs.length); }).catch(() => {});
   }, []);
+
+  // Profile completeness
+  const fields = [name, skills, interests, education, experience, careerGoal];
+  const filledCount = fields.filter(f => f && f.trim().length > 0).length;
+  const completeness = Math.round((filledCount / fields.length) * 100);
+
+  const initials = (user?.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 2);
 
   const save = async () => {
     setSaving(true);
@@ -2938,11 +3415,12 @@ function UserProfile({ user, onUpdate }) {
         interests: interests.split(',').map(s => s.trim()).filter(Boolean),
         education,
         experience,
+        careerGoal,
       },
     });
     setSaving(false);
     setSaved(true);
-    if (onUpdate) onUpdate({ ...user, name, profile: { skills: skills.split(',').map(s => s.trim()).filter(Boolean), interests: interests.split(',').map(s => s.trim()).filter(Boolean), education, experience } });
+    if (onUpdate) onUpdate({ ...user, name, profile: { skills: skills.split(',').map(s => s.trim()).filter(Boolean), interests: interests.split(',').map(s => s.trim()).filter(Boolean), education, experience, careerGoal } });
     setTimeout(() => setSaved(false), 3000);
   };
 
@@ -2956,6 +3434,28 @@ function UserProfile({ user, onUpdate }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Form */}
         <div className="lg:col-span-2 space-y-5">
+          {/* Avatar & Completeness */}
+          <div className="glass-card overflow-hidden">
+            <div className="p-5">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-cyan-500/20">
+                  {initials}
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-white">{user?.name || 'User'}</h3>
+                  <p className="text-xs text-slate-400">{user?.email}</p>
+                  <div className="flex items-center gap-3 mt-2">
+                    <Progress value={completeness} className="h-2 flex-1" />
+                    <span className={`text-xs font-bold ${completeness >= 80 ? 'text-green-400' : completeness >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>{completeness}%</span>
+                  </div>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    {completeness >= 100 ? 'Profile complete! Great job!' : `${fields.length - filledCount} field${fields.length - filledCount !== 1 ? 's' : ''} remaining to complete your profile`}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="glass-card overflow-hidden">
             <div className="p-5 pb-0">
               <h3 className="text-base font-semibold text-white">Personal Information</h3>
@@ -2977,6 +3477,11 @@ function UserProfile({ user, onUpdate }) {
               <h3 className="text-base font-semibold text-white">Career Profile</h3>
             </div>
             <div className="p-5 space-y-4">
+              <div>
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Career Goal</label>
+                <Input value={careerGoal} onChange={e => setCareerGoal(e.target.value)} placeholder="e.g., Become a Senior Full-Stack Developer at a top tech company" className="input-glass h-11" />
+                <p className="text-[10px] text-slate-500 mt-1">What's your dream career objective?</p>
+              </div>
               <div>
                 <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Skills <span className="text-slate-500 normal-case">(comma separated)</span></label>
                 <textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL, Machine Learning..." className="w-full input-glass resize-none text-sm" />
@@ -3012,6 +3517,7 @@ function UserProfile({ user, onUpdate }) {
                 { label: 'Resumes Analyzed', value: stats.resumeCount, icon: FileText, color: 'text-teal-400', bgColor: 'bg-teal-500/10' },
                 { label: 'Mock Interviews', value: stats.interviewCount, icon: Mic, color: 'text-violet-400', bgColor: 'bg-violet-500/10' },
                 { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, color: 'text-amber-400', bgColor: 'bg-amber-500/10' },
+                { label: 'Saved Jobs', value: savedJobsCount, icon: Bookmark, color: 'text-yellow-400', bgColor: 'bg-yellow-500/10' },
               ].map((s, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
                   <div className={`w-8 h-8 rounded-lg ${s.bgColor} flex items-center justify-center`}>
@@ -3026,6 +3532,16 @@ function UserProfile({ user, onUpdate }) {
               </div>
             </div>
           </div>
+
+          {/* Career Goal Card */}
+          {careerGoal && (
+            <div className="glass-card overflow-hidden">
+              <div className="p-5">
+                <h3 className="text-sm font-semibold text-white flex items-center gap-2 mb-2"><Target className="w-4 h-4 text-amber-400" />Career Goal</h3>
+                <p className="text-xs text-slate-300 leading-relaxed">{careerGoal}</p>
+              </div>
+            </div>
+          )}
 
           <div className="glass-card overflow-hidden">
             <div className="p-5 pb-0">
