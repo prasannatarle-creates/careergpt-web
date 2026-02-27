@@ -1328,9 +1328,10 @@ Return ONLY valid JSON (no markdown):
 
     // Normalize all job fields to match display schema
     finalMatches = finalMatches.map(m => {
-      const role = m.role || m.jobTitle || 'Unknown Role';
+      const role = m.role || m.jobTitle || m.title || 'Unknown Role';
       const company = m.company_type || m.company || 'Company';
       return {
+        title: role,
         role,
         jobTitle: role,
         company_type: company,
