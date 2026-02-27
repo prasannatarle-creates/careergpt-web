@@ -989,79 +989,90 @@ async function handleJobMatch(request) {
   try {
     const db = await getDb();
     const userId = auth?.id || 'anonymous';
+    const keywords = Array.isArray(skills) ? skills : (skills || '').split(',').map(s => s.trim()).filter(s => s);
 
-    // Try to fetch REAL jobs from job APIs
+    // Try to fetch REAL jobs from job APIs (free APIs don't need keys)
     let realJobs = [];
     try {
-      const keywords = Array.isArray(skills) ? skills : (skills || '').split(',').map(s => s.trim()).filter(s => s);
       realJobs = await searchAllJobSources(keywords, {
         location: location || 'Remote',
         minSalary: minSalary || 50000,
         limit: 15
       });
-      console.log(`✓ Found ${realJobs.length} real job matches`);
+      console.log(`✓ Found ${realJobs.length} real job matches from APIs`);
     } catch (apiError) {
-      console.warn('Real job search failed:', apiError.message, '- Falling back to LLM generation');
+      console.warn('Real job search failed:', apiError.message);
     }
 
     let finalMatches = [];
+    let responseSummary = '';
+    let responseTopSkillGaps = [];
+    let responseRecommendations = [];
+    let responseRaw = false;
 
-    // If real jobs found, rank them by relevance using LLM
     if (realJobs && realJobs.length > 0) {
+      // REAL JOBS found — rank them by relevance using LLM
       try {
-        const ranked = await rankJobsByRelevance(realJobs, { skills, interests, experience, location }, callSingleModel);
-        finalMatches = ranked.slice(0, 10); // Top 10 matches
+        const ranked = await rankJobsByRelevance(realJobs, { skills: keywords, interests, experience, location }, callSingleModel);
+        finalMatches = ranked.slice(0, 10);
       } catch (rankError) {
-        console.warn('Job ranking failed:', rankError.message);
-        finalMatches = realJobs.slice(0, 10);
+        console.warn('Job ranking failed:', rankError.message, '- using default scores');
+        finalMatches = realJobs.slice(0, 10).map((j, i) => ({
+          ...j,
+          matchScore: Math.max(50, 90 - (i * 5)),
+          keyReasons: [`Matches your ${skills ? 'skills' : 'profile'}`],
+          skillGaps: []
+        }));
       }
+      responseSummary = `Found ${finalMatches.length} real job openings matching your skills. Click "Apply" to go directly to the application page.`;
     } else {
-      // Fallback: Use LLM to generate job matches
-      console.log('Using LLM-based job generation (no real job APIs available)');
+      // NO real jobs — use LLM to generate recommendations
+      console.log('No real jobs from APIs, using LLM-based generation');
 
       const prompt = `Find the best matching job roles for this profile:
-Skills: ${skills ? (Array.isArray(skills) ? skills.join(', ') : skills) : 'Not specified'}
+Skills: ${keywords.join(', ') || 'Not specified'}
 Interests: ${interests || 'Not specified'}
 Experience: ${experience || 'Not specified'}
 Target Industry: ${targetIndustry || 'Any'}
 Location: ${location || 'Any'}
 Minimum Salary: ${minSalary ? `$${minSalary}` : 'Any'}
 
-Return 7-10 matching roles with match scores (0-100), suggested salary ranges, required skills, skill gaps, growth potential, and demand level.`;
+Return ONLY valid JSON (no markdown):
+{
+  "matches": [
+    { "role": "Job Title", "company_type": "Industry/Company Type", "matchScore": 85, "salary": "$X-Y", "skills_matched": ["skill1"], "skills_gap": ["gap1"], "why_match": "reason", "growth_potential": "high", "demand": "high" }
+  ],
+  "summary": "Brief overview",
+  "topSkillGaps": ["gap1", "gap2"],
+  "recommendations": ["rec1", "rec2"]
+}`;
 
-      const result = await callMultiModel(JOB_MATCH_SYSTEM, prompt, ['GPT-4 Turbo', 'Claude 3.5 Sonnet', 'Gemini 2.0 Flash']);
-
-      let llmSummary = '';
-      let topSkillGaps = [];
-      let recommendations = [];
+      const result = await callMultiModel(JOB_MATCH_SYSTEM, prompt, ['GPT-4 Turbo', 'Claude 3.5 Sonnet']);
 
       if (result && result.combinedResponse) {
-        let parsed;
         try {
           const jsonStr = result.combinedResponse.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-          parsed = JSON.parse(jsonStr);
+          const parsed = JSON.parse(jsonStr);
           finalMatches = parsed.matches || [];
-          llmSummary = parsed.summary || '';
-          topSkillGaps = parsed.topSkillGaps || [];
-          recommendations = parsed.recommendations || [];
+          responseSummary = parsed.summary || '';
+          responseTopSkillGaps = parsed.topSkillGaps || [];
+          responseRecommendations = parsed.recommendations || [];
         } catch {
-          console.warn('Failed to parse LLM response as JSON, returning raw');
-          llmSummary = result.combinedResponse;
+          console.warn('Failed to parse LLM JSON, returning as raw markdown');
+          responseSummary = result.combinedResponse;
+          responseRaw = true;
           finalMatches = [];
         }
-      } else {
-        // Fallback to mock jobs
-        finalMatches = getMockJobs(skills || 'Software Engineer', { location: location || 'Remote' });
       }
 
-      // Build response with LLM extras
-      var responseSummary = llmSummary;
-      var responseTopSkillGaps = topSkillGaps;
-      var responseRecommendations = recommendations;
-      var responseRaw = finalMatches.length === 0 && llmSummary;
+      // If LLM also failed, use mock jobs as last resort
+      if (finalMatches.length === 0 && !responseRaw) {
+        finalMatches = getMockJobs(keywords.length > 0 ? keywords[0] : 'Software Engineer', { location: location || 'Remote' });
+        responseSummary = 'Showing sample job listings. Real-time job APIs did not return results for this search — try broader keywords like "Developer", "Engineer", or "Data Scientist".';
+      }
     }
 
-    // Normalize real job fields to match display schema
+    // Normalize all job fields to match display schema
     finalMatches = finalMatches.map(m => ({
       role: m.role || m.jobTitle || 'Unknown Role',
       company_type: m.company_type || m.company || 'Company',
@@ -1076,36 +1087,33 @@ Return 7-10 matching roles with match scores (0-100), suggested salary ranges, r
       postedDate: m.postedDate || null,
       employmentType: m.employmentType || 'FULLTIME',
       source: m.source || 'ai',
-      location: m.location || location || 'Remote'
+      location: m.location || location || 'Remote',
+      jobDescription: m.jobDescription || ''
     }));
 
-    const dataSource = realJobs.length > 0 ? 'real_jobs_ranked_by_ai' : 'ai_generated';
+    const dataSource = realJobs.length > 0 ? 'real_jobs_ranked_by_ai' : (finalMatches.some(m => m.source === 'mock') ? 'mock_fallback' : 'ai_generated');
 
-    // Store results for analytics and user history
+    // Store results
     const searchId = uuidv4();
     await db.collection('job_matches').insertOne({
-      id: searchId,
-      userId,
+      id: searchId, userId,
       input: { skills, interests, experience, targetIndustry, location, minSalary },
-      matches: finalMatches,
-      totalMatches: finalMatches.length,
+      matches: finalMatches, totalMatches: finalMatches.length,
       dataSource: realJobs.length > 0 ? 'REAL_JOBS' : 'LLM_GENERATED',
       createdAt: new Date().toISOString(),
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
 
-    await logAnalytics(db, 'job_match', { userId, matchCount: finalMatches.length, source: realJobs.length > 0 ? 'real_api' : 'llm' });
+    await logAnalytics(db, 'job_match', { userId, matchCount: finalMatches.length, source: dataSource });
 
     return NextResponse.json({
-      searchId,
-      matches: finalMatches,
-      totalMatches: finalMatches.length,
-      summary: responseSummary || '',
-      topSkillGaps: responseTopSkillGaps || [],
-      recommendations: responseRecommendations || [],
-      raw: responseRaw || false,
+      searchId, matches: finalMatches, totalMatches: finalMatches.length,
+      summary: responseSummary, topSkillGaps: responseTopSkillGaps,
+      recommendations: responseRecommendations, raw: responseRaw,
       dataSource,
-      message: realJobs.length > 0 ? 'Top job matches from real job boards, ranked using AI' : 'Job matches generated using AI'
+      message: realJobs.length > 0
+        ? `Found ${finalMatches.length} real jobs from live job boards, ranked by AI`
+        : 'Job recommendations generated by AI. Try broader keywords for real-time listings.'
     });
   } catch (error) {
     console.error('Job match error:', error.message);

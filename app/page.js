@@ -1555,20 +1555,30 @@ function JobMatching() {
 
   if (result) {
     const matches = result.matches || [];
+    const isReal = result.dataSource === 'real_jobs_ranked_by_ai';
+    const isMock = result.dataSource === 'mock_fallback';
     return (
       <div className="p-6 max-w-4xl mx-auto page-transition">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold text-white">Job Matches</h1>
             <div className="flex items-center gap-2 mt-1">
-              <Badge className={`text-[10px] ${result.dataSource === 'real_jobs_ranked_by_ai' ? 'bg-green-500/15 text-green-300 border-green-500/20' : 'bg-blue-500/15 text-blue-300 border-blue-500/20'}`}>
-                {result.dataSource === 'real_jobs_ranked_by_ai' ? 'Real Jobs' : 'AI Generated'}
+              <Badge className={`text-[10px] ${isReal ? 'bg-green-500/15 text-green-300 border-green-500/20' : isMock ? 'bg-amber-500/15 text-amber-300 border-amber-500/20' : 'bg-blue-500/15 text-blue-300 border-blue-500/20'}`}>
+                {isReal ? '✓ Live Jobs' : isMock ? 'Sample Data' : 'AI Generated'}
               </Badge>
               <span className="text-slate-500 text-xs">{result.totalMatches} matches found</span>
             </div>
           </div>
           <Button onClick={() => setResult(null)} variant="outline" className="border-slate-600 text-slate-300 rounded-xl">Search Again</Button>
         </div>
+
+        {/* Message banner */}
+        {result.message && (
+          <div className={`rounded-xl p-4 mb-4 flex items-start gap-3 ${isReal ? 'bg-green-500/5 border border-green-500/10' : 'bg-blue-500/5 border border-blue-500/10'}`}>
+            <AlertCircle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${isReal ? 'text-green-400' : 'text-blue-400'}`} />
+            <p className="text-slate-300 text-sm">{result.message}</p>
+          </div>
+        )}
 
         {/* Summary */}
         {result.summary && (
@@ -1602,7 +1612,7 @@ function JobMatching() {
             {matches.length === 0 && (
               <div className="glass-card-static p-8 text-center">
                 <Briefcase className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                <p className="text-slate-400">No matches found. Try adjusting your skills or criteria.</p>
+                <p className="text-slate-400">No matches found. Try broader keywords like "Developer", "Engineer", or "Data Scientist".</p>
               </div>
             )}
             {matches.map((m, i) => (
@@ -1615,6 +1625,12 @@ function JobMatching() {
                         {m.source && m.source !== 'ai' && m.source !== 'mock' && (
                           <Badge className="bg-emerald-500/15 text-emerald-300 border-emerald-500/20 text-[9px]">Live</Badge>
                         )}
+                        {m.source === 'mock' && (
+                          <Badge className="bg-amber-500/15 text-amber-300 border-amber-500/20 text-[9px]">Sample</Badge>
+                        )}
+                        {m.source && m.source !== 'mock' && m.source !== 'ai' && (
+                          <Badge className="bg-slate-700/50 text-slate-400 border-slate-600/30 text-[8px] uppercase">{m.source}</Badge>
+                        )}
                       </div>
                       <div className="flex items-center gap-2 text-xs text-slate-400">
                         <span>{m.company_type}</span>
@@ -1622,13 +1638,18 @@ function JobMatching() {
                         {m.salary && <><span className="text-slate-600">|</span><span className="text-green-400 font-medium">{m.salary}</span></>}
                       </div>
                     </div>
-                    <div className="text-right ml-4">
-                      <div className="w-14 h-14 rounded-full border-[3px] flex items-center justify-center" style={{ borderColor: m.matchScore >= 80 ? '#22c55e' : m.matchScore >= 60 ? '#eab308' : '#ef4444' }}>
-                        <span className="text-lg font-bold text-white">{m.matchScore}</span>
+                    {m.matchScore > 0 && (
+                      <div className="text-right ml-4">
+                        <div className="w-14 h-14 rounded-full border-[3px] flex items-center justify-center" style={{ borderColor: m.matchScore >= 80 ? '#22c55e' : m.matchScore >= 60 ? '#eab308' : '#ef4444' }}>
+                          <span className="text-lg font-bold text-white">{m.matchScore}</span>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                   <p className="text-sm text-slate-300 mb-3 leading-relaxed">{m.why_match}</p>
+                  {m.jobDescription && m.source !== 'mock' && (
+                    <p className="text-xs text-slate-500 mb-3 line-clamp-2">{m.jobDescription.substring(0, 200)}</p>
+                  )}
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {(m.skills_matched || []).map((s, j) => <Badge key={j} className="bg-green-500/15 text-green-300 border-green-500/20 text-[10px]">{s}</Badge>)}
                     {(m.skills_gap || []).map((s, j) => <Badge key={'g'+j} className="bg-red-500/15 text-red-300 border-red-500/20 text-[10px]">Gap: {s}</Badge>)}
@@ -1640,9 +1661,9 @@ function JobMatching() {
                       {m.employmentType && <span className="text-slate-400">Type: <span className="text-slate-300">{m.employmentType}</span></span>}
                     </div>
                     <div className="flex gap-2">
-                      {m.jobUrl && (
-                        <a href={m.jobUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-500/15 text-blue-300 hover:bg-blue-500/25 transition-colors text-[10px] font-medium">
-                          <ExternalLink className="w-3 h-3" />Apply
+                      {m.jobUrl && m.source !== 'mock' && (
+                        <a href={m.jobUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-300 hover:bg-blue-600/30 transition-colors text-[10px] font-medium border border-blue-500/20">
+                          <ExternalLink className="w-3 h-3" />Apply Now
                         </a>
                       )}
                       <button
