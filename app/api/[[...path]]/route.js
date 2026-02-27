@@ -12,6 +12,7 @@ const { sendEmail, emailTemplates } = require('../../../lib/email.js');
 const { authLimiter, registerLimiter } = require('../../../lib/rateLimiter.js');
 const { parseResumeStructure, calculateExperienceYears, extractSkills, detectSeniorityLevel, detectFocusArea } = require('../../../lib/resumeParser.js');
 const { searchAllJobSources, rankJobsByRelevance, getMockJobs, saveJobForUser, getSavedJobs } = require('../../../lib/jobApi.js');
+const { createJobAlert, getUserJobAlerts, updateJobAlert, deleteJobAlert } = require('../../../lib/jobAlerts.js');
 const { createResumeVariant, trackResumeMetric, getResumeComparison, recommendResumeOptimizations } = require('../../../lib/resumeABTesting.js');
 const { handleChatSendStream } = require('../../../lib/streamingChat.js');
 const { transcribeInterviewAudio, analyzeInterviewTranscription, generateInterviewReport, exportInterviewReportPDF } = require('../../../lib/interviewTranscription.js');
@@ -1128,20 +1129,82 @@ async function handleSaveJob(request) {
 
   try {
     const body = await request.json();
-    const { jobId, jobTitle, company, jobUrl } = body;
-    if (!jobId || !jobTitle || !company) return NextResponse.json({ error: 'Job details required' }, { status: 400 });
+    const { jobTitle, company, jobUrl, salary, matchScore, location, source } = body;
+    if (!jobTitle) return NextResponse.json({ error: 'Job title required' }, { status: 400 });
 
     const db = await getDb();
-    const result = await saveJobForUser(db, auth.id, { jobId, jobTitle, company, jobUrl });
-
-    if (result.success) {
-      await logAnalytics(db, 'job_saved', { userId: auth.id, jobId });
-      return NextResponse.json({ message: 'Job saved successfully', jobId });
-    } else {
-      return NextResponse.json({ error: result.error }, { status: 500 });
-    }
+    const jobId = body.jobId || uuidv4();
+    
+    // Check if already saved
+    const existing = await db.collection('saved_jobs').findOne({ userId: auth.id, jobTitle: jobTitle });
+    if (existing) return NextResponse.json({ message: 'Job already saved', jobId: existing.jobId });
+    
+    await db.collection('saved_jobs').insertOne({
+      jobId,
+      userId: auth.id,
+      jobTitle,
+      company: company || 'Unknown',
+      jobUrl: jobUrl || null,
+      salary: salary || null,
+      matchScore: matchScore || null,
+      location: location || null,
+      source: source || 'ai',
+      status: 'saved', // saved, applied, interviewing, rejected, offered
+      notes: '',
+      savedAt: new Date().toISOString(),
+      appliedAt: null,
+      updatedAt: new Date().toISOString()
+    });
+    
+    await logAnalytics(db, 'job_saved', { userId: auth.id, jobId });
+    return NextResponse.json({ message: 'Job saved successfully', jobId });
   } catch (error) {
     console.error('Save job error:', error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+async function handleUpdateSavedJob(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const body = await request.json();
+    const { jobId, status, notes } = body;
+    if (!jobId) return NextResponse.json({ error: 'Job ID required' }, { status: 400 });
+
+    const db = await getDb();
+    const updates = { updatedAt: new Date().toISOString() };
+    if (status) {
+      updates.status = status;
+      if (status === 'applied') updates.appliedAt = new Date().toISOString();
+    }
+    if (notes !== undefined) updates.notes = notes;
+
+    await db.collection('saved_jobs').updateOne(
+      { userId: auth.id, jobId },
+      { $set: updates }
+    );
+    
+    return NextResponse.json({ message: 'Job updated', jobId });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+async function handleDeleteSavedJob(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const body = await request.json();
+    const { jobId } = body;
+    if (!jobId) return NextResponse.json({ error: 'Job ID required' }, { status: 400 });
+
+    const db = await getDb();
+    await db.collection('saved_jobs').deleteOne({ userId: auth.id, jobId });
+    return NextResponse.json({ message: 'Job removed' });
+  } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -1152,10 +1215,134 @@ async function handleGetSavedJobs(request) {
 
   try {
     const db = await getDb();
-    const savedJobs = await getSavedJobs(db, auth.id);
-    return NextResponse.json({ savedJobs });
+    const jobs = await db.collection('saved_jobs').find({ userId: auth.id }).sort({ savedAt: -1 }).toArray();
+    
+    const stats = {
+      total: jobs.length,
+      saved: jobs.filter(j => j.status === 'saved').length,
+      applied: jobs.filter(j => j.status === 'applied').length,
+      interviewing: jobs.filter(j => j.status === 'interviewing').length,
+      offered: jobs.filter(j => j.status === 'offered').length,
+      rejected: jobs.filter(j => j.status === 'rejected').length
+    };
+    
+    return NextResponse.json({ jobs, stats });
   } catch (error) {
     console.error('Get saved jobs error:', error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// --- JOB ALERTS ---
+async function handleCreateJobAlert(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const body = await request.json();
+    const { skills, location, minSalary, jobTypes, frequency } = body;
+    if (!skills || skills.length === 0) return NextResponse.json({ error: 'At least one skill required' }, { status: 400 });
+
+    const db = await getDb();
+    
+    // Check alert limit (max 5 per user)
+    const existingCount = await db.collection('job_alerts').countDocuments({ userId: auth.id, isActive: true });
+    if (existingCount >= 5) return NextResponse.json({ error: 'Maximum 5 active alerts allowed' }, { status: 400 });
+    
+    const result = await createJobAlert(db, auth.id, auth.email || '', {
+      skills: Array.isArray(skills) ? skills : skills.split(',').map(s => s.trim()),
+      locations: location ? [location] : [],
+      minimumSalary: minSalary || 0,
+      jobTypes: jobTypes || ['full-time'],
+    }, frequency || 'daily');
+
+    await logAnalytics(db, 'job_alert_created', { userId: auth.id });
+    return NextResponse.json(result);
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+async function handleGetJobAlerts(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const db = await getDb();
+    const result = await getUserJobAlerts(db, auth.id);
+    return NextResponse.json(result);
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+async function handleToggleJobAlert(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const body = await request.json();
+    const { alertId, isActive } = body;
+    const db = await getDb();
+    const result = await updateJobAlert(db, alertId, { isActive });
+    return NextResponse.json(result);
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+async function handleDeleteJobAlert(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const body = await request.json();
+    const { alertId } = body;
+    const db = await getDb();
+    const result = await deleteJobAlert(db, alertId);
+    return NextResponse.json(result);
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// --- LIVE JOB SEARCH ---
+async function handleLiveJobSearch(request) {
+  const auth = verifyToken(request);
+  const body = await request.json();
+  const { keywords, location, minSalary, limit } = body;
+
+  try {
+    const keywordArr = Array.isArray(keywords) ? keywords : (keywords || '').split(',').map(s => s.trim()).filter(s => s);
+    if (keywordArr.length === 0) return NextResponse.json({ error: 'Keywords required' }, { status: 400 });
+    
+    let jobs = await searchAllJobSources(keywordArr, {
+      location: location || 'Remote',
+      minSalary: minSalary || 0,
+      limit: limit || 20
+    });
+    
+    // Mark source type
+    const hasRealJobs = jobs.some(j => j.source !== 'mock');
+    
+    return NextResponse.json({
+      jobs: jobs.map(j => ({
+        id: j.jobId,
+        title: j.jobTitle,
+        company: j.company,
+        location: j.location,
+        salary: j.salary,
+        description: j.jobDescription,
+        url: j.jobUrl,
+        postedDate: j.postedDate,
+        type: j.employmentType || 'FULLTIME',
+        source: j.source
+      })),
+      total: jobs.length,
+      hasRealJobs,
+      message: hasRealJobs ? 'Live job listings from job boards' : 'Sample listings (configure API keys for real jobs)'
+    });
+  } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -2049,7 +2236,14 @@ export async function POST(request) {
     if (path === '/job-match') return handleJobMatch(request);
     if (path === '/job-match/history') return handleJobMatchHistory(request);
     if (path === '/saved-jobs/save') return handleSaveJob(request);
+    if (path === '/saved-jobs/update') return handleUpdateSavedJob(request);
+    if (path === '/saved-jobs/delete') return handleDeleteSavedJob(request);
     if (path === '/saved-jobs') return handleGetSavedJobs(request);
+    if (path === '/job-alerts/create') return handleCreateJobAlert(request);
+    if (path === '/job-alerts') return handleGetJobAlerts(request);
+    if (path === '/job-alerts/toggle') return handleToggleJobAlert(request);
+    if (path === '/job-alerts/delete') return handleDeleteJobAlert(request);
+    if (path === '/jobs/live-search') return handleLiveJobSearch(request);
     
     // Phase 2: Resume A/B Testing
     if (path === '/resume/create-variant') return handleCreateResumeVariant(request);
