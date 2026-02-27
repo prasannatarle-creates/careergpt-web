@@ -257,19 +257,25 @@ async function logAnalytics(db, type, data = {}) {
 // ============ SYSTEM PROMPTS ============
 const CAREER_SYSTEM = `You are CareerGPT, an expert AI career guidance counselor. Help students and job seekers with career paths, skills, interviews, and job search strategies. Be specific, actionable, and encouraging. Use markdown formatting.`;
 
-const CAREER_PATH_SYSTEM = `You are an expert career path architect. Given a user's profile, generate a STRUCTURED career path. You MUST return valid JSON (no markdown, no code fences) with this exact structure:
+const CAREER_PATH_SYSTEM = `You are an expert career path architect and labor market analyst. Given a user's profile, generate a comprehensive STRUCTURED career path. You MUST return valid JSON (no markdown, no code fences) with this exact structure:
 {
   "title": "Career Path Title",
-  "summary": "2-3 sentence overview",
+  "summary": "2-3 sentence overview of the recommended career trajectory",
   "matchScore": 85,
   "timeline": [
-    {"phase": "Phase 1: Foundation", "duration": "0-3 months", "goals": ["goal1","goal2"], "skills": ["skill1","skill2"], "resources": ["resource1"]}
+    {"phase": "Phase 1: Foundation", "duration": "0-3 months", "goals": ["goal1","goal2"], "skills": ["skill1","skill2"], "resources": [{"name": "Resource Name", "type": "course/book/tutorial/project", "url": "https://...", "free": true}], "milestone": "What success looks like at this stage"}
   ],
-  "certifications": [{"name": "Cert Name", "provider": "Provider", "priority": "high/medium/low"}],
+  "certifications": [{"name": "Cert Name", "provider": "Provider", "priority": "high/medium/low", "cost": "$300", "duration": "3 months", "url": "https://..."}],
   "salaryRange": {"entry": "$50k-70k", "mid": "$80k-120k", "senior": "$130k-180k"},
-  "topRoles": ["Role 1", "Role 2", "Role 3"],
-  "industryOutlook": "Brief outlook text"
-}`;
+  "topRoles": [{"title": "Role Title", "demand": "high/medium/low", "avgSalary": "$90k", "description": "Brief role description"}],
+  "industryOutlook": "2-3 sentence outlook on this career field's future including demand trends and emerging technologies",
+  "skillGaps": [{"skill": "Skill Name", "importance": "critical/important/nice-to-have", "howToLearn": "Brief suggestion"}],
+  "alternativePaths": [{"title": "Alternative Career", "matchScore": 70, "reason": "Why this could work"}],
+  "networkingTips": ["Tip 1 for building professional network", "Tip 2"],
+  "dayInLife": "A brief 2-3 sentence description of a typical day in this career",
+  "marketDemand": {"level": "high/medium/low", "growthRate": "15% by 2030", "topLocations": ["City 1", "City 2", "City 3"], "remoteAvailability": "high/medium/low"}
+}
+Provide at least 3-4 timeline phases. For resources, include REAL URLs to actual courses/platforms (Coursera, Udemy, freeCodeCamp, YouTube, etc). Be specific and actionable.`;
 
 const RESUME_ATS_SYSTEM = `You are an expert ATS (Applicant Tracking System) resume analyzer. Analyze the resume and return ONLY valid JSON (no markdown, no code fences) with this exact structure:
 {
@@ -713,15 +719,17 @@ async function handleRenameSession(request) {
 async function handleGenerateCareerPath(request) {
   const auth = verifyToken(request);
   const body = await request.json();
-  const { skills, interests, education, experience } = body;
+  const { skills, interests, education, experience, targetRole, location } = body;
 
   const prompt = `Generate a structured career path for this profile:
 Skills: ${skills || 'Not specified'}
 Interests: ${interests || 'Not specified'}
 Education: ${education || 'Not specified'}
 Experience: ${experience || 'Not specified'}
+${targetRole ? `Target/Dream Role: ${targetRole}` : ''}
+${location ? `Location/Market: ${location}` : ''}
 
-Return a detailed JSON career roadmap with timeline phases, certifications, salary ranges, and top roles.`;
+Return a detailed JSON career roadmap with timeline phases, certifications, salary ranges, top roles, skill gaps, market demand, alternative paths, and networking tips. Make salary ranges location-appropriate if location is specified.`;
 
   try {
     const result = await callMultiModel(CAREER_PATH_SYSTEM, prompt, ['GPT-4 Turbo', 'Claude 3.5 Sonnet', 'Perplexity Sonar Pro']);
@@ -740,7 +748,7 @@ Return a detailed JSON career roadmap with timeline phases, certifications, sala
 
     const db = await getDb();
     const careerPath = {
-      id: uuidv4(), userId: auth?.id || 'anonymous', input: { skills, interests, education, experience },
+      id: uuidv4(), userId: auth?.id || 'anonymous', input: { skills, interests, education, experience, targetRole, location },
       result: parsed, models: result.modelResponses.map(r => r.name), synthesized: result.synthesized,
       createdAt: new Date().toISOString(),
     };
