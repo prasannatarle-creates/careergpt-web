@@ -96,10 +96,7 @@ const api = {
       }
       
       const data = await res.json();
-      if (res.status === 401 && url !== '/auth/login' && url !== '/auth/register') {
-        this.setToken(null);
-        window.location.reload();
-      }
+    
       return data;
     } catch (err) {
       console.error('API error for:', url, err);
@@ -191,8 +188,14 @@ function AuthPage({ onAuth }) {
           </div>
         </div>
 
-        <button onClick={() => onAuth(null)} className="mt-4 text-slate-500 hover:text-slate-300 text-sm flex items-center justify-center gap-1 w-full">
-          Continue as Guest <ArrowRight className="w-3 h-3" />
+       <button
+   onClick={() => {
+    localStorage.setItem('cgpt_guest', 'true');
+    onAuth({ name: 'Guest', role: 'guest' });
+  }}
+  className="mt-4 text-slate-500 hover:text-slate-300 text-sm flex items-center justify-center gap-1 w-full"
+>
+  Continue as Guest <ArrowRight className="w-3 h-3" />
         </button>
       </div>
     </div>
@@ -1374,24 +1377,44 @@ function App() {
   const [collapsed, setCollapsed] = useState(false);
 
   // Handle hydration - only run client-side logic after mount
-  useEffect(() => {
-    setMounted(true);
-    const token = api.getToken();
-    if (token) {
-      api.get('/profile').then(d => {
+ useEffect(() => {
+  setMounted(true);
+
+  const token = api.getToken();
+  const guest = localStorage.getItem('cgpt_guest');
+
+  if (token) {
+    api.get('/profile')
+      .then(d => {
         if (d.user) setUser(d.user);
-        else { api.setToken(null); setUser(null); }
-      }).catch(() => { api.setToken(null); setUser(null); });
-    } else {
-      setUser(null);
-    }
-  }, []);
+        else {
+          api.setToken(null);
+          setUser(null);
+        }
+      })
+      .catch(() => {
+        api.setToken(null);
+        setUser(null);
+      });
+  } 
+  else if (guest === 'true') {
+    setUser({ name: 'Guest', role: 'guest' });
+  } 
+  else {
+    setUser(null);
+  }
+
+}, []);
 
   // Show loading during SSR and initial hydration
   if (!mounted || user === undefined) return <div className="h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /></div>;
   if (user === null) return <AuthPage onAuth={(u) => { setUser(u || { name: 'Guest', role: 'guest' }); }} />;
 
-  const logout = () => { api.setToken(null); setUser(null); };
+  const logout = () => {
+  api.setToken(null);
+  localStorage.removeItem('cgpt_guest');
+  setUser(null);
+};
 
   const renderPage = () => {
     switch (page) {

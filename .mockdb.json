@@ -560,6 +560,54 @@
         ]
       },
       "createdAt": "2026-02-20T13:46:52.228Z"
+    },
+    {
+      "id": "22424601-b296-4971-88b2-2c95b5943704",
+      "type": "resume_analyzed",
+      "data": {
+        "resumeId": "28d831d2-b956-43a6-8f25-4c562cd5618f",
+        "atsScore": 72
+      },
+      "createdAt": "2026-02-27T04:36:35.027Z"
+    },
+    {
+      "id": "b990324f-c446-43b3-a7c2-bccea10c983b",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-27T04:38:04.983Z"
+    },
+    {
+      "id": "adbdf14b-9b97-4429-8b4f-5d353fc31c8f",
+      "type": "job_match",
+      "data": {
+        "userId": "anonymous",
+        "matchCount": 3,
+        "source": "real_api"
+      },
+      "createdAt": "2026-02-27T04:38:13.022Z"
+    },
+    {
+      "id": "a805e6e7-733a-4930-9ace-2f547cc15940",
+      "type": "interview_started",
+      "data": {
+        "role": "Software Engineer",
+        "level": "mid-level",
+        "type": "behavioral"
+      },
+      "createdAt": "2026-02-27T04:49:43.742Z"
+    },
+    {
+      "id": "e7efa184-70dd-4355-9ca7-35a7290496b1",
+      "type": "interview_answer",
+      "data": {
+        "sessionId": "3acd7f89-bdba-4cea-8bf5-c7c8d6d01186",
+        "score": 1
+      },
+      "createdAt": "2026-02-27T04:55:56.054Z"
     }
   ],
   "resumes": [
@@ -787,6 +835,257 @@
         }
       },
       "analyzedAt": "2026-02-20T09:11:30.003Z",
+      "targetRole": ""
+    },
+    {
+      "id": "28d831d2-b956-43a6-8f25-4c562cd5618f",
+      "userId": "anonymous",
+      "fileName": "updated_resume.pdf",
+      "fileSize": 80861,
+      "textContent": "Prasanna Tarle Software Developer Pimpri, Maharashtra, India Phone: +91 901283681 · Email: prasannatarle@gmail.com · LinkedIn: https://www.linkedin.com/in/prasannatarle Professional Summary Passionate and detail-oriented full-stack developer with a track record of building AI-integrated web applications. Skilled in Python, FastAPI, React.js, and working with large language models such as OpenAI GPT-4. Successfully delivered an AI-powered career guidance platform that increased user engagement by 25% and reduced career search time by 40%. Aspiring to leverage my skills in software engineering and machine learning to develop innovative solutions that improve user experiences and streamline business processes. Technical Skills •Languages: Python, JavaScript, C++, Java •Web Development: FastAPI, HTML5, CSS3, React.js, Tailwind CSS •Databases: MongoDB, PostgreSQL •AI & Machine Learning: OpenAI GPT-4 API, Prompt Engineering, Resume Parsing (PyMuPDF, docx2txt), LangChain •Tools & Platforms: Git, GitHub, Postman, Vercel, Render, VS Code •Testing: Unit Testing, Integration Testing, pytest •APIs: RESTful API design, Axios Soft Skills •Communication •Problem Solving •Stress Management •Decision Making •Team Collaboration Projects CareerGPT – AI-Based Career Guidance Platform (2024) •Led the development of a full-stack AI web application using FastAPI and React.js that provides personalized career guidance for students and professionals. •Integrated OpenAI’s GPT-4 API to generate career paths, evaluate resumes, and suggest job roles, resulting in a 40% reduction in user search time and a 25% increase in user engagement. •Implemented robust resume parsing and job-skill matching modules using PyMuPDF and custom NLP algorithms, storing structured data in MongoDB. •Designed RESTful APIs and responsive UI components with Tailwind CSS; orchestrated deployment to Vercel and Render for scalable and reliable hosting. •Applied core competencies in data structures, databases and API design to ensure performant backend services. Personal Portfolio & Blog Website •Built a responsive personal portfolio website using React.js and Tailwind CSS to showcase projects, technical blogs and provide an easy way to download my resume. •Implemented continuous integration and deployment (CI/CD) pipeline via GitHub Actions; hosted the site on Vercel. •Integrated Google Analytics to track visitor metrics, attracting 2,000+ unique visitors within three months of launch. •Added a contact form with validation and automated email responses using a serverless function. Student Attendance Management System (Hackathon Project, 2023) •Developed a cloud-hosted attendance management system using FastAPI, PostgreSQL and React that enables educators to track and analyse student attendance in real-time. •Added features such as bulk CSV import, attendance analytics dashboards and automated email notifications. •Optimised data retrieval by writing efficient SQL queries, leading to 30% faster report generation compared with baseline implementation. •Recognised with the “Best Innovation” award at the 2023 college hackathon for practicality and technical excellence. Education Sandip University, Nashik — B.Tech in Computer Science & Engineering Expected May 2025 - GPA: 8.5 / 10 (current) - Relevant coursework: Data Structures & Algorithms, Database Management Systems, Operating Systems, Computer Networks, Cloud Computing, Software Engineering. - Ranked in the top 5% of the Algorithms course and actively participated in university coding competitions as a member of the Coding Club. K.K. Wagh Polytechnic, Nashik — Diploma in Computer Technology Jun 2022 (Completed) - GPA: 85% - Completed a major project on an “Online Examination System” using Java and MySQL, enabling secure testing for 200+ students simultaneously. - Awarded a merit scholarship for academic excellence. Core Competencies •Data Structures & Algorithms: Strong foundation for optimising program performance and solving algorithmic challenges. •Database Management: Proficient in designing relational and NoSQL databases, query optimisation and normalisation techniques. •Operating Systems & Computer Networks: Solid understanding of OS concepts, networking protocols and their practical application in building distributed systems. •REST API Design: Experienced in designing intuitive and well-documented RESTful APIs with proper authentication and error handling. •Problem Solving & Analytical Thinking: Ability to dissect complex problems, design efficient solutions and deliver high-quality code on schedule.",
+      "analysis": {
+        "atsScore": 72,
+        "sections": {
+          "contact": {
+            "score": 90,
+            "feedback": "Contact information is complete and well-formatted.",
+            "present": true
+          },
+          "summary": {
+            "score": 70,
+            "feedback": "The summary is clear and aligns with the job target, but could use more quantifiable achievements.",
+            "present": true
+          },
+          "experience": {
+            "score": 80,
+            "feedback": "Experience section is detailed with relevant projects and technologies, but could benefit from more specific results and impacts.",
+            "present": true
+          },
+          "education": {
+            "score": 85,
+            "feedback": "Education details are clear and relevant, including GPA and coursework, which highlight the candidate's academic strengths.",
+            "present": true
+          },
+          "skills": {
+            "score": 60,
+            "feedback": "Skills are relevant but could be better aligned with the specific needs of the job posting.",
+            "present": true
+          },
+          "projects": {
+            "score": 50,
+            "feedback": "Projects are relevant but not present in a separate section, which could make them harder to notice.",
+            "present": false
+          }
+        },
+        "keywords": {
+          "found": [
+            "Python",
+            "FastAPI",
+            "React.js",
+            "OpenAI GPT-4",
+            "MongoDB",
+            "PostgreSQL"
+          ],
+          "missing": [
+            "Cloud architecture",
+            "Scrum methodology"
+          ],
+          "suggestions": [
+            "Include more industry-specific methodologies like Agile or Scrum.",
+            "Mention experience with cloud platforms in more detail."
+          ]
+        },
+        "strengths": [
+          "Strong technical foundation",
+          "Proven project leadership"
+        ],
+        "weaknesses": [
+          "Lack of industry-specific certifications",
+          "Limited experience with cloud platforms"
+        ],
+        "rewrittenBullets": [
+          {
+            "original": "Successfully delivered an AI-powered career guidance platform that increased user engagement by 25% and reduced career search time by 40%.",
+            "improved": "Spearheaded the development of an AI-powered career guidance platform, enhancing user engagement by 25% and slashing career search time by 40% through strategic innovations.",
+            "reason": "The improved version uses more dynamic action words and clarifies the impact and role in the project."
+          }
+        ],
+        "experienceLevel": "entry",
+        "matchingRoles": [
+          "Junior Software Developer",
+          "Full-Stack Developer",
+          "AI Application Developer"
+        ],
+        "overallFeedback": "This is a strong entry-level resume with detailed technical skills and project experience. Improvements could include more clear division of sections and inclusion of additional relevant keywords and methodologies.",
+        "structuredData": {
+          "contact": {
+            "name": "Prasanna Tarle",
+            "email": "prasannatarle@gmail.com",
+            "phone": "+91 901283681",
+            "location": "Pimpri, Maharashtra, India",
+            "website": null,
+            "linkedin": "https://www.linkedin.com/in/prasannatarle"
+          },
+          "experience": [
+            {
+              "company": null,
+              "role": "Software Developer",
+              "startDate": null,
+              "endDate": null,
+              "description": "Led the development of a full-stack AI web application using FastAPI and React.js that provides personalized career guidance for students and professionals. Integrated OpenAI’s GPT-4 API to generate career paths, evaluate resumes, and suggest job roles, resulting in a 40% reduction in user search time and a 25% increase in user engagement. Implemented robust resume parsing and job-skill matching modules using PyMuPDF and custom NLP algorithms, storing structured data in MongoDB. Designed RESTful APIs and responsive UI components with Tailwind CSS; orchestrated deployment to Vercel and Render for scalable and reliable hosting. Applied core competencies in data structures, databases and API design to ensure performant backend services.",
+              "durationMonths": null
+            },
+            {
+              "company": null,
+              "role": "Project Contributor",
+              "startDate": null,
+              "endDate": null,
+              "description": "Developed a cloud-hosted attendance management system using FastAPI, PostgreSQL and React that enables educators to track and analyse student attendance in real-time. Added features such as bulk CSV import, attendance analytics dashboards and automated email notifications. Optimised data retrieval by writing efficient SQL queries, leading to 30% faster report generation compared with baseline implementation. Recognised with the “Best Innovation” award at the 2023 college hackathon for practicality and technical excellence.",
+              "durationMonths": null
+            }
+          ],
+          "education": [
+            {
+              "school": "Sandip University, Nashik",
+              "degree": "B.Tech",
+              "fieldOfStudy": "Computer Science & Engineering",
+              "graduationDate": "2025",
+              "gpa": "8.5 / 10"
+            },
+            {
+              "school": "K.K. Wagh Polytechnic, Nashik",
+              "degree": "Diploma",
+              "fieldOfStudy": "Computer Technology",
+              "graduationDate": "2022",
+              "gpa": "85%"
+            }
+          ],
+          "skills": [
+            "Python",
+            "JavaScript",
+            "C++",
+            "Java",
+            "FastAPI",
+            "HTML5",
+            "CSS3",
+            "React.js",
+            "Tailwind CSS",
+            "MongoDB",
+            "PostgreSQL",
+            "OpenAI GPT-4 API",
+            "Prompt Engineering",
+            "Resume Parsing",
+            "LangChain",
+            "Git",
+            "GitHub",
+            "Postman",
+            "Vercel",
+            "Render",
+            "VS Code",
+            "Unit Testing",
+            "Integration Testing",
+            "pytest",
+            "RESTful API design",
+            "Axios",
+            "Go",
+            "React"
+          ],
+          "totalExperienceYears": 0,
+          "seniority": "entry",
+          "focusArea": "Full-Stack Engineer",
+          "certifications": [],
+          "metadata": {
+            "totalExperienceYears": null,
+            "projectsCount": 2,
+            "languagesCount": 6,
+            "certificationCount": 0,
+            "pages": 1
+          }
+        }
+      },
+      "createdAt": "2026-02-27T04:35:54.928Z",
+      "structured": {
+        "contact": {
+          "name": "Prasanna Tarle",
+          "email": "prasannatarle@gmail.com",
+          "phone": "+91 901283681",
+          "location": "Pimpri, Maharashtra, India",
+          "website": null,
+          "linkedin": "https://www.linkedin.com/in/prasannatarle"
+        },
+        "summary": "Passionate and detail-oriented full-stack developer with a track record of building AI-integrated web applications. Skilled in Python, FastAPI, React.js, and working with large language models such as OpenAI GPT-4. Successfully delivered an AI-powered career guidance platform that increased user engagement by 25% and reduced career search time by 40%. Aspiring to leverage my skills in software engineering and machine learning to develop innovative solutions that improve user experiences and streamline business processes.",
+        "experience": [
+          {
+            "company": null,
+            "role": "Software Developer",
+            "startDate": null,
+            "endDate": null,
+            "description": "Led the development of a full-stack AI web application using FastAPI and React.js that provides personalized career guidance for students and professionals. Integrated OpenAI’s GPT-4 API to generate career paths, evaluate resumes, and suggest job roles, resulting in a 40% reduction in user search time and a 25% increase in user engagement. Implemented robust resume parsing and job-skill matching modules using PyMuPDF and custom NLP algorithms, storing structured data in MongoDB. Designed RESTful APIs and responsive UI components with Tailwind CSS; orchestrated deployment to Vercel and Render for scalable and reliable hosting. Applied core competencies in data structures, databases and API design to ensure performant backend services.",
+            "durationMonths": null
+          },
+          {
+            "company": null,
+            "role": "Project Contributor",
+            "startDate": null,
+            "endDate": null,
+            "description": "Developed a cloud-hosted attendance management system using FastAPI, PostgreSQL and React that enables educators to track and analyse student attendance in real-time. Added features such as bulk CSV import, attendance analytics dashboards and automated email notifications. Optimised data retrieval by writing efficient SQL queries, leading to 30% faster report generation compared with baseline implementation. Recognised with the “Best Innovation” award at the 2023 college hackathon for practicality and technical excellence.",
+            "durationMonths": null
+          }
+        ],
+        "education": [
+          {
+            "school": "Sandip University, Nashik",
+            "degree": "B.Tech",
+            "fieldOfStudy": "Computer Science & Engineering",
+            "graduationDate": "2025",
+            "gpa": "8.5 / 10"
+          },
+          {
+            "school": "K.K. Wagh Polytechnic, Nashik",
+            "degree": "Diploma",
+            "fieldOfStudy": "Computer Technology",
+            "graduationDate": "2022",
+            "gpa": "85%"
+          }
+        ],
+        "skills": [
+          "Python",
+          "JavaScript",
+          "C++",
+          "Java",
+          "FastAPI",
+          "HTML5",
+          "CSS3",
+          "React.js",
+          "Tailwind CSS",
+          "MongoDB",
+          "PostgreSQL",
+          "OpenAI GPT-4 API",
+          "Prompt Engineering",
+          "Resume Parsing",
+          "LangChain",
+          "Git",
+          "GitHub",
+          "Postman",
+          "Vercel",
+          "Render",
+          "VS Code",
+          "Unit Testing",
+          "Integration Testing",
+          "pytest",
+          "RESTful API design",
+          "Axios"
+        ],
+        "certifications": [],
+        "metadata": {
+          "totalExperienceYears": null,
+          "projectsCount": 2,
+          "languagesCount": 6,
+          "certificationCount": 0,
+          "pages": 1
+        }
+      },
+      "analyzedAt": "2026-02-27T04:36:35.025Z",
       "targetRole": ""
     }
   ],
@@ -1177,6 +1476,44 @@
       ],
       "createdAt": "2026-02-20T13:46:38.660Z",
       "updatedAt": "2026-02-20T13:46:52.226Z"
+    },
+    {
+      "id": "3acd7f89-bdba-4cea-8bf5-c7c8d6d01186",
+      "userId": "anonymous",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "mid-level",
+      "interviewType": "behavioral",
+      "questionCount": 2,
+      "scores": [
+        1
+      ],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock behavioral interview for a mid-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Certainly! Let's begin with a common question that helps us understand your experience and how you handle challenges.\n\n**\"Can you tell me about a challenging technical project you worked on? Specifically, describe the problem, how you approached it, and the outcome.\"**\n\nPlease focus on your role in the project and any technical decisions you had to make.",
+          "timestamp": "2026-02-27T04:49:43.740Z"
+        },
+        {
+          "role": "user",
+          "content": "am I audible ",
+          "timestamp": "2026-02-27T04:55:56.052Z"
+        },
+        {
+          "role": "assistant",
+          "content": "{\"score\":1,\"maxScore\":10,\"technicalAccuracy\":1,\"communicationScore\":1,\"structureScore\":1,\"confidenceScore\":1,\"feedback\":\"The response provided did not address the question. It is essential to focus on delivering relevant content that demonstrates your technical skills and project management capabilities.\",\"strengths\":[],\"improvements\":[\"Ensure that you understand the question and provide a detailed answer that showcases your technical skills, decision-making process, and outcomes from projects you've worked on.\",\"Practice structuring your responses to ensure clarity and relevance to the question asked.\",\"Work on building confidence to effectively communicate your experiences and technical expertise.\"],\"sampleAnswer\":\"In my previous role at TechSolutions, I was tasked with developing a scalable web application to manage user data efficiently. The main challenge was handling the large volume of data without compromising performance. I led the backend team and decided to implement a microservices architecture using Docker and Kubernetes, which allowed us to scale services independently based on demand. Through rigorous testing and optimization, we achieved a 50% reduction in latency and significantly improved user satisfaction. This project taught me valuable lessons in scalability and team collaboration.\",\"usedSTAR\":false,\"nextQuestion\":\"Can you discuss a time when you had to learn a new programming language or technology in a short period? How did you ensure you were successful in this endeavor?\"}",
+          "timestamp": "2026-02-27T04:55:56.052Z",
+          "structured": true
+        }
+      ],
+      "createdAt": "2026-02-27T04:49:43.740Z",
+      "updatedAt": "2026-02-27T04:55:56.052Z"
     }
   ],
   "career_paths": [
@@ -2298,6 +2635,110 @@
       "dataSource": "REAL_JOBS",
       "createdAt": "2026-02-20T13:46:38.363Z",
       "expiresAt": "2026-02-27T13:46:38.363Z"
+    },
+    {
+      "id": "053b99e7-8a54-4e00-a761-ce3f11d33a73",
+      "userId": "anonymous",
+      "input": {
+        "skills": "python",
+        "interests": "AI engineer",
+        "experience": "fresher",
+        "targetIndustry": "tech"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-27T04:38:04.978Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-27T04:38:04.978Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-27T04:38:04.978Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-27T04:38:04.981Z",
+      "expiresAt": "2026-03-06T04:38:04.981Z"
+    },
+    {
+      "id": "fe7d1a5c-5958-4fa1-aeb0-6cf6797304b5",
+      "userId": "anonymous",
+      "input": {
+        "skills": "python",
+        "interests": "AI engineer",
+        "experience": "fresher",
+        "targetIndustry": "tech"
+      },
+      "matches": [
+        {
+          "jobId": "mock-mock-0",
+          "jobTitle": "Python Backend Developer",
+          "company": "Tech Corp",
+          "location": "Remote",
+          "salary": "$100k-140k",
+          "jobDescription": "Python Backend Developer position at Tech Corp. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/0",
+          "postedDate": "2026-02-27T04:38:13.019Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-1",
+          "jobTitle": "Machine Learning Engineer",
+          "company": "AI Labs",
+          "location": "Remote",
+          "salary": "$120k-180k",
+          "jobDescription": "Machine Learning Engineer position at AI Labs. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/1",
+          "postedDate": "2026-02-27T04:38:13.019Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        },
+        {
+          "jobId": "mock-mock-2",
+          "jobTitle": "Data Engineer",
+          "company": "Data Inc",
+          "location": "Remote",
+          "salary": "$110k-160k",
+          "jobDescription": "Data Engineer position at Data Inc. We're looking for talented developers to join our team.",
+          "jobUrl": "https://example.com/jobs/2",
+          "postedDate": "2026-02-27T04:38:13.019Z",
+          "employmentType": "FULLTIME",
+          "source": "mock"
+        }
+      ],
+      "totalMatches": 3,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-27T04:38:13.020Z",
+      "expiresAt": "2026-03-06T04:38:13.020Z"
     }
   ]
 }
