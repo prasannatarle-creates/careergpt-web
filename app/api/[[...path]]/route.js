@@ -679,6 +679,16 @@ async function handleDeleteSession(sessionId) {
   return NextResponse.json({ success: true });
 }
 
+async function handleRenameSession(request) {
+  const auth = verifyToken(request);
+  const body = await request.json();
+  const { sessionId, title } = body;
+  if (!sessionId || !title) return NextResponse.json({ error: 'Session ID and title required' }, { status: 400 });
+  const db = await getDb();
+  await db.collection('sessions').updateOne({ id: sessionId }, { $set: { title: title.trim().substring(0, 100), updatedAt: new Date().toISOString() } });
+  return NextResponse.json({ success: true });
+}
+
 // --- STRUCTURED CAREER PATH ---
 async function handleGenerateCareerPath(request) {
   const auth = verifyToken(request);
@@ -2228,6 +2238,7 @@ export async function POST(request) {
     
     // Original endpoints
     if (path === '/chat/send') return handleChatSend(request);
+    if (path === '/chat/rename-session') return handleRenameSession(request);
     if (path === '/resume/upload') return handleResumeUpload(request);
     if (path === '/resume/analyze') return handleResumeAnalyze(request);
     if (path === '/career-path/generate') return handleGenerateCareerPath(request);
