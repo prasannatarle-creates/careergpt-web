@@ -18,7 +18,8 @@ import {
   BarChart3, Rocket, Menu, X, Bot, User, Mic, Compass,
   LogIn, UserPlus, LogOut, Home, Settings, ChevronDown,
   Award, Star, AlertCircle, Eye, EyeOff, Search,
-  MapPin, ExternalLink, Clock
+  MapPin, ExternalLink, Clock, Bell, Bookmark, Globe,
+  Filter, Building2, XCircle, MoreVertical, Heart
 } from 'lucide-react';
 
 // ============ HYDRATION-SAFE DATE FORMATTER ============
@@ -232,6 +233,8 @@ function Sidebar({ currentPage, onNavigate, user, onLogout, collapsed, onToggle 
     { id: 'career', label: 'Career Path', icon: Compass, color: 'from-amber-500 to-orange-500', iconColor: 'text-amber-400' },
     { id: 'interview', label: 'Mock Interview', icon: Mic, color: 'from-violet-500 to-purple-500', iconColor: 'text-violet-400' },
     { id: 'jobs', label: 'Job Matching', icon: Briefcase, color: 'from-green-500 to-emerald-500', iconColor: 'text-green-400' },
+    { id: 'livejobs', label: 'Job Board', icon: Globe, color: 'from-emerald-500 to-teal-500', iconColor: 'text-emerald-400' },
+    { id: 'savedjobs', label: 'Saved Jobs', icon: Bookmark, color: 'from-yellow-500 to-amber-500', iconColor: 'text-yellow-400' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, color: 'from-pink-500 to-rose-500', iconColor: 'text-pink-400' },
   ];
 
@@ -333,6 +336,8 @@ function Dashboard({ user, onNavigate }) {
     { id: 'career', title: 'Career Path', desc: 'Structured roadmaps', icon: Compass, color: 'from-amber-500 to-orange-500', count: stats?.careerPathCount },
     { id: 'interview', title: 'Mock Interview', desc: 'AI interview practice', icon: Mic, color: 'from-violet-500 to-purple-500', count: stats?.interviewCount },
     { id: 'jobs', title: 'Job Matching', desc: 'AI skill matching', icon: Briefcase, color: 'from-green-500 to-emerald-500' },
+    { id: 'livejobs', title: 'Job Board', desc: 'Live job openings', icon: Globe, color: 'from-emerald-500 to-teal-500' },
+    { id: 'savedjobs', title: 'Saved Jobs', desc: 'Track applications', icon: Bookmark, color: 'from-yellow-500 to-amber-500' },
     { id: 'analytics', title: 'Analytics', desc: 'Usage insights', icon: BarChart3, color: 'from-pink-500 to-rose-500' },
   ];
 
@@ -1267,14 +1272,21 @@ function JobMatching() {
   const [savingJob, setSavingJob] = useState(null);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [alerts, setAlerts] = useState([]);
+  const [showAlerts, setShowAlerts] = useState(false);
+  const [creatingAlert, setCreatingAlert] = useState(false);
+  const [alertFrequency, setAlertFrequency] = useState('daily');
 
-  // Load search history
+  // Load search history & alerts
   useEffect(() => {
     api.get('/job-match/history').then(d => {
       if (d.history) setHistory(d.history);
     }).catch(() => {});
     api.get('/saved-jobs').then(d => {
       if (d.jobs) setSavedJobs(new Set(d.jobs.map(j => j.jobTitle)));
+    }).catch(() => {});
+    api.get('/job-alerts').then(d => {
+      if (d.alerts) setAlerts(d.alerts);
     }).catch(() => {});
   }, []);
 
@@ -1294,10 +1306,33 @@ function JobMatching() {
   const saveJob = async (job, index) => {
     setSavingJob(index);
     try {
-      const d = await api.post('/saved-jobs/save', { jobTitle: job.role, company: job.company_type, salary: job.salary, jobUrl: job.jobUrl });
+      const d = await api.post('/saved-jobs/save', { jobTitle: job.role, company: job.company_type, salary: job.salary, jobUrl: job.jobUrl, matchScore: job.matchScore, location: job.location, source: job.source });
       if (!d.error) setSavedJobs(prev => new Set([...prev, job.role]));
     } catch (e) { console.error(e); }
     finally { setSavingJob(null); }
+  };
+
+  const createAlert = async () => {
+    if (!skills.trim()) return;
+    setCreatingAlert(true);
+    try {
+      const d = await api.post('/job-alerts/create', { skills, location, frequency: alertFrequency });
+      if (d.success) {
+        setAlerts(prev => [...prev, { alertId: d.alertId, criteria: { skills: skills.split(',').map(s => s.trim()), locations: location ? [location] : [] }, frequency: alertFrequency, isActive: true }]);
+        setShowAlerts(true);
+      }
+    } catch (e) { console.error(e); }
+    finally { setCreatingAlert(false); }
+  };
+
+  const toggleAlert = async (alertId, isActive) => {
+    await api.post('/job-alerts/toggle', { alertId, isActive: !isActive });
+    setAlerts(prev => prev.map(a => a.alertId === alertId ? { ...a, isActive: !isActive } : a));
+  };
+
+  const deleteAlert = async (alertId) => {
+    await api.post('/job-alerts/delete', { alertId });
+    setAlerts(prev => prev.filter(a => a.alertId !== alertId));
   };
 
   const loadFromHistory = (h) => {
@@ -1496,6 +1531,71 @@ function JobMatching() {
         </div>
       </div>
 
+      {/* Job Alerts Section */}
+      <div className="mt-6 glass-card overflow-hidden">
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                <Bell className="w-4 h-4 text-amber-400" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-white">Job Alerts</h3>
+                <p className="text-[10px] text-slate-500">{alerts.length} active alert{alerts.length !== 1 ? 's' : ''}</p>
+              </div>
+            </div>
+            <button onClick={() => setShowAlerts(!showAlerts)} className="text-xs text-cyan-400 hover:text-cyan-300">
+              {showAlerts ? 'Hide' : 'Manage'}
+            </button>
+          </div>
+
+          {/* Quick Create Alert */}
+          {skills.trim() && (
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] mb-3">
+              <Bell className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+              <span className="text-xs text-slate-300 flex-1">Get notified for <span className="text-amber-300 font-medium">{skills.split(',')[0].trim()}</span> jobs</span>
+              <select value={alertFrequency} onChange={e => setAlertFrequency(e.target.value)} className="input-glass text-[10px] py-1 px-2 rounded-lg w-20">
+                <option value="immediately">Instant</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+              </select>
+              <Button onClick={createAlert} disabled={creatingAlert} size="sm" className="bg-amber-500/20 text-amber-300 border-amber-500/20 hover:bg-amber-500/30 text-[10px] h-7 px-3 rounded-lg">
+                {creatingAlert ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Create Alert'}
+              </Button>
+            </div>
+          )}
+
+          {/* Existing Alerts */}
+          {showAlerts && alerts.length > 0 && (
+            <div className="space-y-2">
+              {alerts.map(alert => (
+                <div key={alert.alertId} className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <div className={`w-2 h-2 rounded-full ${alert.isActive ? 'bg-green-400' : 'bg-slate-600'}`} />
+                    <div className="min-w-0">
+                      <p className="text-xs text-white truncate">{(alert.criteria?.skills || []).join(', ')}</p>
+                      <p className="text-[10px] text-slate-500">{alert.frequency} • {(alert.criteria?.locations || []).join(', ') || 'Any location'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <button onClick={() => toggleAlert(alert.alertId, alert.isActive)} className={`px-2 py-1 rounded text-[10px] transition-colors ${alert.isActive ? 'bg-green-500/15 text-green-300' : 'bg-slate-500/15 text-slate-400'}`}>
+                      {alert.isActive ? 'On' : 'Off'}
+                    </button>
+                    <button onClick={() => deleteAlert(alert.alertId)} className="p-1 rounded text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {showAlerts && alerts.length === 0 && (
+            <p className="text-[10px] text-slate-500 text-center py-2">No alerts yet. Enter skills above and click "Create Alert".</p>
+          )}
+        </div>
+      </div>
+
       {/* Tips */}
       <div className="mt-6 glass-card-static p-4">
         <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Tips for Better Matches</h3>
@@ -1505,6 +1605,290 @@ function JobMatching() {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+// ============ SAVED JOBS DASHBOARD ============
+function SavedJobs() {
+  const [jobs, setJobs] = useState([]);
+  const [stats, setStats] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+  const [updating, setUpdating] = useState(null);
+
+  const loadJobs = async () => {
+    const d = await api.get('/saved-jobs');
+    if (d.jobs) { setJobs(d.jobs); setStats(d.stats || {}); }
+    setLoading(false);
+  };
+
+  useEffect(() => { loadJobs(); }, []);
+
+  const updateStatus = async (jobId, status) => {
+    setUpdating(jobId);
+    await api.post('/saved-jobs/update', { jobId, status });
+    await loadJobs();
+    setUpdating(null);
+  };
+
+  const removeJob = async (jobId) => {
+    await api.post('/saved-jobs/delete', { jobId });
+    setJobs(prev => prev.filter(j => j.jobId !== jobId));
+    setStats(prev => ({ ...prev, total: (prev.total || 1) - 1 }));
+  };
+
+  const statusConfig = {
+    saved: { label: 'Saved', color: 'bg-slate-500/15 text-slate-300 border-slate-500/20', icon: Bookmark },
+    applied: { label: 'Applied', color: 'bg-blue-500/15 text-blue-300 border-blue-500/20', icon: Send },
+    interviewing: { label: 'Interviewing', color: 'bg-violet-500/15 text-violet-300 border-violet-500/20', icon: Mic },
+    offered: { label: 'Offered', color: 'bg-green-500/15 text-green-300 border-green-500/20', icon: CheckCircle2 },
+    rejected: { label: 'Rejected', color: 'bg-red-500/15 text-red-300 border-red-500/20', icon: XCircle }
+  };
+
+  const filtered = filter === 'all' ? jobs : jobs.filter(j => j.status === filter);
+
+  if (loading) return <div className="p-6 flex items-center justify-center h-full"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /></div>;
+
+  return (
+    <div className="p-6 lg:p-8 max-w-5xl mx-auto page-transition">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-white mb-1">Saved Jobs</h1>
+        <p className="text-sm text-slate-400">Track your job applications and progress</p>
+      </div>
+
+      {/* Stats Pipeline */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+        {[
+          { label: 'Saved', value: stats.saved || 0, color: 'text-slate-300', bg: 'bg-slate-500/10' },
+          { label: 'Applied', value: stats.applied || 0, color: 'text-blue-300', bg: 'bg-blue-500/10' },
+          { label: 'Interviewing', value: stats.interviewing || 0, color: 'text-violet-300', bg: 'bg-violet-500/10' },
+          { label: 'Offered', value: stats.offered || 0, color: 'text-green-300', bg: 'bg-green-500/10' },
+          { label: 'Rejected', value: stats.rejected || 0, color: 'text-red-300', bg: 'bg-red-500/10' }
+        ].map(s => (
+          <button key={s.label} onClick={() => setFilter(s.label.toLowerCase())} className={`glass-card-static p-3 text-center transition-all ${filter === s.label.toLowerCase() ? 'ring-1 ring-cyan-500/30' : ''}`}>
+            <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+            <p className="text-[10px] text-slate-500 uppercase tracking-wider">{s.label}</p>
+          </button>
+        ))}
+      </div>
+
+      {/* Filter Bar */}
+      <div className="flex items-center gap-2 mb-4">
+        <button onClick={() => setFilter('all')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${filter === 'all' ? 'bg-cyan-500/15 text-cyan-300' : 'text-slate-400 hover:text-white'}`}>
+          All ({stats.total || 0})
+        </button>
+        {Object.entries(statusConfig).map(([key, cfg]) => (
+          <button key={key} onClick={() => setFilter(key)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${filter === key ? cfg.color : 'text-slate-400 hover:text-white'}`}>
+            {cfg.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Job List */}
+      {filtered.length === 0 ? (
+        <div className="glass-card-static p-12 text-center">
+          <Bookmark className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+          <p className="text-slate-400 mb-1">{filter === 'all' ? 'No saved jobs yet' : `No ${filter} jobs`}</p>
+          <p className="text-xs text-slate-500">Save jobs from Job Matching or Job Board to track them here</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((job, i) => {
+            const cfg = statusConfig[job.status] || statusConfig.saved;
+            return (
+              <div key={job.jobId} className="glass-card overflow-hidden animate-slide-up" style={{ animationDelay: `${i * 0.03}s` }}>
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-base font-semibold text-white truncate">{job.jobTitle}</h3>
+                        <Badge className={`${cfg.color} text-[9px] flex-shrink-0`}>{cfg.label}</Badge>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-slate-400 mb-2">
+                        <Building2 className="w-3 h-3" /><span>{job.company}</span>
+                        {job.location && <><span className="text-slate-600">|</span><MapPin className="w-3 h-3" /><span>{job.location}</span></>}
+                        {job.salary && <><span className="text-slate-600">|</span><span className="text-green-400">{job.salary}</span></>}
+                      </div>
+                      {job.notes && <p className="text-xs text-slate-500 italic mb-2">{job.notes}</p>}
+                      <div className="flex items-center gap-2 text-[10px] text-slate-500">
+                        <span>Saved {job.savedAt ? new Date(job.savedAt).toLocaleDateString() : 'N/A'}</span>
+                        {job.appliedAt && <><span>•</span><span>Applied {new Date(job.appliedAt).toLocaleDateString()}</span></>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      {/* Status update dropdown */}
+                      <select
+                        value={job.status}
+                        onChange={e => updateStatus(job.jobId, e.target.value)}
+                        disabled={updating === job.jobId}
+                        className="input-glass text-[10px] py-1 px-2 rounded-lg w-28"
+                      >
+                        <option value="saved">📌 Saved</option>
+                        <option value="applied">📤 Applied</option>
+                        <option value="interviewing">🎤 Interviewing</option>
+                        <option value="offered">✅ Offered</option>
+                        <option value="rejected">❌ Rejected</option>
+                      </select>
+                      {job.jobUrl && (
+                        <a href={job.jobUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                      <button onClick={() => removeJob(job.jobId)} className="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============ LIVE JOB BOARD ============
+function LiveJobBoard() {
+  const [keywords, setKeywords] = useState('');
+  const [location, setLocation] = useState('');
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+  const [hasRealJobs, setHasRealJobs] = useState(false);
+  const [savedSet, setSavedSet] = useState(new Set());
+  const [savingId, setSavingId] = useState(null);
+  const [message, setMessage] = useState('');
+
+  // Load previously saved jobs to mark them
+  useEffect(() => {
+    api.get('/saved-jobs').then(d => {
+      if (d.jobs) setSavedSet(new Set(d.jobs.map(j => j.jobTitle)));
+    }).catch(() => {});
+  }, []);
+
+  const search = async () => {
+    if (!keywords.trim()) return;
+    setLoading(true);
+    setSearched(true);
+    try {
+      const d = await api.post('/jobs/live-search', { keywords, location });
+      if (d.error) throw new Error(d.error);
+      setJobs(d.jobs || []);
+      setHasRealJobs(d.hasRealJobs || false);
+      setMessage(d.message || '');
+    } catch (e) {
+      console.error(e);
+      setJobs([]);
+    } finally { setLoading(false); }
+  };
+
+  const saveJob = async (job) => {
+    setSavingId(job.id);
+    try {
+      await api.post('/saved-jobs/save', {
+        jobTitle: job.title, company: job.company, salary: job.salary,
+        jobUrl: job.url, location: job.location, source: job.source
+      });
+      setSavedSet(prev => new Set([...prev, job.title]));
+    } catch (e) { console.error(e); }
+    finally { setSavingId(null); }
+  };
+
+  return (
+    <div className="p-6 lg:p-8 max-w-5xl mx-auto page-transition">
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-1">
+          <h1 className="text-2xl font-bold text-white">Job Board</h1>
+          <Badge className={`text-[9px] ${hasRealJobs ? 'bg-green-500/15 text-green-300 border-green-500/20' : 'bg-blue-500/15 text-blue-300 border-blue-500/20'}`}>
+            {hasRealJobs ? 'Live' : 'Search'}
+          </Badge>
+        </div>
+        <p className="text-sm text-slate-400">Search and apply to job openings directly</p>
+      </div>
+
+      {/* Search Bar */}
+      <div className="glass-card overflow-hidden mb-6">
+        <div className="p-5">
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <Input value={keywords} onChange={e => setKeywords(e.target.value)} onKeyDown={e => e.key === 'Enter' && search()} placeholder="Job title, skills, or keywords..." className="input-glass h-11" />
+            </div>
+            <div className="w-48">
+              <Input value={location} onChange={e => setLocation(e.target.value)} onKeyDown={e => e.key === 'Enter' && search()} placeholder="Location..." className="input-glass h-11" />
+            </div>
+            <Button onClick={search} disabled={loading || !keywords.trim()} className="bg-gradient-to-r from-emerald-600 to-teal-500 text-white border-0 h-11 px-6 rounded-xl">
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Search className="w-4 h-4 mr-2" />Search</>}
+            </Button>
+          </div>
+          {message && <p className="text-[10px] text-slate-500 mt-2 flex items-center gap-1"><Globe className="w-3 h-3" />{message}</p>}
+        </div>
+      </div>
+
+      {/* Results */}
+      {!searched ? (
+        <div className="glass-card-static p-16 text-center">
+          <Globe className="w-16 h-16 text-slate-700 mx-auto mb-4" />
+          <h2 className="text-lg font-semibold text-slate-400 mb-2">Search for Jobs</h2>
+          <p className="text-sm text-slate-500 max-w-md mx-auto">Enter keywords like "React Developer" or "Data Scientist" to find job openings you can apply to directly.</p>
+        </div>
+      ) : loading ? (
+        <div className="flex flex-col items-center justify-center py-16 gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
+          <p className="text-sm text-slate-500">Searching job boards...</p>
+        </div>
+      ) : jobs.length === 0 ? (
+        <div className="glass-card-static p-12 text-center">
+          <Briefcase className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+          <p className="text-slate-400">No jobs found. Try different keywords or location.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <p className="text-sm text-slate-500 mb-2">{jobs.length} jobs found</p>
+          {jobs.map((job, i) => (
+            <div key={job.id || i} className="glass-card overflow-hidden animate-slide-up" style={{ animationDelay: `${i * 0.04}s` }}>
+              <div className="p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-base font-semibold text-white">{job.title}</h3>
+                      {job.source !== 'mock' && <Badge className="bg-emerald-500/15 text-emerald-300 border-emerald-500/20 text-[9px]">Live</Badge>}
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap text-xs text-slate-400 mb-3">
+                      <span className="flex items-center gap-1"><Building2 className="w-3 h-3" />{job.company}</span>
+                      {job.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{job.location}</span>}
+                      {job.salary && job.salary !== 'Competitive' && <span className="text-green-400 font-medium">{job.salary}</span>}
+                      {job.type && <Badge className="bg-slate-500/15 text-slate-400 border-slate-500/20 text-[9px]">{job.type}</Badge>}
+                    </div>
+                    {job.description && (
+                      <p className="text-xs text-slate-400 leading-relaxed line-clamp-2 mb-3">{job.description.substring(0, 200)}...</p>
+                    )}
+                    {job.postedDate && <p className="text-[10px] text-slate-600">Posted: {new Date(job.postedDate).toLocaleDateString()}</p>}
+                  </div>
+                  <div className="flex flex-col gap-2 flex-shrink-0">
+                    {job.url && job.url !== 'https://example.com/jobs/0' && job.url !== 'https://example.com/jobs/1' && job.url !== 'https://example.com/jobs/2' ? (
+                      <a href={job.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-medium hover:from-blue-500 hover:to-blue-400 transition-all shadow-lg shadow-blue-500/15">
+                        <ExternalLink className="w-3.5 h-3.5" />Apply Now
+                      </a>
+                    ) : (
+                      <span className="px-4 py-2 rounded-xl bg-slate-700/30 text-slate-500 text-xs font-medium">No Link</span>
+                    )}
+                    <button
+                      onClick={() => saveJob(job)}
+                      disabled={savingId === job.id || savedSet.has(job.title)}
+                      className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium transition-all ${savedSet.has(job.title) ? 'bg-green-500/15 text-green-300' : 'bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] hover:text-white'}`}
+                    >
+                      {savingId === job.id ? <Loader2 className="w-3 h-3 animate-spin" /> : savedSet.has(job.title) ? <><CheckCircle2 className="w-3 h-3" />Saved</> : <><Bookmark className="w-3 h-3" />Save</>}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -1829,6 +2213,8 @@ function App() {
       case 'career': return <CareerPath />;
       case 'interview': return <MockInterview />;
       case 'jobs': return <JobMatching />;
+      case 'livejobs': return <LiveJobBoard />;
+      case 'savedjobs': return <SavedJobs />;
       case 'analytics': return <Analytics />;
       default: return <Dashboard user={user} onNavigate={setPage} />;
     }
