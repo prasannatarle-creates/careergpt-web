@@ -20,7 +20,8 @@ import {
   Award, Star, AlertCircle, Eye, EyeOff, Search,
   MapPin, ExternalLink, Clock, Bell, Bookmark, Globe,
   Filter, Building2, XCircle, MoreVertical, Heart,
-  Copy, Check, Share2, Edit2, Link2
+  Copy, Check, Share2, Edit2, Link2,
+  BookOpen, GraduationCap, Download
 } from 'lucide-react';
 
 // ============ HYDRATION-SAFE DATE FORMATTER ============
@@ -236,6 +237,7 @@ function Sidebar({ currentPage, onNavigate, user, onLogout, collapsed, onToggle 
     { id: 'jobs', label: 'Job Matching', icon: Briefcase, color: 'from-green-500 to-emerald-500', iconColor: 'text-green-400' },
     { id: 'livejobs', label: 'Job Board', icon: Globe, color: 'from-emerald-500 to-teal-500', iconColor: 'text-emerald-400' },
     { id: 'savedjobs', label: 'Saved Jobs', icon: Bookmark, color: 'from-yellow-500 to-amber-500', iconColor: 'text-yellow-400' },
+    { id: 'learning', label: 'Learning Center', icon: GraduationCap, color: 'from-indigo-500 to-purple-500', iconColor: 'text-indigo-400' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, color: 'from-pink-500 to-rose-500', iconColor: 'text-pink-400' },
   ];
 
@@ -365,6 +367,7 @@ function Dashboard({ user, onNavigate }) {
     { id: 'jobs', title: 'Job Matching', desc: 'AI skill matching', icon: Briefcase, color: 'from-green-500 to-emerald-500' },
     { id: 'livejobs', title: 'Job Board', desc: 'Live job openings', icon: Globe, color: 'from-emerald-500 to-teal-500' },
     { id: 'savedjobs', title: 'Saved Jobs', desc: 'Track applications', icon: Bookmark, color: 'from-yellow-500 to-amber-500', count: savedJobsCount },
+    { id: 'learning', title: 'Learning Center', desc: 'Skill gap analysis', icon: GraduationCap, color: 'from-indigo-500 to-purple-500' },
     { id: 'analytics', title: 'Analytics', desc: 'Usage insights', icon: BarChart3, color: 'from-pink-500 to-rose-500' },
   ];
 
@@ -3212,6 +3215,255 @@ function LiveJobBoard() {
   );
 }
 
+// ============ LEARNING CENTER ============
+function LearningCenter() {
+  const [resumes, setResumes] = useState([]);
+  const [paths, setPaths] = useState([]);
+  const [selectedResume, setSelectedResume] = useState('');
+  const [targetRole, setTargetRole] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('generate');
+  const [skillGaps, setSkillGaps] = useState(null);
+  const [gapLoading, setGapLoading] = useState(false);
+
+  useEffect(() => {
+    api.get('/resumes').then(d => setResumes(d.resumes || []));
+    api.get('/learning-paths').then(d => setPaths(d.paths || []));
+  }, []);
+
+  const generatePath = async () => {
+    if (!selectedResume || !targetRole.trim()) { setError('Select a resume and enter target role'); return; }
+    setLoading(true); setError('');
+    try {
+      const d = await api.post('/learning-path/generate', { resumeId: selectedResume, targetRole: targetRole.trim() });
+      if (d.error) throw new Error(d.error);
+      setPaths(prev => [{ pathId: d.pathId, targetRole: targetRole.trim(), learningPath: d.learningPath, createdAt: new Date().toISOString() }, ...prev]);
+      setActiveTab('paths');
+    } catch (e) { setError(e.message); }
+    finally { setLoading(false); }
+  };
+
+  const analyzeGaps = async () => {
+    if (!selectedResume || !targetRole.trim()) { setError('Select a resume and enter target role'); return; }
+    setGapLoading(true); setError('');
+    try {
+      const d = await api.post('/learning-path/skill-gaps', { resumeId: selectedResume, targetRole: targetRole.trim() });
+      if (d.error) throw new Error(d.error);
+      setSkillGaps(d);
+    } catch (e) { setError(e.message); }
+    finally { setGapLoading(false); }
+  };
+
+  const tabs = [
+    { id: 'generate', label: 'Generate Path', icon: Rocket },
+    { id: 'paths', label: 'My Paths', icon: Compass, count: paths.length },
+    { id: 'gaps', label: 'Skill Gaps', icon: Target },
+  ];
+
+  return (
+    <div className="p-6 lg:p-8 max-w-6xl mx-auto page-transition">
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <GraduationCap className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Learning Center</h1>
+            <p className="text-sm text-slate-400">AI-powered learning paths & skill gap analysis</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 mb-6 p-1 rounded-xl bg-slate-800/50 w-fit">
+        {tabs.map(t => (
+          <button key={t.id} onClick={() => setActiveTab(t.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === t.id ? 'bg-gradient-to-r from-indigo-600 to-purple-500 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}>
+            <t.icon className="w-4 h-4" />
+            {t.label}
+            {t.count > 0 && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/10">{t.count}</span>}
+          </button>
+        ))}
+      </div>
+
+      {/* Input Section */}
+      {(activeTab === 'generate' || activeTab === 'gaps') && (
+        <div className="glass-card p-6 mb-6 animate-slide-up">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Resume</label>
+              <Select value={selectedResume} onValueChange={setSelectedResume}>
+                <SelectTrigger className="input-glass h-11"><SelectValue placeholder="Select resume" /></SelectTrigger>
+                <SelectContent className="bg-slate-900 border-slate-700">
+                  {resumes.map(r => <SelectItem key={r.id} value={r.id} className="text-slate-200">{r.fileName}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              {resumes.length === 0 && <p className="text-[10px] text-amber-400 mt-1">Upload a resume first in Resume Analyzer</p>}
+            </div>
+            <div>
+              <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Target Role</label>
+              <Input value={targetRole} onChange={e => setTargetRole(e.target.value)} placeholder="e.g., Senior Data Scientist" className="input-glass h-11" />
+            </div>
+            <div className="flex items-end gap-2">
+              {activeTab === 'generate' && (
+                <Button onClick={generatePath} disabled={loading} className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-500 text-white border-0 h-11 rounded-xl btn-glow">
+                  {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Generating...</> : <><Sparkles className="w-4 h-4 mr-2" />Generate Path</>}
+                </Button>
+              )}
+              {activeTab === 'gaps' && (
+                <Button onClick={analyzeGaps} disabled={gapLoading} className="flex-1 bg-gradient-to-r from-amber-600 to-orange-500 text-white border-0 h-11 rounded-xl btn-glow">
+                  {gapLoading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Analyzing...</> : <><Target className="w-4 h-4 mr-2" />Analyze Gaps</>}
+                </Button>
+              )}
+            </div>
+          </div>
+          {error && <div className="mt-3 text-red-400 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-xl flex items-center gap-2"><AlertCircle className="w-4 h-4" />{error}</div>}
+        </div>
+      )}
+
+      {/* My Learning Paths */}
+      {activeTab === 'paths' && (
+        <div className="space-y-4 animate-slide-up">
+          {paths.length === 0 ? (
+            <div className="glass-card-static p-12 text-center">
+              <GraduationCap className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+              <p className="text-slate-400 mb-2">No learning paths yet</p>
+              <p className="text-xs text-slate-500">Generate a learning path from the Generate tab</p>
+            </div>
+          ) : paths.map((p, idx) => (
+            <div key={p.pathId || idx} className="glass-card overflow-hidden">
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                      <BookOpen className="w-5 h-5 text-indigo-400" />
+                      {p.targetRole}
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-1">Created {formatDate(p.createdAt)}</p>
+                  </div>
+                  <Badge className="bg-indigo-500/15 text-indigo-300 border-indigo-500/20">Learning Path</Badge>
+                </div>
+                {p.learningPath && (
+                  <div className="space-y-3">
+                    {/* Skill Gaps */}
+                    {p.learningPath.skillGaps && p.learningPath.skillGaps.length > 0 && (
+                      <div>
+                        <p className="text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Skills to Learn</p>
+                        <div className="flex flex-wrap gap-2">
+                          {p.learningPath.skillGaps.slice(0, 8).map((s, i) => (
+                            <span key={i} className="px-3 py-1 rounded-full text-xs bg-amber-500/10 text-amber-300 border border-amber-500/20">{typeof s === 'string' ? s : s.skill || s.name}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {/* Courses */}
+                    {p.learningPath.courses && p.learningPath.courses.length > 0 && (
+                      <div>
+                        <p className="text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Recommended Courses</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {p.learningPath.courses.slice(0, 6).map((c, i) => (
+                            <div key={i} className="p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                              <p className="text-sm text-slate-200 font-medium">{c.title || c.name}</p>
+                              <p className="text-[10px] text-slate-500 mt-0.5">{c.platform || c.provider} {c.duration ? `• ${c.duration}` : ''}</p>
+                              {c.url && <a href={c.url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-cyan-400 hover:underline mt-1 inline-flex items-center gap-1"><ExternalLink className="w-3 h-3" />View Course</a>}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {/* Steps/Milestones */}
+                    {p.learningPath.steps && p.learningPath.steps.length > 0 && (
+                      <div>
+                        <p className="text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Learning Steps</p>
+                        <div className="space-y-2">
+                          {p.learningPath.steps.slice(0, 5).map((step, i) => (
+                            <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02]">
+                              <div className="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{i + 1}</div>
+                              <div>
+                                <p className="text-sm text-slate-200">{typeof step === 'string' ? step : step.title || step.description}</p>
+                                {step.duration && <p className="text-[10px] text-slate-500 mt-0.5">{step.duration}</p>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Skill Gap Analysis */}
+      {activeTab === 'gaps' && skillGaps && (
+        <div className="space-y-4 animate-slide-up">
+          {/* Analysis */}
+          {skillGaps.skillAnalysis && (
+            <div className="glass-card p-5">
+              <h3 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
+                <Target className="w-5 h-5 text-amber-400" />
+                Skill Gap Analysis
+              </h3>
+              {skillGaps.skillAnalysis.existingSkills && skillGaps.skillAnalysis.existingSkills.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-xs text-green-400 font-medium mb-2 uppercase tracking-wider">Your Current Skills</p>
+                  <div className="flex flex-wrap gap-2">
+                    {skillGaps.skillAnalysis.existingSkills.map((s, i) => (
+                      <span key={i} className="px-3 py-1 rounded-full text-xs bg-green-500/10 text-green-300 border border-green-500/20">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {skillGaps.skillAnalysis.missingSkills && skillGaps.skillAnalysis.missingSkills.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-xs text-red-400 font-medium mb-2 uppercase tracking-wider">Skills to Develop</p>
+                  <div className="flex flex-wrap gap-2">
+                    {skillGaps.skillAnalysis.missingSkills.map((s, i) => (
+                      <span key={i} className="px-3 py-1 rounded-full text-xs bg-red-500/10 text-red-300 border border-red-500/20">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {skillGaps.skillAnalysis.prioritySkills && skillGaps.skillAnalysis.prioritySkills.length > 0 && (
+                <div>
+                  <p className="text-xs text-amber-400 font-medium mb-2 uppercase tracking-wider">Priority Skills to Learn First</p>
+                  <div className="flex flex-wrap gap-2">
+                    {skillGaps.skillAnalysis.prioritySkills.map((s, i) => (
+                      <span key={i} className="px-3 py-1 rounded-full text-xs bg-amber-500/10 text-amber-300 border border-amber-500/20 font-medium">{typeof s === 'string' ? s : s.skill || s.name}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Course Recommendations */}
+          {skillGaps.courseRecommendations && skillGaps.courseRecommendations.length > 0 && (
+            <div className="glass-card p-5">
+              <h3 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-cyan-400" />
+                Recommended Courses
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {skillGaps.courseRecommendations.map((c, i) => (
+                  <div key={i} className="p-4 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.03] transition-all group">
+                    <p className="text-sm text-white font-medium mb-1">{c.title || c.name}</p>
+                    <p className="text-[10px] text-slate-400">{c.platform || c.provider}</p>
+                    {c.level && <Badge className="mt-2 bg-indigo-500/15 text-indigo-300 border-indigo-500/20 text-[10px]">{c.level}</Badge>}
+                    {c.url && <a href={c.url} target="_blank" rel="noopener noreferrer" className="text-xs text-cyan-400 hover:underline mt-2 inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"><ExternalLink className="w-3 h-3" />Open</a>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ============ ADMIN ANALYTICS ============
 function Analytics() {
   const [data, setData] = useState(null);
@@ -3391,6 +3643,13 @@ function UserProfile({ user, onUpdate }) {
   const [resumes, setResumes] = useState([]);
   const [stats, setStats] = useState(null);
   const [savedJobsCount, setSavedJobsCount] = useState(0);
+  // Password change state
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const [currentPw, setCurrentPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [pwLoading, setPwLoading] = useState(false);
+  const [pwMsg, setPwMsg] = useState(null);
 
   useEffect(() => {
     api.get('/resumes').then(d => setResumes(d.resumes || []));
@@ -3422,6 +3681,22 @@ function UserProfile({ user, onUpdate }) {
     setSaved(true);
     if (onUpdate) onUpdate({ ...user, name, profile: { skills: skills.split(',').map(s => s.trim()).filter(Boolean), interests: interests.split(',').map(s => s.trim()).filter(Boolean), education, experience, careerGoal } });
     setTimeout(() => setSaved(false), 3000);
+  };
+
+  const changePassword = async () => {
+    setPwMsg(null);
+    if (!currentPw || !newPw) { setPwMsg({ type: 'error', text: 'All fields required' }); return; }
+    if (newPw.length < 6) { setPwMsg({ type: 'error', text: 'Password must be at least 6 characters' }); return; }
+    if (newPw !== confirmPw) { setPwMsg({ type: 'error', text: 'New passwords do not match' }); return; }
+    setPwLoading(true);
+    try {
+      const d = await api.post('/auth/change-password', { currentPassword: currentPw, newPassword: newPw });
+      if (d.error) throw new Error(d.error);
+      setPwMsg({ type: 'success', text: 'Password changed successfully!' });
+      setCurrentPw(''); setNewPw(''); setConfirmPw('');
+      setTimeout(() => { setPwMsg(null); setShowPasswordChange(false); }, 3000);
+    } catch (e) { setPwMsg({ type: 'error', text: e.message }); }
+    finally { setPwLoading(false); }
   };
 
   return (
@@ -3503,6 +3778,46 @@ function UserProfile({ user, onUpdate }) {
               </Button>
             </div>
           </div>
+
+          {/* Password Change */}
+          {user?.role !== 'guest' && (
+            <div className="glass-card overflow-hidden">
+              <div className="p-5">
+                <button onClick={() => setShowPasswordChange(!showPasswordChange)} className="flex items-center justify-between w-full">
+                  <h3 className="text-base font-semibold text-white flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center"><AlertCircle className="w-4 h-4 text-red-400" /></div>
+                    Security
+                  </h3>
+                  <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${showPasswordChange ? 'rotate-180' : ''}`} />
+                </button>
+                {showPasswordChange && (
+                  <div className="mt-4 space-y-3 animate-fade-in">
+                    <div>
+                      <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Current Password</label>
+                      <Input type="password" value={currentPw} onChange={e => setCurrentPw(e.target.value)} className="input-glass h-10" placeholder="Enter current password" />
+                    </div>
+                    <div>
+                      <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">New Password</label>
+                      <Input type="password" value={newPw} onChange={e => setNewPw(e.target.value)} className="input-glass h-10" placeholder="Min 6 characters" />
+                    </div>
+                    <div>
+                      <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Confirm New Password</label>
+                      <Input type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} className="input-glass h-10" placeholder="Confirm new password" />
+                    </div>
+                    {pwMsg && (
+                      <div className={`text-sm p-3 rounded-xl flex items-center gap-2 ${pwMsg.type === 'error' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-green-500/10 text-green-400 border border-green-500/20'}`}>
+                        {pwMsg.type === 'error' ? <AlertCircle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+                        {pwMsg.text}
+                      </div>
+                    )}
+                    <Button onClick={changePassword} disabled={pwLoading} className="w-full bg-gradient-to-r from-red-600 to-orange-500 text-white border-0 h-10 rounded-xl">
+                      {pwLoading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Changing...</> : 'Change Password'}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Stats & Resume History */}
@@ -3648,6 +3963,7 @@ function App() {
       case 'jobs': return <JobMatching />;
       case 'livejobs': return <LiveJobBoard />;
       case 'savedjobs': return <SavedJobs />;
+      case 'learning': return <LearningCenter />;
       case 'analytics': return <Analytics />;
       default: return <Dashboard user={user} onNavigate={setPage} />;
     }
