@@ -1886,6 +1886,29 @@ async function handleHealth() {
     return NextResponse.json({ status: 'unhealthy', error: error.message }, { status: 500 });
   }
 }
+  async function handleGuestLogin() {
+  try {
+    const guestUser = {
+      id: uuidv4(),
+      email: `guest-${Date.now()}@careergpt.local`,
+      role: 'guest'
+    };
+
+    const token = generateToken(guestUser);
+
+    return NextResponse.json({
+      token,
+      user: {
+        id: guestUser.id,
+        name: 'Guest',
+        email: guestUser.email,
+        role: 'guest'
+      }
+    });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
 
 // ============ ROUTER ============
 function getPath(request) {
@@ -1952,6 +1975,7 @@ export async function POST(request) {
     // Auth endpoints (with rate limiting)
     if (path === '/auth/register') return handleRegister(await request.json(), clientIp);
     if (path === '/auth/login') return handleLogin(await request.json(), clientIp);
+    if (path === '/auth/guest') return handleGuestLogin();
     if (path === '/auth/verify-email') return handleVerifyEmail((await request.json()).token);
     if (path === '/auth/forgot-password') return handleForgotPassword(await request.json());
     if (path === '/auth/reset-password') return handleResetPassword(await request.json());
