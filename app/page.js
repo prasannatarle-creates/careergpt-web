@@ -17,7 +17,8 @@ import {
   TrendingUp, Zap, ArrowRight, CheckCircle2,
   BarChart3, Rocket, Menu, X, Bot, User, Mic, Compass,
   LogIn, UserPlus, LogOut, Home, Settings, ChevronDown,
-  Award, Star, AlertCircle, Eye, EyeOff, Search
+  Award, Star, AlertCircle, Eye, EyeOff, Search,
+  MapPin, ExternalLink, Clock
 } from 'lucide-react';
 
 // ============ HYDRATION-SAFE DATE FORMATTER ============
@@ -1258,54 +1259,156 @@ function JobMatching() {
   const [interests, setInterests] = useState('');
   const [experience, setExperience] = useState('');
   const [industry, setIndustry] = useState('');
+  const [location, setLocation] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [error, setError] = useState('');
+  const [savedJobs, setSavedJobs] = useState(new Set());
+  const [savingJob, setSavingJob] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
+
+  // Load search history
+  useEffect(() => {
+    api.get('/job-match/history').then(d => {
+      if (d.history) setHistory(d.history);
+    }).catch(() => {});
+    api.get('/saved-jobs').then(d => {
+      if (d.jobs) setSavedJobs(new Set(d.jobs.map(j => j.jobTitle)));
+    }).catch(() => {});
+  }, []);
 
   const match = async () => {
     setLoading(true);
+    setError('');
     try {
-      const d = await api.post('/job-match', { skills, interests, experience, targetIndustry: industry });
+      const d = await api.post('/job-match', { skills, interests, experience, targetIndustry: industry, location });
       if (d.error) throw new Error(d.error);
-      setResult(d.matches);
-    } catch (e) { console.error(e); } finally { setLoading(false); }
+      setResult(d);
+    } catch (e) {
+      console.error(e);
+      setError(e.message || 'Failed to find job matches. Please try again.');
+    } finally { setLoading(false); }
+  };
+
+  const saveJob = async (job, index) => {
+    setSavingJob(index);
+    try {
+      const d = await api.post('/saved-jobs/save', { jobTitle: job.role, company: job.company_type, salary: job.salary, jobUrl: job.jobUrl });
+      if (!d.error) setSavedJobs(prev => new Set([...prev, job.role]));
+    } catch (e) { console.error(e); }
+    finally { setSavingJob(null); }
+  };
+
+  const loadFromHistory = (h) => {
+    setSkills(h.input.skills || '');
+    setInterests(h.input.interests || '');
+    setExperience(h.input.experience || '');
+    setIndustry(h.input.targetIndustry || '');
+    setLocation(h.input.location || '');
+    setShowHistory(false);
   };
 
   if (result) {
     const matches = result.matches || [];
     return (
-      <div className="p-6 max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-white">Job Matches</h1>
-          <Button onClick={() => setResult(null)} variant="outline" className="border-slate-600 text-slate-300">Search Again</Button>
+      <div className="p-6 max-w-4xl mx-auto page-transition">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-white">Job Matches</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <Badge className={`text-[10px] ${result.dataSource === 'real_jobs_ranked_by_ai' ? 'bg-green-500/15 text-green-300 border-green-500/20' : 'bg-blue-500/15 text-blue-300 border-blue-500/20'}`}>
+                {result.dataSource === 'real_jobs_ranked_by_ai' ? 'Real Jobs' : 'AI Generated'}
+              </Badge>
+              <span className="text-slate-500 text-xs">{result.totalMatches} matches found</span>
+            </div>
+          </div>
+          <Button onClick={() => setResult(null)} variant="outline" className="border-slate-600 text-slate-300 rounded-xl">Search Again</Button>
         </div>
 
-        {result.summary && <div className="glass-card-static p-4 mb-4"><p className="text-slate-300 text-sm leading-relaxed">{result.summary}</p></div>}
+        {/* Summary */}
+        {result.summary && (
+          <div className="glass-card-static p-5 mb-4">
+            <p className="text-slate-300 text-sm leading-relaxed">{result.summary}</p>
+          </div>
+        )}
+
+        {/* Top Skill Gaps & Recommendations */}
+        {((result.topSkillGaps && result.topSkillGaps.length > 0) || (result.recommendations && result.recommendations.length > 0)) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            {result.topSkillGaps && result.topSkillGaps.length > 0 && (
+              <div className="glass-card-static">
+                <div className="p-4 pb-2"><h3 className="text-xs font-semibold text-amber-400 uppercase tracking-wider">Skill Gaps to Fill</h3></div>
+                <div className="px-4 pb-4"><div className="flex flex-wrap gap-1.5">{result.topSkillGaps.map((s, i) => <Badge key={i} className="bg-amber-500/15 text-amber-300 border-amber-500/20 text-[10px]">{s}</Badge>)}</div></div>
+              </div>
+            )}
+            {result.recommendations && result.recommendations.length > 0 && (
+              <div className="glass-card-static">
+                <div className="p-4 pb-2"><h3 className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Recommendations</h3></div>
+                <div className="px-4 pb-4 space-y-1.5">{result.recommendations.map((r, i) => <div key={i} className="flex gap-2"><CheckCircle2 className="w-3 h-3 text-cyan-400 mt-0.5 flex-shrink-0" /><span className="text-xs text-slate-300">{r}</span></div>)}</div>
+              </div>
+            )}
+          </div>
+        )}
 
         {result.raw ? (
           <div className="glass-card-static p-6"><div className="prose prose-invert max-w-none [&>*]:text-slate-200 [&>p]:text-slate-200 [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-slate-200"><ReactMarkdown remarkPlugins={[remarkGfm]}>{result.summary}</ReactMarkdown></div></div>
         ) : (
           <div className="space-y-4">
+            {matches.length === 0 && (
+              <div className="glass-card-static p-8 text-center">
+                <Briefcase className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                <p className="text-slate-400">No matches found. Try adjusting your skills or criteria.</p>
+              </div>
+            )}
             {matches.map((m, i) => (
-              <div key={i} className="glass-card overflow-hidden">
+              <div key={i} className="glass-card overflow-hidden animate-slide-up" style={{ animationDelay: `${i * 0.05}s` }}>
                 <div className="p-5">
                   <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">{m.role}</h3>
-                      <p className="text-slate-400 text-xs">{m.company_type} | {m.salary}</p>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-lg font-semibold text-white">{m.role}</h3>
+                        {m.source && m.source !== 'ai' && m.source !== 'mock' && (
+                          <Badge className="bg-emerald-500/15 text-emerald-300 border-emerald-500/20 text-[9px]">Live</Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-slate-400">
+                        <span>{m.company_type}</span>
+                        {m.location && <><span className="text-slate-600">|</span><MapPin className="w-3 h-3" /><span>{m.location}</span></>}
+                        {m.salary && <><span className="text-slate-600">|</span><span className="text-green-400 font-medium">{m.salary}</span></>}
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold" style={{ color: m.matchScore >= 80 ? '#22c55e' : m.matchScore >= 60 ? '#eab308' : '#ef4444' }}>{m.matchScore}%</div>
-                      <p className="text-[10px] text-slate-500">Match Score</p>
+                    <div className="text-right ml-4">
+                      <div className="w-14 h-14 rounded-full border-[3px] flex items-center justify-center" style={{ borderColor: m.matchScore >= 80 ? '#22c55e' : m.matchScore >= 60 ? '#eab308' : '#ef4444' }}>
+                        <span className="text-lg font-bold text-white">{m.matchScore}</span>
+                      </div>
                     </div>
                   </div>
                   <p className="text-sm text-slate-300 mb-3 leading-relaxed">{m.why_match}</p>
-                  <div className="flex flex-wrap gap-1.5 mb-2">
+                  <div className="flex flex-wrap gap-1.5 mb-3">
                     {(m.skills_matched || []).map((s, j) => <Badge key={j} className="bg-green-500/15 text-green-300 border-green-500/20 text-[10px]">{s}</Badge>)}
                     {(m.skills_gap || []).map((s, j) => <Badge key={'g'+j} className="bg-red-500/15 text-red-300 border-red-500/20 text-[10px]">Gap: {s}</Badge>)}
                   </div>
-                  <div className="flex gap-4 text-[10px]">
-                    <span className="text-slate-400">Growth: <span className={m.growth_potential === 'high' ? 'text-green-400' : 'text-yellow-400'}>{m.growth_potential}</span></span>
-                    <span className="text-slate-400">Demand: <span className={m.demand === 'high' ? 'text-green-400' : 'text-yellow-400'}>{m.demand}</span></span>
+                  <div className="flex items-center justify-between pt-3 border-t border-white/[0.05]">
+                    <div className="flex gap-4 text-[10px]">
+                      <span className="text-slate-400">Growth: <span className={m.growth_potential === 'high' ? 'text-green-400 font-medium' : 'text-yellow-400'}>{m.growth_potential}</span></span>
+                      <span className="text-slate-400">Demand: <span className={m.demand === 'high' ? 'text-green-400 font-medium' : 'text-yellow-400'}>{m.demand}</span></span>
+                      {m.employmentType && <span className="text-slate-400">Type: <span className="text-slate-300">{m.employmentType}</span></span>}
+                    </div>
+                    <div className="flex gap-2">
+                      {m.jobUrl && (
+                        <a href={m.jobUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-500/15 text-blue-300 hover:bg-blue-500/25 transition-colors text-[10px] font-medium">
+                          <ExternalLink className="w-3 h-3" />Apply
+                        </a>
+                      )}
+                      <button
+                        onClick={() => saveJob(m, i)}
+                        disabled={savingJob === i || savedJobs.has(m.role)}
+                        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors text-[10px] font-medium ${savedJobs.has(m.role) ? 'bg-green-500/15 text-green-300' : 'bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] hover:text-white'}`}
+                      >
+                        {savingJob === i ? <Loader2 className="w-3 h-3 animate-spin" /> : savedJobs.has(m.role) ? <><CheckCircle2 className="w-3 h-3" />Saved</> : <><Star className="w-3 h-3" />Save</>}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1318,31 +1421,88 @@ function JobMatching() {
 
   return (
     <div className="p-6 lg:p-8 max-w-2xl mx-auto page-transition">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white mb-1">AI Job Matching</h1>
-        <p className="text-sm text-slate-400">Find the best job matches based on your profile</p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-1">AI Job Matching</h1>
+          <p className="text-sm text-slate-400">Find the best job matches based on your profile</p>
+        </div>
+        {history.length > 0 && (
+          <Button onClick={() => setShowHistory(!showHistory)} variant="outline" className="border-slate-600 text-slate-300 rounded-xl text-xs">
+            <Clock className="w-3.5 h-3.5 mr-1.5" />History
+          </Button>
+        )}
       </div>
+
+      {/* Search History */}
+      {showHistory && history.length > 0 && (
+        <div className="glass-card-static mb-6">
+          <div className="p-4 pb-2"><h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Recent Searches</h3></div>
+          <div className="px-4 pb-4 space-y-2">
+            {history.map((h, i) => (
+              <button key={i} onClick={() => loadFromHistory(h)} className="w-full text-left p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.05] transition-colors">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-white">{h.input.skills}</p>
+                    <p className="text-[10px] text-slate-500">{h.input.targetIndustry || 'Any industry'} • {h.totalMatches} matches</p>
+                  </div>
+                  <Badge className={`text-[9px] ${h.dataSource === 'REAL_JOBS' ? 'bg-green-500/15 text-green-300' : 'bg-blue-500/15 text-blue-300'}`}>{h.dataSource === 'REAL_JOBS' ? 'Real' : 'AI'}</Badge>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm text-red-300 font-medium">Match Failed</p>
+            <p className="text-xs text-red-300/70 mt-0.5">{error}</p>
+          </div>
+        </div>
+      )}
+
       <div className="glass-card overflow-hidden">
         <div className="p-6 space-y-5">
           <div>
-            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Skills</label>
-            <textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL..." className="w-full input-glass resize-none text-sm" />
+            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Skills *</label>
+            <textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL, Machine Learning..." className="w-full input-glass resize-none text-sm" />
           </div>
-          <div>
-            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Interests</label>
-            <Input value={interests} onChange={e => setInterests(e.target.value)} placeholder="AI, web dev..." className="input-glass h-11" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Interests</label>
+              <Input value={interests} onChange={e => setInterests(e.target.value)} placeholder="AI, web dev, data science..." className="input-glass h-11" />
+            </div>
+            <div>
+              <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Experience</label>
+              <Input value={experience} onChange={e => setExperience(e.target.value)} placeholder="2 years, fresher..." className="input-glass h-11" />
+            </div>
           </div>
-          <div>
-            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Experience</label>
-            <Input value={experience} onChange={e => setExperience(e.target.value)} placeholder="2 years..." className="input-glass h-11" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Industry (optional)</label>
+              <Input value={industry} onChange={e => setIndustry(e.target.value)} placeholder="Tech, Finance, Healthcare..." className="input-glass h-11" />
+            </div>
+            <div>
+              <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Location (optional)</label>
+              <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="Remote, New York, India..." className="input-glass h-11" />
+            </div>
           </div>
-          <div>
-            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Industry (optional)</label>
-            <Input value={industry} onChange={e => setIndustry(e.target.value)} placeholder="Tech, Finance..." className="input-glass h-11" />
-          </div>
-          <Button onClick={match} disabled={loading || !skills} className="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white border-0 h-12 rounded-xl btn-glow shadow-lg shadow-green-500/15">
-            {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Matching...</> : <><Search className="w-4 h-4 mr-2" />Find Matching Jobs</>}
+          <Button onClick={match} disabled={loading || !skills.trim()} className="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white border-0 h-12 rounded-xl btn-glow shadow-lg shadow-green-500/15">
+            {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Finding matches...</> : <><Search className="w-4 h-4 mr-2" />Find Matching Jobs</>}
           </Button>
+        </div>
+      </div>
+
+      {/* Tips */}
+      <div className="mt-6 glass-card-static p-4">
+        <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Tips for Better Matches</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {['Be specific with skills (e.g., "React, Node.js" not just "coding")', 'Include both technical and soft skills', 'Mention your experience level clearly', 'Add industry preference for targeted results'].map((tip, i) => (
+            <div key={i} className="flex gap-2 items-start"><Sparkles className="w-3 h-3 text-cyan-400 mt-0.5 flex-shrink-0" /><span className="text-[11px] text-slate-400">{tip}</span></div>
+          ))}
         </div>
       </div>
     </div>
