@@ -138,49 +138,60 @@ function AuthPage({ onAuth }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center mx-auto mb-4">
-            <Brain className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-animated-mesh relative overflow-hidden flex items-center justify-center p-4">
+      {/* Animated background orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-blob" />
+        <div className="absolute top-1/3 -right-20 w-96 h-96 bg-cyan-500/8 rounded-full blur-3xl animate-blob" style={{ animationDelay: '2s' }} />
+        <div className="absolute -bottom-40 left-1/3 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-blob" style={{ animationDelay: '4s' }} />
+        <div className="bg-grid-pattern absolute inset-0" />
+      </div>
+
+      <div className="w-full max-w-md relative z-10 animate-slide-up">
+        {/* Logo */}
+        <div className="text-center mb-10">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-400 to-teal-400 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-cyan-500/20 animate-float">
+            <Brain className="w-9 h-9 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Career<span className="text-cyan-400">GPT</span></h1>
-          <p className="text-slate-400 mt-1">AI-Powered Career Guidance Platform</p>
+          <h1 className="text-4xl font-extrabold text-white tracking-tight">Career<span className="text-gradient-cyan">GPT</span></h1>
+          <p className="text-slate-400 mt-2 text-sm">AI-Powered Career Guidance Platform</p>
         </div>
 
-        <div className="card-premium bg-white/10 backdrop-blur-md border border-white/20">
-          <div className="p-6">
-            <div className="flex gap-2 mb-6">
-              <Button onClick={() => setMode('login')} variant={mode === 'login' ? 'default' : 'ghost'} className={`flex-1 ${mode === 'login' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>
-                <LogIn className="w-4 h-4 mr-2" /> Login
+        {/* Auth Card */}
+        <div className="glass-card-bright p-1 animate-scale-in" style={{ animationDelay: '0.15s' }}>
+          <div className="p-7">
+            {/* Tab Buttons */}
+            <div className="flex gap-1 mb-7 p-1 rounded-xl bg-slate-800/50">
+              <Button onClick={() => setMode('login')} variant="ghost" className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all duration-300 ${mode === 'login' ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md shadow-blue-500/20' : 'text-slate-400 hover:text-white'}`}>
+                <LogIn className="w-4 h-4 mr-2" /> Sign In
               </Button>
-              <Button onClick={() => setMode('register')} variant={mode === 'register' ? 'default' : 'ghost'} className={`flex-1 ${mode === 'register' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}>
+              <Button onClick={() => setMode('register')} variant="ghost" className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all duration-300 ${mode === 'register' ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md shadow-blue-500/20' : 'text-slate-400 hover:text-white'}`}>
                 <UserPlus className="w-4 h-4 mr-2" /> Register
               </Button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {mode === 'register' && (
-                <div>
-                  <label className="text-slate-300 text-sm block mb-1">Full Name</label>
-                  <Input value={name} onChange={e => setName(e.target.value)} placeholder="John Doe" className="bg-slate-800 border-slate-700 text-white" required />
+                <div className="animate-fade-in">
+                  <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Full Name</label>
+                  <Input value={name} onChange={e => setName(e.target.value)} placeholder="John Doe" className="input-glass h-11" required />
                 </div>
               )}
               <div>
-                <label className="text-slate-300 text-sm block mb-1">Email</label>
-                <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className="bg-slate-800 border-slate-700 text-white" required />
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Email</label>
+                <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className="input-glass h-11" required />
               </div>
               <div>
-                <label className="text-slate-300 text-sm block mb-1">Password</label>
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Password</label>
                 <div className="relative">
-                  <Input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="Min 6 characters" className="bg-slate-800 border-slate-700 text-white pr-10" required minLength={6} />
-                  <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
+                  <Input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="Min 6 characters" className="input-glass h-11 pr-10" required minLength={6} />
+                  <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
                     {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
-              {error && <div className="text-red-400 text-sm bg-red-900/20 p-2 rounded">{error}</div>}
-              <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0">
+              {error && <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-xl flex items-center gap-2 animate-scale-in"><AlertCircle className="w-4 h-4 flex-shrink-0" />{error}</div>}
+              <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 text-white border-0 h-12 rounded-xl text-sm font-semibold btn-glow shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all">
                 {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                 {mode === 'register' ? 'Create Account' : 'Sign In'}
               </Button>
@@ -188,15 +199,23 @@ function AuthPage({ onAuth }) {
           </div>
         </div>
 
-       <button
-   onClick={() => {
-    localStorage.setItem('cgpt_guest', 'true');
-    onAuth({ name: 'Guest', role: 'guest' });
-  }}
-  className="mt-4 text-slate-500 hover:text-slate-300 text-sm flex items-center justify-center gap-1 w-full"
->
-  Continue as Guest <ArrowRight className="w-3 h-3" />
+        {/* Guest button */}
+        <button
+          onClick={() => {
+            localStorage.setItem('cgpt_guest', 'true');
+            onAuth({ name: 'Guest', role: 'guest' });
+          }}
+          className="mt-6 text-slate-500 hover:text-cyan-400 text-sm flex items-center justify-center gap-2 w-full transition-colors duration-300 group"
+        >
+          Continue as Guest <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
         </button>
+
+        {/* Bottom tagline */}
+        <div className="mt-8 text-center">
+          <p className="text-[11px] text-slate-600 flex items-center justify-center gap-1.5">
+            <Sparkles className="w-3 h-3" /> Powered by 5 AI Models
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -205,64 +224,95 @@ function AuthPage({ onAuth }) {
 // ============ SIDEBAR NAVIGATION ============
 function Sidebar({ currentPage, onNavigate, user, onLogout, collapsed, onToggle }) {
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'text-blue-400' },
-    { id: 'profile', label: 'My Profile', icon: Settings, color: 'text-slate-400' },
-    { id: 'chat', label: 'AI Career Chat', icon: MessageSquare, color: 'text-cyan-400' },
-    { id: 'resume', label: 'Resume Analyzer', icon: FileText, color: 'text-teal-400' },
-    { id: 'career', label: 'Career Path', icon: Compass, color: 'text-amber-400' },
-    { id: 'interview', label: 'Mock Interview', icon: Mic, color: 'text-violet-400' },
-    { id: 'jobs', label: 'Job Matching', icon: Briefcase, color: 'text-green-400' },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3, color: 'text-pink-400' },
+    { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'from-blue-500 to-blue-600', iconColor: 'text-blue-400' },
+    { id: 'profile', label: 'My Profile', icon: Settings, color: 'from-slate-500 to-slate-600', iconColor: 'text-slate-400' },
+    { id: 'chat', label: 'AI Career Chat', icon: MessageSquare, color: 'from-cyan-500 to-blue-500', iconColor: 'text-cyan-400' },
+    { id: 'resume', label: 'Resume Analyzer', icon: FileText, color: 'from-teal-500 to-cyan-500', iconColor: 'text-teal-400' },
+    { id: 'career', label: 'Career Path', icon: Compass, color: 'from-amber-500 to-orange-500', iconColor: 'text-amber-400' },
+    { id: 'interview', label: 'Mock Interview', icon: Mic, color: 'from-violet-500 to-purple-500', iconColor: 'text-violet-400' },
+    { id: 'jobs', label: 'Job Matching', icon: Briefcase, color: 'from-green-500 to-emerald-500', iconColor: 'text-green-400' },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, color: 'from-pink-500 to-rose-500', iconColor: 'text-pink-400' },
   ];
 
   return (
-    <div className={`${collapsed ? 'w-16' : 'w-64'} transition-all duration-300 border-r border-slate-800 bg-slate-900/70 flex flex-col h-screen`}>
-      <div className="p-4 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0 cursor-pointer" onClick={onToggle}>
+    <div className={`${collapsed ? 'w-[72px]' : 'w-[260px]'} transition-all duration-300 ease-in-out flex flex-col h-screen relative`} style={{ background: 'rgba(8, 12, 24, 0.95)', borderRight: '1px solid rgba(148, 163, 184, 0.07)' }}>
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-950/20 to-transparent pointer-events-none" />
+      
+      {/* Logo */}
+      <div className="p-4 flex items-center gap-3 relative z-10">
+        <div
+          className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-cyan-400 to-teal-400 flex items-center justify-center flex-shrink-0 cursor-pointer shadow-lg shadow-cyan-500/15 hover:shadow-cyan-500/25 transition-all duration-300 hover:scale-105"
+          onClick={onToggle}
+        >
           <Brain className="w-5 h-5 text-white" />
         </div>
-        {!collapsed && <span className="text-lg font-bold text-white">Career<span className="text-cyan-400">GPT</span></span>}
+        {!collapsed && (
+          <span className="text-lg font-bold text-white animate-fade-in">
+            Career<span className="text-gradient-cyan">GPT</span>
+          </span>
+        )}
       </div>
 
-      <Separator className="bg-slate-800" />
+      <div className="mx-4 h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent" />
 
-      <nav className="flex-1 p-2 space-y-1">
-        {navItems.map(item => (
-          <button
-            key={item.id}
-            onClick={() => onNavigate(item.id)}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
-              currentPage === item.id
-                ? 'bg-blue-600/20 text-white border border-blue-500/30'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-            }`}
-          >
-            <item.icon className={`w-5 h-5 flex-shrink-0 ${currentPage === item.id ? item.color : ''}`} />
-            {!collapsed && <span>{item.label}</span>}
-          </button>
-        ))}
+      {/* Nav Items */}
+      <nav className="flex-1 px-3 py-3 space-y-1 relative z-10 overflow-y-auto custom-scrollbar">
+        {navItems.map((item, idx) => {
+          const isActive = currentPage === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => onNavigate(item.id)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group relative ${
+                isActive
+                  ? 'text-white'
+                  : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
+              }`}
+              style={{ animationDelay: `${idx * 40}ms` }}
+            >
+              {/* Active background */}
+              {isActive && (
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-500/10 border border-blue-500/20" />
+              )}
+              {/* Active indicator bar */}
+              {isActive && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-gradient-to-b from-blue-400 to-cyan-400" />
+              )}
+              <div className={`relative z-10 w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+                isActive ? `bg-gradient-to-br ${item.color} shadow-md` : 'bg-white/[0.04] group-hover:bg-white/[0.08]'
+              }`}>
+                <item.icon className={`w-[18px] h-[18px] ${isActive ? 'text-white' : item.iconColor} transition-colors`} />
+              </div>
+              {!collapsed && <span className="relative z-10 font-medium">{item.label}</span>}
+            </button>
+          );
+        })}
       </nav>
 
-      <Separator className="bg-slate-800" />
+      <div className="mx-4 h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent" />
 
-      <div className="p-3">
+      {/* User Section */}
+      <div className="p-3 relative z-10">
         {user ? (
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0">
+          <div className={`flex items-center gap-3 p-2 rounded-xl hover:bg-white/[0.04] transition-colors ${collapsed ? 'justify-center' : ''}`}>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-500/15">
               <span className="text-white text-xs font-bold">{user.name?.[0]?.toUpperCase()}</span>
             </div>
             {!collapsed && (
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-white truncate">{user.name}</p>
+              <div className="flex-1 min-w-0 animate-fade-in">
+                <p className="text-sm text-white font-medium truncate">{user.name}</p>
                 <p className="text-[10px] text-slate-500 truncate">{user.email}</p>
               </div>
             )}
             {!collapsed && (
-              <button onClick={onLogout} className="text-slate-500 hover:text-red-400 p-1"><LogOut className="w-4 h-4" /></button>
+              <button onClick={onLogout} className="text-slate-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-all">
+                <LogOut className="w-4 h-4" />
+              </button>
             )}
           </div>
         ) : (
-          !collapsed && <p className="text-xs text-slate-500 text-center">Guest Mode</p>
+          !collapsed && <p className="text-xs text-slate-600 text-center py-2">Guest Mode</p>
         )}
       </div>
     </div>
@@ -286,48 +336,77 @@ function Dashboard({ user, onNavigate }) {
   ];
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-1">Welcome{user ? `, ${user.name}` : ''}!</h1>
-        <p className="text-slate-400">Your AI-powered career guidance dashboard</p>
+    <div className="p-6 lg:p-8 max-w-6xl mx-auto page-transition">
+      {/* Hero Section */}
+      <div className="mb-10 relative">
+        <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-xs text-slate-500 uppercase tracking-wider font-medium">Welcome back</span>
+          </div>
+          <h1 className="text-3xl lg:text-4xl font-extrabold text-white mb-2 tracking-tight">
+            {user ? `Hello, ${user.name}` : 'Welcome'}! <span className="inline-block animate-float" style={{ animationDuration: '3s' }}>👋</span>
+          </h1>
+          <p className="text-slate-400 text-base">Your AI-powered career guidance hub</p>
+        </div>
       </div>
 
       {/* Quick Stats */}
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {[
-            { label: 'Chats', value: stats.chatCount, icon: MessageSquare, color: 'text-cyan-400' },
-            { label: 'Resumes', value: stats.resumeCount, icon: FileText, color: 'text-teal-400', icon: FileText,color: 'text-teal-4 00' },
-            { label: 'Interviews', value: stats.interviewCount, icon: Mic, color: 'text-violet-400' },
-            { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, color: 'text-amber-400' },
+            { label: 'Chat Sessions', value: stats.chatCount, icon: MessageSquare, color: 'from-cyan-500 to-blue-500', bgColor: 'bg-cyan-500/10', textColor: 'text-cyan-400' },
+            { label: 'Resumes', value: stats.resumeCount, icon: FileText, color: 'from-teal-500 to-cyan-500', bgColor: 'bg-teal-500/10', textColor: 'text-teal-400' },
+            { label: 'Interviews', value: stats.interviewCount, icon: Mic, color: 'from-violet-500 to-purple-500', bgColor: 'bg-violet-500/10', textColor: 'text-violet-400' },
+            { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, color: 'from-amber-500 to-orange-500', bgColor: 'bg-amber-500/10', textColor: 'text-amber-400' },
           ].map((s, i) => (
-            <div key={i} className="card-premium p-4 flex items-center gap-3">
-              <s.icon className={`w-8 h-8 ${s.color}`} />
-              <div>
-                <p className="text-2xl font-bold text-white">{s.value || 0}</p>
-                <p className="text-xs text-slate-400">{s.label}</p>
+            <div key={i} className="glass-card p-5 group" style={{ animationDelay: `${i * 80}ms` }}>
+              <div className="flex items-center justify-between mb-3">
+                <div className={`w-10 h-10 rounded-xl ${s.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                  <s.icon className={`w-5 h-5 ${s.textColor}`} />
+                </div>
+                <TrendingUp className="w-4 h-4 text-slate-600" />
               </div>
+              <p className="text-2xl font-bold text-white">{s.value || 0}</p>
+              <p className="text-xs text-slate-400 mt-0.5">{s.label}</p>
             </div>
           ))}
         </div>
       )}
 
       {/* Feature Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {features.map(f => (
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold text-white mb-1 flex items-center gap-2">
+          <Zap className="w-4 h-4 text-cyan-400" /> Quick Actions
+        </h2>
+        <p className="text-sm text-slate-500 mb-5">Jump into any tool to supercharge your career</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+        {features.map((f, i) => (
           <div
             key={f.id}
             onClick={() => onNavigate(f.id)}
-            className="card-premium card-hover cursor-pointer group"
+            className="glass-card cursor-pointer group overflow-hidden relative"
+            style={{ animationDelay: `${i * 60}ms` }}
           >
-            <div className="p-6">
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                <f.icon className="w-6 h-6 text-white" />
+            {/* Hover gradient overlay */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${f.color} opacity-0 group-hover:opacity-[0.06] transition-opacity duration-500`} />
+            <div className="p-6 relative z-10">
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:shadow-xl transition-all duration-300`}>
+                  <f.icon className="w-6 h-6 text-white" />
+                </div>
+                <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all duration-300" />
               </div>
-              <h3 className="text-white font-semibold mb-1">{f.title}</h3>
-              <p className="text-slate-400 text-sm">{f.desc}</p>
+              <h3 className="text-white font-semibold text-base mb-1">{f.title}</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
               {f.count !== undefined && f.count > 0 && (
-                <span className="badge-primary inline-block mt-3 text-xs">{f.count} completed</span>
+                <div className="mt-4">
+                  <span className="badge-primary text-[11px]">
+                    <CheckCircle2 className="w-3 h-3" /> {f.count} completed
+                  </span>
+                </div>
               )}
             </div>
           </div>
@@ -335,9 +414,12 @@ function Dashboard({ user, onNavigate }) {
       </div>
 
       {/* AI Models Status */}
-      <div className="card-premium mt-8 p-6">
-        <h3 className="heading-sm text-white flex items-center gap-2 mb-4">
-          <Zap className="w-5 h-5 text-accent-500" /> AI Models Status
+      <div className="glass-card-static p-6 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+        <h3 className="text-base font-semibold text-white flex items-center gap-2 mb-5">
+          <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+            <Zap className="w-4 h-4 text-purple-400" />
+          </div>
+          AI Models Connected
         </h3>
         <div className="flex flex-wrap gap-3">
             {[
@@ -347,10 +429,10 @@ function Dashboard({ user, onNavigate }) {
               { name: 'Grok 3 Mini', color: '#ef4444', status: 'beta' },
               { name: 'Perplexity Sonar', color: '#22d3ee', status: 'beta' },
             ].map(m => (
-              <div key={m.name} className="flex items-center gap-2 px-3 py-2 rounded-lg border" style={{ borderColor: m.color + '30', backgroundColor: m.color + '10' }}>
-                <div className={`w-2.5 h-2.5 rounded-full ${m.status === 'active' ? 'animate-pulse' : 'opacity-50'}`} style={{ backgroundColor: m.color }} />
-                <span className="text-sm" style={{ color: m.color }}>{m.name}</span>
-                {m.status === 'beta' && <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/20 text-amber-400">beta</span>}
+              <div key={m.name} className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border transition-all duration-300 hover:scale-[1.02]" style={{ borderColor: m.color + '25', backgroundColor: m.color + '08' }}>
+                <div className={`w-2 h-2 rounded-full ${m.status === 'active' ? 'animate-pulse' : 'opacity-40'}`} style={{ backgroundColor: m.color }} />
+                <span className="text-sm font-medium" style={{ color: m.color }}>{m.name}</span>
+                {m.status === 'beta' && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-medium border border-amber-500/20">BETA</span>}
               </div>
             ))}
           </div>
@@ -395,20 +477,23 @@ function AIChat() {
   return (
     <div className="flex h-full">
       {/* Session List */}
-      <div className="w-64 border-r border-slate-800 bg-slate-900/30 flex flex-col">
-        <div className="p-3">
-          <Button onClick={() => { setActiveSession(null); setMessages([]); }} className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0" size="sm" data-testid="new-chat-btn">
-            <Plus className="w-4 h-4 mr-2" /> New Chat
+      <div className="w-72 flex flex-col h-full relative" style={{ background: 'rgba(8, 12, 24, 0.6)', borderRight: '1px solid rgba(148, 163, 184, 0.07)' }}>
+        <div className="p-4">
+          <Button onClick={() => { setActiveSession(null); setMessages([]); }} className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0 rounded-xl h-10 btn-glow shadow-lg shadow-blue-500/15" size="sm" data-testid="new-chat-btn">
+            <Plus className="w-4 h-4 mr-2" /> New Conversation
           </Button>
+        </div>
+        <div className="px-4 mb-2">
+          <p className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Recent Chats</p>
         </div>
         <ScrollArea className="flex-1 px-3">
           {sessions.map(s => (
-            <div key={s.id} onClick={() => loadSession(s.id)} className={`p-2.5 rounded-lg cursor-pointer mb-1 flex items-center justify-between group ${activeSession === s.id ? 'bg-blue-600/20 border border-blue-500/30' : 'hover:bg-slate-800'}`}>
+            <div key={s.id} onClick={() => loadSession(s.id)} className={`p-3 rounded-xl cursor-pointer mb-1.5 flex items-center justify-between group transition-all duration-200 ${activeSession === s.id ? 'bg-blue-600/15 border border-blue-500/20' : 'hover:bg-white/[0.03]'}`}>
               <div className="min-w-0 flex-1">
-                <p className="text-xs text-slate-200 truncate">{s.title}</p>
-                <p className="text-[10px] text-slate-500">{formatDate(s.updatedAt)}</p>
+                <p className="text-xs text-slate-200 truncate font-medium">{s.title}</p>
+                <p className="text-[10px] text-slate-500 mt-0.5">{formatDate(s.updatedAt)}</p>
               </div>
-              <button onClick={(e) => { e.stopPropagation(); api.del(`/chat/sessions/${s.id}`); if (activeSession === s.id) { setActiveSession(null); setMessages([]); } setSessions(prev => prev.filter(x => x.id !== s.id)); }} className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 p-1">
+              <button onClick={(e) => { e.stopPropagation(); api.del(`/chat/sessions/${s.id}`); if (activeSession === s.id) { setActiveSession(null); setMessages([]); } setSessions(prev => prev.filter(x => x.id !== s.id)); }} className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-all">
                 <Trash2 className="w-3 h-3" />
               </button>
             </div>
@@ -417,50 +502,103 @@ function AIChat() {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
-        <ScrollArea className="flex-1 p-4">
+      <div className="flex-1 flex flex-col relative">
+        {/* Subtle background */}
+        <div className="absolute inset-0 bg-grid-pattern pointer-events-none opacity-50" />
+        
+        <ScrollArea className="flex-1 p-4 relative z-10">
           {messages.length === 0 ? (
-            <div className="max-w-xl mx-auto mt-8 text-center">
-              <Brain className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
-              <h2 className="text-xl font-bold text-white mb-2">CareerGPT Chat</h2>
-              <p className="text-slate-400 text-sm mb-6">Powered by 5 AI models for comprehensive career advice</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="max-w-xl mx-auto mt-16 text-center animate-slide-up">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-400 to-teal-400 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-cyan-500/20 animate-float">
+                <Brain className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2">CareerGPT Chat</h2>
+              <p className="text-slate-400 text-sm mb-8">Powered by 5 AI models for comprehensive career advice</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {['Best AI career paths for 2025?', 'How to prepare for tech interviews?', 'Skills for data science career?', 'Create a 6-month career plan'].map((q, i) => (
-                  <button key={i} onClick={() => setInput(q)} className="text-left p-3 rounded-lg border border-slate-700 bg-slate-900/50 hover:bg-slate-800 text-slate-300 text-xs"><Sparkles className="w-3 h-3 text-cyan-400 mb-1" />{q}</button>
+                  <button key={i} onClick={() => setInput(q)} className="text-left p-4 rounded-xl border border-slate-700/50 bg-slate-900/30 hover:bg-slate-800/50 hover:border-cyan-500/20 text-slate-300 text-sm transition-all duration-300 group backdrop-blur-sm">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400 mb-1.5 group-hover:scale-110 transition-transform" />
+                    <span>{q}</span>
+                  </button>
                 ))}
               </div>
             </div>
           ) : (
-            <div className="max-w-3xl mx-auto space-y-4">
+            <div className="max-w-3xl mx-auto space-y-5">
               {messages.filter(m => !m.hidden).map((msg, i) => (
-                <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-                  {msg.role === 'assistant' && <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0 mt-1"><Bot className="w-4 h-4 text-white" /></div>}
-                  <div className={`max-w-[80%] rounded-xl px-4 py-2.5 ${msg.role === 'user' ? 'bg-blue-600 text-white' : msg.isError ? 'bg-red-900/50 border border-red-700 text-red-200' : 'bg-slate-800 border border-slate-700 text-slate-200'}`}>
-                    {msg.role === 'assistant' ? <div className="prose prose-invert prose-sm max-w-none [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-white"><ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown></div> : <p className="text-sm">{msg.content}</p>}
+                <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : ''} animate-slide-up`} style={{ animationDelay: `${i * 30}ms` }}>
+                  {msg.role === 'assistant' && (
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0 mt-1 shadow-md shadow-blue-500/15">
+                      <Bot className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                  <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                    msg.role === 'user'
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/15'
+                      : msg.isError
+                        ? 'bg-red-900/30 border border-red-700/30 text-red-200'
+                        : 'glass-card-static text-slate-200'
+                  }`}>
+                    {msg.role === 'assistant' ? (
+                      <div className="prose prose-invert prose-sm max-w-none [&>*]:text-slate-200 [&>p]:text-slate-200 [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-slate-200 [&>ul]:text-slate-200 [&>ol]:text-slate-200 [&>code]:bg-slate-700/50 [&>code]:px-1.5 [&>code]:py-0.5 [&>code]:rounded-md [&>pre]:bg-slate-800/80 [&>pre]:rounded-xl [&>pre]:border [&>pre]:border-slate-700/50">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="text-sm leading-relaxed">{msg.content}</p>
+                    )}
                     {msg.models && (
-                      <div className="mt-2 pt-2 border-t border-slate-700/50 flex flex-wrap gap-1 items-center">
-                        {msg.synthesized && <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30 text-[9px] px-1.5 py-0">SYNTHESIZED</Badge>}
-                        {msg.models.map((m, j) => <span key={j} className="text-[9px] px-1.5 py-0.5 rounded" style={{ backgroundColor: (m.color || '#888') + '20', color: m.color || '#888' }}>{m.name || m}</span>)}
-                        {(msg.failedModels || []).map((f, j) => <span key={'f'+j} className="text-[9px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-400">X {f.name}</span>)}
+                      <div className="mt-2.5 pt-2.5 border-t border-slate-700/30 flex flex-wrap gap-1.5 items-center">
+                        {msg.synthesized && <Badge className="bg-cyan-500/15 text-cyan-300 border-cyan-500/20 text-[9px] px-2 py-0.5 rounded-full">SYNTHESIZED</Badge>}
+                        {msg.models.map((m, j) => <span key={j} className="text-[9px] px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: (m.color || '#888') + '15', color: m.color || '#888', border: `1px solid ${(m.color || '#888')}20` }}>{m.name || m}</span>)}
+                        {(msg.failedModels || []).map((f, j) => <span key={'f'+j} className="text-[9px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">✕ {f.name}</span>)}
                       </div>
                     )}
                   </div>
-                  {msg.role === 'user' && <div className="w-7 h-7 rounded-lg bg-slate-700 flex items-center justify-center flex-shrink-0 mt-1"><User className="w-4 h-4 text-slate-300" /></div>}
+                  {msg.role === 'user' && (
+                    <div className="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700/50 flex items-center justify-center flex-shrink-0 mt-1">
+                      <User className="w-4 h-4 text-slate-300" />
+                    </div>
+                  )}
                 </div>
               ))}
               {loading && (
-                <div className="flex gap-2"><div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center"><Bot className="w-4 h-4 text-white" /></div>
-                  <div className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3"><div className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin text-cyan-400" /><span className="text-xs text-slate-400">Consulting AI models...</span></div></div>
+                <div className="flex gap-3 animate-fade-in">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-md shadow-blue-500/15">
+                    <Bot className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="glass-card-static rounded-2xl px-5 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-1.5">
+                        <div className="typing-dot" />
+                        <div className="typing-dot" />
+                        <div className="typing-dot" />
+                      </div>
+                      <span className="text-xs text-slate-400">Consulting AI models...</span>
+                    </div>
+                  </div>
                 </div>
               )}
               <div ref={endRef} />
             </div>
           )}
         </ScrollArea>
-        <div className="border-t border-slate-800 p-3">
-          <div className="max-w-3xl mx-auto flex gap-2">
-            <Input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMessage()} placeholder="Ask about careers..." className="bg-slate-800 border-slate-700 text-white rounded-xl" disabled={loading} />
-            <Button onClick={sendMessage} disabled={!input.trim() || loading} className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0 rounded-xl"><Send className="w-4 h-4" /></Button>
+
+        {/* Input Area */}
+        <div className="relative z-10 p-4" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.07)' }}>
+          <div className="max-w-3xl mx-auto flex gap-3">
+            <div className="flex-1 relative">
+              <Input
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && sendMessage()}
+                placeholder="Ask about careers, skills, interviews..."
+                className="input-glass h-12 rounded-xl pr-4 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <Button onClick={sendMessage} disabled={!input.trim() || loading} className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0 rounded-xl h-12 w-12 p-0 btn-glow shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25">
+              <Send className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </div>
@@ -590,24 +728,24 @@ function ResumeAnalyzer() {
     const a = analysis;
     const isRaw = a.raw;
     return (
-      <div className="p-6 max-w-4xl mx-auto">
+      <div className="p-6 lg:p-8 max-w-4xl mx-auto page-transition">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-white">Resume Analysis</h1>
           <div className="flex gap-2">
-            {!isRaw && <Button onClick={downloadPDF} variant="outline" className="border-green-600 text-green-300 hover:bg-green-900/30"><FileText className="w-4 h-4 mr-2" />Download PDF</Button>}
-            <Button onClick={() => { setAnalysis(null); setFile(null); }} variant="outline" className="border-slate-600 text-slate-300">Analyze Another</Button>
+            {!isRaw && <Button onClick={downloadPDF} variant="outline" className="border-green-600/30 text-green-300 hover:bg-green-900/20 rounded-xl"><FileText className="w-4 h-4 mr-2" />Download PDF</Button>}
+            <Button onClick={() => { setAnalysis(null); setFile(null); }} variant="outline" className="border-slate-600/30 text-slate-300 hover:bg-slate-800/30 rounded-xl">Analyze Another</Button>
           </div>
         </div>
 
         {isRaw ? (
-          <Card className="bg-slate-900/60 border-slate-800"><CardContent className="p-6"><div className="prose prose-invert max-w-none [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-white"><ReactMarkdown remarkPlugins={[remarkGfm]}>{a.overallFeedback || JSON.stringify(a)}</ReactMarkdown></div></CardContent></Card>
+          <div className="glass-card-static p-6"><div className="prose prose-invert max-w-none [&>*]:text-slate-200 [&>p]:text-slate-200 [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-slate-200"><ReactMarkdown remarkPlugins={[remarkGfm]}>{a.overallFeedback || JSON.stringify(a)}</ReactMarkdown></div></div>
         ) : (
           <div className="space-y-6">
             {/* ATS Score */}
-            <Card className="bg-slate-900/60 border-slate-800">
-              <CardContent className="p-6">
+            <div className="glass-card-bright">
+              <div className="p-6">
                 <div className="flex items-center gap-6">
-                  <div className="w-24 h-24 rounded-full border-4 flex items-center justify-center" style={{ borderColor: a.atsScore >= 70 ? '#22c55e' : a.atsScore >= 50 ? '#eab308' : '#ef4444' }}>
+                  <div className="w-24 h-24 rounded-full border-4 flex items-center justify-center animate-scale-in" style={{ borderColor: a.atsScore >= 70 ? '#22c55e' : a.atsScore >= 50 ? '#eab308' : '#ef4444' }}>
                     <span className="text-3xl font-bold text-white">{a.atsScore}</span>
                   </div>
                   <div>
@@ -618,16 +756,16 @@ function ResumeAnalyzer() {
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Sections */}
             {a.sections && (
-              <Card className="bg-slate-900/60 border-slate-800">
-                <CardHeader><CardTitle className="text-white">Section-by-Section Analysis</CardTitle></CardHeader>
-                <CardContent className="space-y-3">
+              <div className="glass-card-static">
+                <div className="p-5 pb-0"><h3 className="text-base font-semibold text-white">Section-by-Section Analysis</h3></div>
+                <div className="p-5 space-y-3">
                   {Object.entries(a.sections).map(([key, sec]) => (
-                    <div key={key} className="p-3 rounded-lg bg-slate-800/50 border border-slate-700">
+                    <div key={key} className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-medium text-white capitalize">{key}</span>
                         <div className="flex items-center gap-2">
@@ -639,54 +777,54 @@ function ResumeAnalyzer() {
                       <p className="text-xs text-slate-400">{sec.feedback}</p>
                     </div>
                   ))}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
             {/* Keywords */}
             {a.keywords && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="bg-slate-900/60 border-slate-800">
-                  <CardHeader><CardTitle className="text-green-400 text-sm">Keywords Found</CardTitle></CardHeader>
-                  <CardContent><div className="flex flex-wrap gap-1">{(a.keywords.found || []).map((k, i) => <Badge key={i} className="bg-green-500/20 text-green-300 border-green-500/30 text-xs">{k}</Badge>)}</div></CardContent>
-                </Card>
-                <Card className="bg-slate-900/60 border-slate-800">
-                  <CardHeader><CardTitle className="text-red-400 text-sm">Missing Keywords</CardTitle></CardHeader>
-                  <CardContent><div className="flex flex-wrap gap-1">{(a.keywords.missing || []).map((k, i) => <Badge key={i} className="bg-red-500/20 text-red-300 border-red-500/30 text-xs">{k}</Badge>)}</div></CardContent>
-                </Card>
+                <div className="glass-card-static">
+                  <div className="p-5 pb-0"><h3 className="text-sm font-semibold text-green-400">Keywords Found</h3></div>
+                  <div className="p-5"><div className="flex flex-wrap gap-1.5">{(a.keywords.found || []).map((k, i) => <Badge key={i} className="bg-green-500/15 text-green-300 border-green-500/20 text-xs">{k}</Badge>)}</div></div>
+                </div>
+                <div className="glass-card-static">
+                  <div className="p-5 pb-0"><h3 className="text-sm font-semibold text-red-400">Missing Keywords</h3></div>
+                  <div className="p-5"><div className="flex flex-wrap gap-1.5">{(a.keywords.missing || []).map((k, i) => <Badge key={i} className="bg-red-500/15 text-red-300 border-red-500/20 text-xs">{k}</Badge>)}</div></div>
+                </div>
               </div>
             )}
 
             {/* Rewritten Bullets */}
             {a.rewrittenBullets && a.rewrittenBullets.length > 0 && (
-              <Card className="bg-slate-900/60 border-slate-800">
-                <CardHeader><CardTitle className="text-white text-sm">Improved Bullet Points</CardTitle></CardHeader>
-                <CardContent className="space-y-3">
+              <div className="glass-card-static">
+                <div className="p-5 pb-0"><h3 className="text-sm font-semibold text-white">Improved Bullet Points</h3></div>
+                <div className="p-5 space-y-3">
                   {a.rewrittenBullets.map((b, i) => (
-                    <div key={i} className="p-3 rounded-lg bg-slate-800/50 border border-slate-700">
+                    <div key={i} className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
                       <p className="text-xs text-red-300 line-through mb-1">{b.original}</p>
                       <p className="text-xs text-green-300">{b.improved}</p>
                       <p className="text-[10px] text-slate-500 mt-1">{b.reason}</p>
                     </div>
                   ))}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
             {/* Strengths / Weaknesses */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card className="bg-slate-900/60 border-slate-800">
-                <CardHeader><CardTitle className="text-green-400 text-sm">Strengths</CardTitle></CardHeader>
-                <CardContent>{(a.strengths || []).map((s, i) => <div key={i} className="flex gap-2 mb-1"><CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" /><span className="text-xs text-slate-300">{s}</span></div>)}</CardContent>
-              </Card>
-              <Card className="bg-slate-900/60 border-slate-800">
-                <CardHeader><CardTitle className="text-amber-400 text-sm">Areas to Improve</CardTitle></CardHeader>
-                <CardContent>{(a.weaknesses || []).map((w, i) => <div key={i} className="flex gap-2 mb-1"><AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" /><span className="text-xs text-slate-300">{w}</span></div>)}</CardContent>
-              </Card>
+              <div className="glass-card-static">
+                <div className="p-5 pb-0"><h3 className="text-sm font-semibold text-green-400">Strengths</h3></div>
+                <div className="p-5">{(a.strengths || []).map((s, i) => <div key={i} className="flex gap-2 mb-2"><CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" /><span className="text-xs text-slate-300 leading-relaxed">{s}</span></div>)}</div>
+              </div>
+              <div className="glass-card-static">
+                <div className="p-5 pb-0"><h3 className="text-sm font-semibold text-amber-400">Areas to Improve</h3></div>
+                <div className="p-5">{(a.weaknesses || []).map((w, i) => <div key={i} className="flex gap-2 mb-2"><AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" /><span className="text-xs text-slate-300 leading-relaxed">{w}</span></div>)}</div>
+              </div>
             </div>
 
             {a.overallFeedback && (
-              <Card className="bg-slate-900/60 border-slate-800"><CardContent className="p-6"><p className="text-slate-300 text-sm">{a.overallFeedback}</p></CardContent></Card>
+              <div className="glass-card-static p-6"><p className="text-slate-300 text-sm leading-relaxed">{a.overallFeedback}</p></div>
             )}
           </div>
         )}
@@ -695,24 +833,41 @@ function ResumeAnalyzer() {
   }
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-white mb-6">Resume Analyzer & ATS Scorer</h1>
-      <Card className="bg-slate-900/60 border-slate-800">
-        <CardContent className="p-6 space-y-4">
-          <div onClick={() => fileRef.current?.click()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${file ? 'border-green-500 bg-green-500/10' : 'border-slate-600 hover:border-slate-500'}`}>
+    <div className="p-6 lg:p-8 max-w-2xl mx-auto page-transition">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-white mb-1">Resume Analyzer & ATS Scorer</h1>
+        <p className="text-sm text-slate-400">Upload your resume and get AI-powered ATS analysis</p>
+      </div>
+      <div className="glass-card overflow-hidden">
+        <div className="p-6 space-y-5">
+          <div onClick={() => fileRef.current?.click()} className={`border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all duration-300 ${file ? 'border-green-500/40 bg-green-500/5' : 'border-slate-600/40 hover:border-cyan-500/30 hover:bg-cyan-500/5'}`}>
             <input ref={fileRef} type="file" className="hidden" accept=".pdf,.txt,.md" onChange={e => e.target.files?.[0] && setFile(e.target.files[0])} />
-            {file ? <><CheckCircle2 className="w-10 h-10 text-green-400 mx-auto mb-2" /><p className="text-white font-semibold">{file.name}</p><p className="text-slate-400 text-xs">{(file.size / 1024).toFixed(1)} KB</p></> : <><Upload className="w-10 h-10 text-slate-500 mx-auto mb-2" /><p className="text-white">Drop resume here or click to browse</p><p className="text-slate-400 text-xs">PDF, TXT supported</p></>}
+            {file ? (
+              <div className="animate-scale-in">
+                <CheckCircle2 className="w-12 h-12 text-green-400 mx-auto mb-3" />
+                <p className="text-white font-semibold text-lg">{file.name}</p>
+                <p className="text-slate-400 text-xs mt-1">{(file.size / 1024).toFixed(1)} KB</p>
+              </div>
+            ) : (
+              <>
+                <div className="w-14 h-14 rounded-2xl bg-slate-800/50 flex items-center justify-center mx-auto mb-3">
+                  <Upload className="w-7 h-7 text-slate-400" />
+                </div>
+                <p className="text-white font-medium">Drop resume here or click to browse</p>
+                <p className="text-slate-500 text-xs mt-1">PDF, TXT supported</p>
+              </>
+            )}
           </div>
           <div>
-            <label className="text-slate-300 text-sm block mb-1">Target Role (optional)</label>
-            <Input value={targetRole} onChange={e => setTargetRole(e.target.value)} placeholder="e.g., Software Engineer, Data Scientist" className="bg-slate-800 border-slate-700 text-white" />
+            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Target Role (optional)</label>
+            <Input value={targetRole} onChange={e => setTargetRole(e.target.value)} placeholder="e.g., Software Engineer, Data Scientist" className="input-glass h-11" />
           </div>
-          {error && <p className="text-red-400 text-sm">{error}</p>}
-          <Button onClick={analyze} disabled={!file || uploading || analyzing} className="w-full bg-gradient-to-r from-teal-600 to-cyan-500 text-white border-0 py-5 rounded-xl">
+          {error && <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-xl flex items-center gap-2"><AlertCircle className="w-4 h-4" />{error}</p>}
+          <Button onClick={analyze} disabled={!file || uploading || analyzing} className="w-full bg-gradient-to-r from-teal-600 to-cyan-500 text-white border-0 h-12 rounded-xl btn-glow shadow-lg shadow-teal-500/15">
             {uploading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Uploading...</> : analyzing ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Analyzing with AI...</> : <><Target className="w-4 h-4 mr-2" />Analyze Resume</>}
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
@@ -747,44 +902,44 @@ function CareerPath() {
         </div>
 
         {isRaw ? (
-          <Card className="bg-slate-900/60 border-slate-800"><CardContent className="p-6"><div className="prose prose-invert max-w-none [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-white"><ReactMarkdown remarkPlugins={[remarkGfm]}>{cp.summary}</ReactMarkdown></div></CardContent></Card>
+          <div className="glass-card-static p-6"><div className="prose prose-invert max-w-none [&>*]:text-slate-200 [&>p]:text-slate-200 [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-slate-200"><ReactMarkdown remarkPlugins={[remarkGfm]}>{cp.summary}</ReactMarkdown></div></div>
         ) : (
           <div className="space-y-6">
-            {cp.summary && <Card className="bg-slate-900/60 border-slate-800"><CardContent className="p-6"><p className="text-slate-300">{cp.summary}</p>{cp.matchScore && <Badge className="mt-2 bg-green-500/20 text-green-300 border-green-500/30">{cp.matchScore}% Match</Badge>}</CardContent></Card>}
+            {cp.summary && <div className="glass-card-static p-6"><p className="text-slate-300 leading-relaxed">{cp.summary}</p>{cp.matchScore && <Badge className="mt-3 bg-green-500/15 text-green-300 border-green-500/20">{cp.matchScore}% Match</Badge>}</div>}
 
             {/* Timeline */}
             {cp.timeline && (
-              <Card className="bg-slate-900/60 border-slate-800">
-                <CardHeader><CardTitle className="text-white">Roadmap Timeline</CardTitle></CardHeader>
-                <CardContent className="space-y-4">
+              <div className="glass-card-static">
+                <div className="p-5 pb-0"><h3 className="text-base font-semibold text-white">Roadmap Timeline</h3></div>
+                <div className="p-5 space-y-4">
                   {cp.timeline.map((phase, i) => (
                     <div key={i} className="relative pl-8 pb-4 border-l-2 border-cyan-500/30 last:border-0">
-                      <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-cyan-500" />
+                      <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg shadow-cyan-500/30" />
                       <h3 className="text-white font-semibold">{phase.phase}</h3>
                       <p className="text-cyan-400 text-xs mb-2">{phase.duration}</p>
                       {phase.goals && <div className="space-y-1 mb-2">{phase.goals.map((g, j) => <div key={j} className="flex gap-2"><CheckCircle2 className="w-3 h-3 text-green-400 mt-0.5 flex-shrink-0" /><span className="text-xs text-slate-300">{g}</span></div>)}</div>}
-                      {phase.skills && <div className="flex flex-wrap gap-1">{phase.skills.map((s, j) => <Badge key={j} className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-[10px]">{s}</Badge>)}</div>}
+                      {phase.skills && <div className="flex flex-wrap gap-1.5">{phase.skills.map((s, j) => <Badge key={j} className="bg-blue-500/15 text-blue-300 border-blue-500/20 text-[10px]">{s}</Badge>)}</div>}
                     </div>
                   ))}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
             {/* Salary & Roles */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {cp.salaryRange && (
-                <Card className="bg-slate-900/60 border-slate-800">
-                  <CardHeader><CardTitle className="text-white text-sm">Salary Ranges</CardTitle></CardHeader>
-                  <CardContent className="space-y-2">
-                    {Object.entries(cp.salaryRange).map(([k, v]) => <div key={k} className="flex justify-between"><span className="text-slate-400 text-sm capitalize">{k}</span><span className="text-green-400 text-sm font-semibold">{v}</span></div>)}
-                  </CardContent>
-                </Card>
+                <div className="glass-card-static">
+                  <div className="p-5 pb-0"><h3 className="text-sm font-semibold text-white">Salary Ranges</h3></div>
+                  <div className="p-5 space-y-2">
+                    {Object.entries(cp.salaryRange).map(([k, v]) => <div key={k} className="flex justify-between items-center"><span className="text-slate-400 text-sm capitalize">{k}</span><span className="text-green-400 text-sm font-semibold">{v}</span></div>)}
+                  </div>
+                </div>
               )}
               {cp.certifications && (
-                <Card className="bg-slate-900/60 border-slate-800">
-                  <CardHeader><CardTitle className="text-white text-sm">Certifications</CardTitle></CardHeader>
-                  <CardContent>{cp.certifications.map((c, i) => <div key={i} className="flex items-center gap-2 mb-2"><Award className="w-4 h-4 text-amber-400" /><span className="text-sm text-slate-300">{c.name}</span><Badge className={`text-[9px] ${c.priority === 'high' ? 'bg-red-500/20 text-red-300' : 'bg-slate-700 text-slate-400'}`}>{c.priority}</Badge></div>)}</CardContent>
-                </Card>
+                <div className="glass-card-static">
+                  <div className="p-5 pb-0"><h3 className="text-sm font-semibold text-white">Certifications</h3></div>
+                  <div className="p-5">{cp.certifications.map((c, i) => <div key={i} className="flex items-center gap-2 mb-2.5"><Award className="w-4 h-4 text-amber-400" /><span className="text-sm text-slate-300">{c.name}</span><Badge className={`text-[9px] ${c.priority === 'high' ? 'bg-red-500/15 text-red-300' : 'bg-slate-700/50 text-slate-400'}`}>{c.priority}</Badge></div>)}</div>
+                </div>
               )}
             </div>
           </div>
@@ -794,19 +949,34 @@ function CareerPath() {
   }
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-white mb-6">Career Path Generator</h1>
-      <Card className="bg-slate-900/60 border-slate-800">
-        <CardContent className="p-6 space-y-4">
-          <div><label className="text-slate-300 text-sm block mb-1">Your Skills</label><textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL..." className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-amber-500 focus:outline-none resize-none" /></div>
-          <div><label className="text-slate-300 text-sm block mb-1">Interests</label><textarea value={interests} onChange={e => setInterests(e.target.value)} rows={2} placeholder="AI, web dev, data science..." className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-amber-500 focus:outline-none resize-none" /></div>
-          <div><label className="text-slate-300 text-sm block mb-1">Education</label><Input value={education} onChange={e => setEducation(e.target.value)} placeholder="B.Tech CS, MBA..." className="bg-slate-800 border-slate-700 text-white" /></div>
-          <div><label className="text-slate-300 text-sm block mb-1">Experience</label><Input value={experience} onChange={e => setExperience(e.target.value)} placeholder="2 years, fresher..." className="bg-slate-800 border-slate-700 text-white" /></div>
-          <Button onClick={generate} disabled={loading || (!skills && !interests)} className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 py-5 rounded-xl">
+    <div className="p-6 lg:p-8 max-w-2xl mx-auto page-transition">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-white mb-1">Career Path Generator</h1>
+        <p className="text-sm text-slate-400">Get a personalized roadmap for your dream career</p>
+      </div>
+      <div className="glass-card overflow-hidden">
+        <div className="p-6 space-y-5">
+          <div>
+            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Your Skills</label>
+            <textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL..." className="w-full input-glass resize-none text-sm" />
+          </div>
+          <div>
+            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Interests</label>
+            <textarea value={interests} onChange={e => setInterests(e.target.value)} rows={2} placeholder="AI, web dev, data science..." className="w-full input-glass resize-none text-sm" />
+          </div>
+          <div>
+            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Education</label>
+            <Input value={education} onChange={e => setEducation(e.target.value)} placeholder="B.Tech CS, MBA..." className="input-glass h-11" />
+          </div>
+          <div>
+            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Experience</label>
+            <Input value={experience} onChange={e => setExperience(e.target.value)} placeholder="2 years, fresher..." className="input-glass h-11" />
+          </div>
+          <Button onClick={generate} disabled={loading || (!skills && !interests)} className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 h-12 rounded-xl btn-glow shadow-lg shadow-amber-500/15">
             {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Generating...</> : <><Compass className="w-4 h-4 mr-2" />Generate Career Path</>}
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
@@ -936,20 +1106,47 @@ function MockInterview() {
 
   if (!started) {
     return (
-      <div className="p-6 max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold text-white mb-6">AI Mock Interview</h1>
-        <Card className="bg-slate-900/60 border-slate-800">
-          <CardContent className="p-6 space-y-4">
-            <div><label className="text-slate-300 text-sm block mb-1">Job Role</label><Input value={role} onChange={e => setRole(e.target.value)} className="bg-slate-800 border-slate-700 text-white" /></div>
-            <div className="grid grid-cols-2 gap-4">
-              <div><label className="text-slate-300 text-sm block mb-1">Level</label><Select value={level} onValueChange={setLevel}><SelectTrigger className="bg-slate-800 border-slate-700 text-white"><SelectValue /></SelectTrigger><SelectContent className="bg-slate-800 border-slate-700"><SelectItem value="entry-level">Entry</SelectItem><SelectItem value="mid-level">Mid</SelectItem><SelectItem value="senior">Senior</SelectItem></SelectContent></Select></div>
-              <div><label className="text-slate-300 text-sm block mb-1">Type</label><Select value={type} onValueChange={setType}><SelectTrigger className="bg-slate-800 border-slate-700 text-white"><SelectValue /></SelectTrigger><SelectContent className="bg-slate-800 border-slate-700"><SelectItem value="behavioral">Behavioral</SelectItem><SelectItem value="technical">Technical</SelectItem><SelectItem value="system-design">System Design</SelectItem><SelectItem value="mixed">Mixed</SelectItem></SelectContent></Select></div>
+      <div className="p-6 lg:p-8 max-w-2xl mx-auto page-transition">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-white mb-1">AI Mock Interview</h1>
+          <p className="text-sm text-slate-400">Practice with AI-powered interview simulation</p>
+        </div>
+        <div className="glass-card overflow-hidden">
+          <div className="p-6 space-y-5">
+            <div>
+              <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Job Role</label>
+              <Input value={role} onChange={e => setRole(e.target.value)} className="input-glass h-11" />
             </div>
-            <Button onClick={startInterview} disabled={loading} className="w-full bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 py-5 rounded-xl">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Level</label>
+                <Select value={level} onValueChange={setLevel}>
+                  <SelectTrigger className="input-glass h-11"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700">
+                    <SelectItem value="entry-level">Entry Level</SelectItem>
+                    <SelectItem value="mid-level">Mid Level</SelectItem>
+                    <SelectItem value="senior">Senior</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Type</label>
+                <Select value={type} onValueChange={setType}>
+                  <SelectTrigger className="input-glass h-11"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700">
+                    <SelectItem value="behavioral">Behavioral</SelectItem>
+                    <SelectItem value="technical">Technical</SelectItem>
+                    <SelectItem value="system-design">System Design</SelectItem>
+                    <SelectItem value="mixed">Mixed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <Button onClick={startInterview} disabled={loading} className="w-full bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 h-12 rounded-xl btn-glow shadow-lg shadow-violet-500/15">
               {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Starting...</> : <><Mic className="w-4 h-4 mr-2" />Start Interview</>}
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }
@@ -964,10 +1161,10 @@ function MockInterview() {
 
       {/* Current Question / Feedback */}
       {feedback && !feedback.raw ? (
-        <Card className="bg-slate-900/60 border-slate-800 mb-4">
-          <CardContent className="p-5">
+        <div className="glass-card-static mb-4">
+          <div className="p-5">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-full border-4 flex items-center justify-center" style={{ borderColor: feedback.score >= 7 ? '#22c55e' : feedback.score >= 5 ? '#eab308' : '#ef4444' }}>
+              <div className="w-16 h-16 rounded-full border-4 flex items-center justify-center animate-scale-in" style={{ borderColor: feedback.score >= 7 ? '#22c55e' : feedback.score >= 5 ? '#eab308' : '#ef4444' }}>
                 <span className="text-xl font-bold text-white">{feedback.score}/{feedback.maxScore || 10}</span>
               </div>
               <div className="flex-1 grid grid-cols-2 gap-2">
@@ -976,19 +1173,19 @@ function MockInterview() {
                 ))}
               </div>
             </div>
-            <p className="text-sm text-slate-300 mb-3">{feedback.feedback}</p>
-            {feedback.sampleAnswer && <div className="p-3 bg-green-900/20 border border-green-700/30 rounded-lg"><p className="text-[10px] text-green-400 mb-1">Sample Better Answer:</p><p className="text-xs text-slate-300">{feedback.sampleAnswer}</p></div>}
-            {feedback.nextQuestion && !isComplete && <div className="mt-4 p-3 bg-slate-800 rounded-lg border border-slate-700"><p className="text-[10px] text-cyan-400 mb-1">Next Question:</p><p className="text-sm text-white">{feedback.nextQuestion}</p></div>}
-          </CardContent>
-        </Card>
+            <p className="text-sm text-slate-300 mb-3 leading-relaxed">{feedback.feedback}</p>
+            {feedback.sampleAnswer && <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-xl"><p className="text-[10px] text-green-400 mb-1 font-medium">Sample Better Answer:</p><p className="text-xs text-slate-300">{feedback.sampleAnswer}</p></div>}
+            {feedback.nextQuestion && !isComplete && <div className="mt-4 p-3 bg-white/[0.03] rounded-xl border border-white/[0.06]"><p className="text-[10px] text-cyan-400 mb-1 font-medium">Next Question:</p><p className="text-sm text-white">{feedback.nextQuestion}</p></div>}
+          </div>
+        </div>
       ) : (
-        <Card className="bg-slate-900/60 border-slate-800 mb-4">
-          <CardContent className="p-5">
-            <div className="prose prose-invert prose-sm max-w-none [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>em]:text-slate-200">
+        <div className="glass-card-static mb-4">
+          <div className="p-5">
+            <div className="prose prose-invert prose-sm max-w-none [&>*]:text-slate-200 [&>p]:text-slate-200 [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>em]:text-slate-300">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{feedback?.feedback || currentContent}</ReactMarkdown>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {!isComplete ? (
@@ -1007,7 +1204,7 @@ function MockInterview() {
           )}
 
           <div className="relative">
-            <textarea value={answer} onChange={e => setAnswer(e.target.value)} placeholder={isRecording ? "Listening... speak now" : "Type or use voice to answer..."} rows={5} className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-4 pr-14 text-sm focus:border-violet-500 focus:outline-none resize-none" />
+            <textarea value={answer} onChange={e => setAnswer(e.target.value)} placeholder={isRecording ? "Listening... speak now" : "Type or use voice to answer..."} rows={5} className="input-glass w-full rounded-xl p-4 pr-14 text-sm resize-none" />
             {voiceSupported && (
               <button onClick={toggleVoice} className={`absolute right-3 top-3 w-10 h-10 rounded-full flex items-center justify-center transition-all ${isRecording ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/30' : 'bg-slate-700 text-slate-400 hover:bg-violet-600 hover:text-white'}`}>
                 <Mic className="w-5 h-5" />
@@ -1030,12 +1227,12 @@ function MockInterview() {
         <div className="space-y-4">
           {/* Final scores summary */}
           {allFeedback.length > 0 && (
-            <Card className="bg-slate-900/60 border-slate-800">
-              <CardContent className="p-5">
+            <div className="glass-card-bright">
+              <div className="p-5">
                 <h3 className="text-white font-semibold mb-3">Interview Performance Summary</h3>
                 <div className="grid grid-cols-5 gap-2">
                   {allFeedback.map((fb, i) => (
-                    <div key={i} className="text-center p-2 rounded-lg bg-slate-800">
+                    <div key={i} className="text-center p-2 rounded-xl bg-white/[0.04] border border-white/[0.06]">
                       <p className="text-[10px] text-slate-400">Q{i+1}</p>
                       <p className={`text-lg font-bold ${(fb.score || 0) >= 7 ? 'text-green-400' : (fb.score || 0) >= 5 ? 'text-yellow-400' : 'text-red-400'}`}>{fb.score || '?'}</p>
                     </div>
@@ -1043,10 +1240,10 @@ function MockInterview() {
                 </div>
                 <div className="mt-3 text-center">
                   <p className="text-slate-400 text-xs">Average Score</p>
-                  <p className="text-2xl font-bold text-white">{(allFeedback.reduce((a, b) => a + (b.score || 0), 0) / allFeedback.length).toFixed(1)}/10</p>
+                  <p className="text-2xl font-bold text-gradient">{(allFeedback.reduce((a, b) => a + (b.score || 0), 0) / allFeedback.length).toFixed(1)}/10</p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
           <Button onClick={() => { stopVoice(); setStarted(false); setFeedback(null); setAllFeedback([]); }} className="w-full bg-gradient-to-r from-violet-600 to-purple-500 text-white border-0 py-4 rounded-xl">Start New Interview</Button>
         </div>
@@ -1082,15 +1279,15 @@ function JobMatching() {
           <Button onClick={() => setResult(null)} variant="outline" className="border-slate-600 text-slate-300">Search Again</Button>
         </div>
 
-        {result.summary && <Card className="bg-slate-900/60 border-slate-800 mb-4"><CardContent className="p-4"><p className="text-slate-300 text-sm">{result.summary}</p></CardContent></Card>}
+        {result.summary && <div className="glass-card-static p-4 mb-4"><p className="text-slate-300 text-sm leading-relaxed">{result.summary}</p></div>}
 
         {result.raw ? (
-          <Card className="bg-slate-900/60 border-slate-800"><CardContent className="p-6"><div className="prose prose-invert max-w-none [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-white"><ReactMarkdown remarkPlugins={[remarkGfm]}>{result.summary}</ReactMarkdown></div></CardContent></Card>
+          <div className="glass-card-static p-6"><div className="prose prose-invert max-w-none [&>*]:text-slate-200 [&>p]:text-slate-200 [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-slate-200"><ReactMarkdown remarkPlugins={[remarkGfm]}>{result.summary}</ReactMarkdown></div></div>
         ) : (
           <div className="space-y-4">
             {matches.map((m, i) => (
-              <Card key={i} className="bg-slate-900/60 border-slate-800 hover:border-slate-600 transition-all">
-                <CardContent className="p-5">
+              <div key={i} className="glass-card overflow-hidden">
+                <div className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <h3 className="text-lg font-semibold text-white">{m.role}</h3>
@@ -1101,17 +1298,17 @@ function JobMatching() {
                       <p className="text-[10px] text-slate-500">Match Score</p>
                     </div>
                   </div>
-                  <p className="text-sm text-slate-300 mb-3">{m.why_match}</p>
-                  <div className="flex flex-wrap gap-1 mb-2">
-                    {(m.skills_matched || []).map((s, j) => <Badge key={j} className="bg-green-500/20 text-green-300 border-green-500/30 text-[10px]">{s}</Badge>)}
-                    {(m.skills_gap || []).map((s, j) => <Badge key={'g'+j} className="bg-red-500/20 text-red-300 border-red-500/30 text-[10px]">Gap: {s}</Badge>)}
+                  <p className="text-sm text-slate-300 mb-3 leading-relaxed">{m.why_match}</p>
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {(m.skills_matched || []).map((s, j) => <Badge key={j} className="bg-green-500/15 text-green-300 border-green-500/20 text-[10px]">{s}</Badge>)}
+                    {(m.skills_gap || []).map((s, j) => <Badge key={'g'+j} className="bg-red-500/15 text-red-300 border-red-500/20 text-[10px]">Gap: {s}</Badge>)}
                   </div>
                   <div className="flex gap-4 text-[10px]">
                     <span className="text-slate-400">Growth: <span className={m.growth_potential === 'high' ? 'text-green-400' : 'text-yellow-400'}>{m.growth_potential}</span></span>
                     <span className="text-slate-400">Demand: <span className={m.demand === 'high' ? 'text-green-400' : 'text-yellow-400'}>{m.demand}</span></span>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -1120,19 +1317,34 @@ function JobMatching() {
   }
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-white mb-6">AI Job Matching</h1>
-      <Card className="bg-slate-900/60 border-slate-800">
-        <CardContent className="p-6 space-y-4">
-          <div><label className="text-slate-300 text-sm block mb-1">Skills</label><textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL..." className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-green-500 focus:outline-none resize-none" /></div>
-          <div><label className="text-slate-300 text-sm block mb-1">Interests</label><Input value={interests} onChange={e => setInterests(e.target.value)} placeholder="AI, web dev..." className="bg-slate-800 border-slate-700 text-white" /></div>
-          <div><label className="text-slate-300 text-sm block mb-1">Experience</label><Input value={experience} onChange={e => setExperience(e.target.value)} placeholder="2 years..." className="bg-slate-800 border-slate-700 text-white" /></div>
-          <div><label className="text-slate-300 text-sm block mb-1">Industry (optional)</label><Input value={industry} onChange={e => setIndustry(e.target.value)} placeholder="Tech, Finance..." className="bg-slate-800 border-slate-700 text-white" /></div>
-          <Button onClick={match} disabled={loading || !skills} className="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white border-0 py-5 rounded-xl">
+    <div className="p-6 lg:p-8 max-w-2xl mx-auto page-transition">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-white mb-1">AI Job Matching</h1>
+        <p className="text-sm text-slate-400">Find the best job matches based on your profile</p>
+      </div>
+      <div className="glass-card overflow-hidden">
+        <div className="p-6 space-y-5">
+          <div>
+            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Skills</label>
+            <textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL..." className="w-full input-glass resize-none text-sm" />
+          </div>
+          <div>
+            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Interests</label>
+            <Input value={interests} onChange={e => setInterests(e.target.value)} placeholder="AI, web dev..." className="input-glass h-11" />
+          </div>
+          <div>
+            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Experience</label>
+            <Input value={experience} onChange={e => setExperience(e.target.value)} placeholder="2 years..." className="input-glass h-11" />
+          </div>
+          <div>
+            <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Industry (optional)</label>
+            <Input value={industry} onChange={e => setIndustry(e.target.value)} placeholder="Tech, Finance..." className="input-glass h-11" />
+          </div>
+          <Button onClick={match} disabled={loading || !skills} className="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white border-0 h-12 rounded-xl btn-glow shadow-lg shadow-green-500/15">
             {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Matching...</> : <><Search className="w-4 h-4 mr-2" />Find Matching Jobs</>}
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1146,89 +1358,94 @@ function Analytics() {
     api.get('/admin/analytics').then(d => { setData(d); setLoading(false); }).catch(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-6 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-cyan-400" /></div>;
+  if (loading) return <div className="p-6 flex items-center justify-center h-full"><div className="flex flex-col items-center gap-3"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /><p className="text-sm text-slate-500">Loading analytics...</p></div></div>;
   if (!data) return <div className="p-6 text-slate-400 text-center">No analytics data</div>;
 
   const s = data.stats;
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold text-white mb-6">Analytics Dashboard</h1>
+    <div className="p-6 lg:p-8 max-w-6xl mx-auto page-transition">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-white mb-1">Analytics Dashboard</h1>
+        <p className="text-sm text-slate-400">Track usage and performance insights</p>
+      </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Users', value: s.totalUsers, icon: User, color: 'text-blue-400' },
-          { label: 'Resumes Analyzed', value: s.totalResumes, icon: FileText, color: 'text-teal-400' },
-          { label: 'Mock Interviews', value: s.totalInterviews, icon: Mic, color: 'text-violet-400' },
-          { label: 'Avg ATS Score', value: s.avgAtsScore, icon: Target, color: 'text-green-400' },
-          { label: 'Chat Sessions', value: s.totalChats, icon: MessageSquare, color: 'text-cyan-400' },
-          { label: 'Career Paths', value: s.totalCareerPaths, icon: Compass, color: 'text-amber-400' },
-          { label: 'Job Matches', value: s.totalJobMatches, icon: Briefcase, color: 'text-green-400' },
+          { label: 'Total Users', value: s.totalUsers, icon: User, color: 'text-blue-400', bgColor: 'bg-blue-500/10' },
+          { label: 'Resumes Analyzed', value: s.totalResumes, icon: FileText, color: 'text-teal-400', bgColor: 'bg-teal-500/10' },
+          { label: 'Mock Interviews', value: s.totalInterviews, icon: Mic, color: 'text-violet-400', bgColor: 'bg-violet-500/10' },
+          { label: 'Avg ATS Score', value: s.avgAtsScore, icon: Target, color: 'text-green-400', bgColor: 'bg-green-500/10' },
+          { label: 'Chat Sessions', value: s.totalChats, icon: MessageSquare, color: 'text-cyan-400', bgColor: 'bg-cyan-500/10' },
+          { label: 'Career Paths', value: s.totalCareerPaths, icon: Compass, color: 'text-amber-400', bgColor: 'bg-amber-500/10' },
+          { label: 'Job Matches', value: s.totalJobMatches, icon: Briefcase, color: 'text-green-400', bgColor: 'bg-green-500/10' },
         ].map((stat, i) => (
-          <Card key={i} className="bg-slate-900/60 border-slate-800">
-            <CardContent className="p-4 flex items-center gap-3">
-              <stat.icon className={`w-8 h-8 ${stat.color}`} />
+          <div key={i} className="glass-card p-5 group">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-xl ${stat.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                <stat.icon className={`w-5 h-5 ${stat.color}`} />
+              </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stat.value || 0}</p>
                 <p className="text-xs text-slate-400">{stat.label}</p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Module Usage */}
-      <Card className="bg-slate-900/60 border-slate-800 mb-6">
-        <CardHeader><CardTitle className="text-white">Module Usage</CardTitle></CardHeader>
-        <CardContent>
+      <div className="glass-card-static mb-6">
+        <div className="p-5 pb-0"><h3 className="text-base font-semibold text-white">Module Usage</h3></div>
+        <div className="p-5">
           <div className="space-y-3">
             {Object.entries(data.moduleUsage || {}).sort((a, b) => b[1] - a[1]).map(([mod, count]) => {
               const maxCount = Math.max(...Object.values(data.moduleUsage || {}));
               return (
                 <div key={mod}>
-                  <div className="flex justify-between text-sm mb-1"><span className="text-slate-300">{mod.replace(/_/g, ' ')}</span><span className="text-slate-400">{count}</span></div>
+                  <div className="flex justify-between text-sm mb-1.5"><span className="text-slate-300 capitalize">{mod.replace(/_/g, ' ')}</span><span className="text-slate-400 font-medium">{count}</span></div>
                   <Progress value={(count / maxCount) * 100} className="h-2" />
                 </div>
               );
             })}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Daily Activity */}
-      <Card className="bg-slate-900/60 border-slate-800 mb-6">
-        <CardHeader><CardTitle className="text-white">Daily Activity (Last 7 Days)</CardTitle></CardHeader>
-        <CardContent>
-          <div className="flex items-end gap-2 h-32">
+      <div className="glass-card-static mb-6">
+        <div className="p-5 pb-0"><h3 className="text-base font-semibold text-white">Daily Activity (Last 7 Days)</h3></div>
+        <div className="p-5">
+          <div className="flex items-end gap-3 h-36">
             {(data.dailyActivity || []).map((d, i) => {
               const maxVal = Math.max(...(data.dailyActivity || []).map(x => x.count), 1);
               return (
-                <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full bg-cyan-500/30 rounded-t" style={{ height: `${(d.count / maxVal) * 100}%`, minHeight: '4px' }} />
-                  <span className="text-[9px] text-slate-500">{d.date?.slice(5)}</span>
-                  <span className="text-[10px] text-slate-300">{d.count}</span>
+                <div key={i} className="flex-1 flex flex-col items-center gap-1.5 group">
+                  <div className="w-full bg-gradient-to-t from-cyan-500/40 to-cyan-500/10 rounded-t-lg transition-all duration-300 group-hover:from-cyan-500/60 group-hover:to-cyan-500/20" style={{ height: `${Math.max((d.count / maxVal) * 100, 5)}%` }} />
+                  <span className="text-[10px] text-slate-500">{d.date?.slice(5)}</span>
+                  <span className="text-[10px] text-slate-300 font-medium">{d.count}</span>
                 </div>
               );
             })}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Recent Events */}
-      <Card className="bg-slate-900/60 border-slate-800">
-        <CardHeader><CardTitle className="text-white">Recent Activity</CardTitle></CardHeader>
-        <CardContent>
+      <div className="glass-card-static">
+        <div className="p-5 pb-0"><h3 className="text-base font-semibold text-white">Recent Activity</h3></div>
+        <div className="p-5">
           <div className="space-y-2">
             {(data.recentEvents || []).map((e, i) => (
-              <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
                 <div className="w-2 h-2 rounded-full bg-cyan-400" />
-                <span className="text-xs text-slate-300 flex-1">{e.type.replace(/_/g, ' ')}</span>
+                <span className="text-xs text-slate-300 flex-1 capitalize">{e.type.replace(/_/g, ' ')}</span>
                 <span className="text-[10px] text-slate-500">{formatDateTime(e.createdAt)}</span>
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1269,91 +1486,106 @@ function UserProfile({ user, onUpdate }) {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold text-white mb-6">My Profile</h1>
+    <div className="p-6 lg:p-8 max-w-4xl mx-auto page-transition">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-white mb-1">My Profile</h1>
+        <p className="text-sm text-slate-400">Manage your career profile and preferences</p>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Form */}
-        <div className="lg:col-span-2 space-y-4">
-          <Card className="bg-slate-900/60 border-slate-800">
-            <CardHeader><CardTitle className="text-white text-lg">Personal Information</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
+        <div className="lg:col-span-2 space-y-5">
+          <div className="glass-card overflow-hidden">
+            <div className="p-5 pb-0">
+              <h3 className="text-base font-semibold text-white">Personal Information</h3>
+            </div>
+            <div className="p-5 space-y-4">
               <div>
-                <label className="text-slate-300 text-sm block mb-1">Full Name</label>
-                <Input value={name} onChange={e => setName(e.target.value)} className="bg-slate-800 border-slate-700 text-white" />
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Full Name</label>
+                <Input value={name} onChange={e => setName(e.target.value)} className="input-glass h-11" />
               </div>
               <div>
-                <label className="text-slate-300 text-sm block mb-1">Email</label>
-                <Input value={user?.email || ''} disabled className="bg-slate-800/50 border-slate-700 text-slate-500" />
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Email</label>
+                <Input value={user?.email || ''} disabled className="input-glass h-11 opacity-50" />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="bg-slate-900/60 border-slate-800">
-            <CardHeader><CardTitle className="text-white text-lg">Career Profile</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
+          <div className="glass-card overflow-hidden">
+            <div className="p-5 pb-0">
+              <h3 className="text-base font-semibold text-white">Career Profile</h3>
+            </div>
+            <div className="p-5 space-y-4">
               <div>
-                <label className="text-slate-300 text-sm block mb-1">Skills <span className="text-slate-500">(comma separated)</span></label>
-                <textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL, Machine Learning..." className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none resize-none" />
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Skills <span className="text-slate-500 normal-case">(comma separated)</span></label>
+                <textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL, Machine Learning..." className="w-full input-glass resize-none text-sm" />
               </div>
               <div>
-                <label className="text-slate-300 text-sm block mb-1">Interests <span className="text-slate-500">(comma separated)</span></label>
-                <textarea value={interests} onChange={e => setInterests(e.target.value)} rows={2} placeholder="AI, Web Development, Data Science..." className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none resize-none" />
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Interests <span className="text-slate-500 normal-case">(comma separated)</span></label>
+                <textarea value={interests} onChange={e => setInterests(e.target.value)} rows={2} placeholder="AI, Web Development, Data Science..." className="w-full input-glass resize-none text-sm" />
               </div>
               <div>
-                <label className="text-slate-300 text-sm block mb-1">Education</label>
-                <Input value={education} onChange={e => setEducation(e.target.value)} placeholder="B.Tech Computer Science, MIT..." className="bg-slate-800 border-slate-700 text-white" />
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Education</label>
+                <Input value={education} onChange={e => setEducation(e.target.value)} placeholder="B.Tech Computer Science, MIT..." className="input-glass h-11" />
               </div>
               <div>
-                <label className="text-slate-300 text-sm block mb-1">Experience</label>
-                <Input value={experience} onChange={e => setExperience(e.target.value)} placeholder="2 years as Software Developer..." className="bg-slate-800 border-slate-700 text-white" />
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Experience</label>
+                <Input value={experience} onChange={e => setExperience(e.target.value)} placeholder="2 years as Software Developer..." className="input-glass h-11" />
               </div>
-              <Button onClick={save} disabled={saving} className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0">
+              <Button onClick={save} disabled={saving} className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0 h-11 rounded-xl btn-glow shadow-lg shadow-blue-500/15">
                 {saving ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Saving...</> : saved ? <><CheckCircle2 className="w-4 h-4 mr-2" />Saved!</> : 'Save Profile'}
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Stats & Resume History */}
-        <div className="space-y-4">
-          <Card className="bg-slate-900/60 border-slate-800">
-            <CardHeader><CardTitle className="text-white text-lg">Stats</CardTitle></CardHeader>
-            <CardContent className="space-y-3">
+        <div className="space-y-5">
+          <div className="glass-card overflow-hidden">
+            <div className="p-5 pb-0">
+              <h3 className="text-base font-semibold text-white">Stats</h3>
+            </div>
+            <div className="p-5 space-y-2.5">
               {stats && [
-                { label: 'Chat Sessions', value: stats.chatCount, icon: MessageSquare, color: 'text-cyan-400' },
-                { label: 'Resumes Analyzed', value: stats.resumeCount, icon: FileText, color: 'text-teal-400' },
-                { label: 'Mock Interviews', value: stats.interviewCount, icon: Mic, color: 'text-violet-400' },
-                { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, color: 'text-amber-400' },
+                { label: 'Chat Sessions', value: stats.chatCount, icon: MessageSquare, color: 'text-cyan-400', bgColor: 'bg-cyan-500/10' },
+                { label: 'Resumes Analyzed', value: stats.resumeCount, icon: FileText, color: 'text-teal-400', bgColor: 'bg-teal-500/10' },
+                { label: 'Mock Interviews', value: stats.interviewCount, icon: Mic, color: 'text-violet-400', bgColor: 'bg-violet-500/10' },
+                { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, color: 'text-amber-400', bgColor: 'bg-amber-500/10' },
               ].map((s, i) => (
-                <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
-                  <s.icon className={`w-5 h-5 ${s.color}`} />
+                <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                  <div className={`w-8 h-8 rounded-lg ${s.bgColor} flex items-center justify-center`}>
+                    <s.icon className={`w-4 h-4 ${s.color}`} />
+                  </div>
                   <span className="text-sm text-slate-300 flex-1">{s.label}</span>
                   <span className="text-sm font-bold text-white">{s.value || 0}</span>
                 </div>
               ))}
-              <div className="text-center pt-2">
+              <div className="text-center pt-3">
                 <p className="text-[10px] text-slate-500">Member since {formatDate(user?.createdAt)}</p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="bg-slate-900/60 border-slate-800">
-            <CardHeader><CardTitle className="text-white text-lg">Resume History</CardTitle></CardHeader>
-            <CardContent>
+          <div className="glass-card overflow-hidden">
+            <div className="p-5 pb-0">
+              <h3 className="text-base font-semibold text-white">Resume History</h3>
+            </div>
+            <div className="p-5">
               {resumes.length === 0 ? (
-                <p className="text-slate-500 text-sm text-center py-4">No resumes uploaded yet</p>
+                <p className="text-slate-500 text-sm text-center py-6">No resumes uploaded yet</p>
               ) : (
                 <div className="space-y-2">
                   {resumes.map(r => (
-                    <div key={r.id} className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50">
-                      <FileText className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                    <div key={r.id} className="flex items-center gap-2.5 p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                      <div className="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center flex-shrink-0">
+                        <FileText className="w-4 h-4 text-teal-400" />
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-slate-200 truncate">{r.fileName}</p>
+                        <p className="text-xs text-slate-200 truncate font-medium">{r.fileName}</p>
                         <p className="text-[10px] text-slate-500">{formatDate(r.createdAt)}</p>
                       </div>
                       {r.analysis?.atsScore && (
-                        <Badge className={`text-[10px] ${r.analysis.atsScore >= 70 ? 'bg-green-500/20 text-green-300' : r.analysis.atsScore >= 50 ? 'bg-yellow-500/20 text-yellow-300' : 'bg-red-500/20 text-red-300'}`}>
+                        <Badge className={`text-[10px] ${r.analysis.atsScore >= 70 ? 'bg-green-500/15 text-green-300 border-green-500/20' : r.analysis.atsScore >= 50 ? 'bg-yellow-500/15 text-yellow-300 border-yellow-500/20' : 'bg-red-500/15 text-red-300 border-red-500/20'}`}>
                           ATS: {r.analysis.atsScore}
                         </Badge>
                       )}
@@ -1361,8 +1593,8 @@ function UserProfile({ user, onUpdate }) {
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1407,7 +1639,19 @@ function App() {
 }, []);
 
   // Show loading during SSR and initial hydration
-  if (!mounted || user === undefined) return <div className="h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /></div>;
+  if (!mounted || user === undefined) return (
+    <div className="h-screen bg-animated-mesh flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4 animate-slide-up">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-400 to-teal-400 flex items-center justify-center shadow-lg shadow-cyan-500/25 animate-float">
+          <Brain className="w-7 h-7 text-white" />
+        </div>
+        <div className="flex items-center gap-2">
+          <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
+          <span className="text-sm text-slate-400">Loading CareerGPT...</span>
+        </div>
+      </div>
+    </div>
+  );
   if (user === null) return <AuthPage onAuth={(u) => { setUser(u || { name: 'Guest', role: 'guest' }); }} />;
 
   const logout = () => {
@@ -1431,9 +1675,12 @@ function App() {
   };
 
   return (
-    <div className="h-screen flex bg-slate-950">
+    <div className="h-screen flex" style={{ background: 'linear-gradient(135deg, #050a18 0%, #0a1628 50%, #0c0f1a 100%)' }}>
       <Sidebar currentPage={page} onNavigate={setPage} user={user.role !== 'guest' ? user : null} onLogout={logout} collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
-      <div className="flex-1 overflow-auto">{renderPage()}</div>
+      <div className="flex-1 overflow-auto custom-scrollbar relative">
+        <div className="absolute inset-0 bg-grid-pattern pointer-events-none opacity-40" />
+        <div className="relative z-10">{renderPage()}</div>
+      </div>
     </div>
   );
 }
