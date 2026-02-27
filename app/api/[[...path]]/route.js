@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 // PDF parse v1.x - compatible with serverless
 import pdf from 'pdf-parse/lib/pdf-parse.js';
+import mammoth from 'mammoth';
 
 // Import new utilities
 const { sendEmail, emailTemplates } = require('../../../lib/email.js');
@@ -284,7 +285,7 @@ const RESUME_ATS_SYSTEM = `You are an expert ATS (Applicant Tracking System) res
   "keywords": {
     "found": ["keyword1", "keyword2"],
     "missing": ["keyword3", "keyword4"],
-    "suggestions": ["suggestion1", "suggestion2"]
+    "suggestions": ["Add keyword X to strengthen your profile", "Include keyword Y in skills section"]
   },
   "strengths": ["strength1", "strength2"],
   "weaknesses": ["weakness1", "weakness2"],
@@ -293,8 +294,27 @@ const RESUME_ATS_SYSTEM = `You are an expert ATS (Applicant Tracking System) res
   ],
   "experienceLevel": "entry/mid/senior",
   "matchingRoles": ["Role 1", "Role 2", "Role 3"],
-  "overallFeedback": "Summary feedback paragraph"
-}`;
+  "overallFeedback": "Summary feedback paragraph",
+  "atsChecklist": [
+    {"item": "Uses standard section headings (Experience, Education, Skills)", "passed": true, "tip": "Section headings are clearly labeled"},
+    {"item": "No tables or complex formatting detected", "passed": true, "tip": "Clean formatting helps ATS parsing"},
+    {"item": "Contact information is complete", "passed": true, "tip": "Email and phone are present"},
+    {"item": "Consistent date formatting", "passed": false, "tip": "Use MM/YYYY format consistently"},
+    {"item": "Action verbs used in bullet points", "passed": true, "tip": "Strong action verbs improve readability"},
+    {"item": "Quantified achievements present", "passed": false, "tip": "Add numbers and metrics to bullets"},
+    {"item": "Appropriate resume length", "passed": true, "tip": "Length is suitable for experience level"},
+    {"item": "No spelling or grammar errors", "passed": true, "tip": "Text appears clean"},
+    {"item": "Skills section matches target role", "passed": false, "tip": "Add more role-relevant skills"},
+    {"item": "Professional summary/objective present", "passed": true, "tip": "Summary effectively introduces candidate"}
+  ],
+  "readability": {
+    "score": 75,
+    "level": "Good",
+    "avgSentenceLength": 16,
+    "suggestions": ["Shorten some bullet points", "Use simpler language in summary"]
+  }
+}
+Evaluate ALL checklist items honestly based on the actual resume content. Set passed to true/false accurately.`;
 
 const INTERVIEW_SYSTEM = `You are an expert interviewer conducting a mock interview. Ask realistic questions one at a time. After the user answers, provide structured feedback. Be encouraging but honest. Use markdown formatting.`;
 
@@ -768,6 +788,18 @@ async function handleResumeUpload(request) {
           return NextResponse.json({ error: 'Failed to parse PDF. Please try a different file or use TXT format.' }, { status: 400 });
         }
       }
+    } else if (file.name.toLowerCase().endsWith('.docx')) {
+      try {
+        const result = await mammoth.extractRawText({ buffer });
+        textContent = result.value || '';
+        console.log(`DOCX parsed successfully: ${textContent.length} chars extracted`);
+        if (!textContent || textContent.length < 20) {
+          return NextResponse.json({ error: 'Could not extract text from DOCX. Please try PDF or TXT format.' }, { status: 400 });
+        }
+      } catch (docxError) {
+        console.error('DOCX parsing error:', docxError.message);
+        return NextResponse.json({ error: 'Failed to parse DOCX file. Please try PDF or TXT format.' }, { status: 400 });
+      }
     } else {
       textContent = buffer.toString('utf-8');
     }
@@ -827,6 +859,12 @@ async function handleResumeAnalyze(request) {
     } catch {
       analysis = { atsScore: 0, overallFeedback: response, raw: true };
     }
+
+    // Add word count and text metrics
+    const words = resume.textContent.split(/\s+/).filter(w => w.length > 0);
+    analysis.wordCount = words.length;
+    analysis.charCount = resume.textContent.length;
+    analysis.pageEstimate = Math.max(1, Math.ceil(words.length / 400));
 
     // Enhance analysis with parsed data
     if (structured) {
