@@ -126,12 +126,12 @@ function getModelStr(provider, model) {
   // OpenRouter uses different model naming conventions
   if (OPENROUTER_API_KEY) {
     const modelMap = {
-      'gpt-4.1': 'openai/gpt-4-turbo',
-      'gpt-4': 'openai/gpt-4-turbo',
-      'claude-4-sonnet-20250514': 'anthropic/claude-3.5-sonnet',
-      'gemini-2.5-flash': 'google/gemini-2-flash',
-      'grok-3-mini': 'xai/grok-2-mini',
-      'sonar-pro': 'perplexity/sonar'
+      'gpt-4.1': 'openai/gpt-4.1',
+      'gpt-4': 'openai/gpt-4.1',
+      'claude-4-sonnet-20250514': 'anthropic/claude-sonnet-4',
+      'gemini-2.5-flash': 'google/gemini-2.5-flash-preview',
+      'grok-3-mini': 'x-ai/grok-3-mini',
+      'sonar-pro': 'perplexity/sonar-pro'
     };
     return modelMap[model] || `${provider}/${model}`;
   }
@@ -140,11 +140,11 @@ function getModelStr(provider, model) {
 }
 
 const ALL_MODELS = [
-  { provider: 'openai', model: 'gpt-4.1', name: 'GPT-4 Turbo', color: '#10a37f', guaranteed: true },
-  { provider: 'anthropic', model: 'claude-4-sonnet-20250514', name: 'Claude 3.5 Sonnet', color: '#d97706', guaranteed: true },
-  { provider: 'gemini', model: 'gemini-2.5-flash', name: 'Gemini 2.0 Flash', color: '#4285f4', guaranteed: true },
-  { provider: 'xai', model: 'grok-3-mini', name: 'Grok 3 Mini', color: '#ef4444', guaranteed: false },
-  { provider: 'perplexity', model: 'sonar-pro', name: 'Perplexity Sonar Pro', color: '#22d3ee', guaranteed: false },
+  { provider: 'openai', model: 'gpt-4.1', name: 'GPT-4.1', color: '#10a37f', guaranteed: true },
+  { provider: 'anthropic', model: 'claude-4-sonnet-20250514', name: 'Claude 4 Sonnet', color: '#d97706', guaranteed: true },
+  { provider: 'google', model: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', color: '#4285f4', guaranteed: true },
+  { provider: 'x-ai', model: 'grok-3-mini', name: 'Grok 3 Mini', color: '#ef4444', guaranteed: false },
+  { provider: 'perplexity', model: 'sonar-pro', name: 'Perplexity Sonar', color: '#22d3ee', guaranteed: false },
 ];
 
 async function callModel(client, modelStr, messages) {
@@ -165,15 +165,18 @@ async function callMultiModel(systemPrompt, userMessage, activeModelNames = null
     ? ALL_MODELS.filter(m => activeModelNames.includes(m.name))
     : ALL_MODELS;
 
-  // Skip unreliable models that consistently fail
-  modelsToUse = modelsToUse.filter(m => !['Gemini 2.0 Flash', 'Grok 3 Mini'].includes(m.name));
+  // Prioritize guaranteed models first, then beta models
+  modelsToUse = [
+    ...modelsToUse.filter(m => m.guaranteed),
+    ...modelsToUse.filter(m => !m.guaranteed)
+  ];
 
   const messages = [
     { role: 'system', content: systemPrompt },
     { role: 'user', content: userMessage },
   ];
 
-  // Use sequential model calls with timeouts instead of parallel Promise.all
+  // Use sequential model calls with timeouts - guaranteed models first
   const results = [];
   const timeoutMs = 15000; // 15 second timeout per model
   
@@ -609,6 +612,35 @@ async function handleUpdateProfile(request) {
   return NextResponse.json({ success: true });
 }
 
+// --- CHANGE PASSWORD ---
+async function handleChangePassword(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const body = await request.json();
+    const { currentPassword, newPassword } = body;
+    if (!currentPassword || !newPassword) return NextResponse.json({ error: 'Current and new password required' }, { status: 400 });
+    if (newPassword.length < 6) return NextResponse.json({ error: 'New password must be at least 6 characters' }, { status: 400 });
+    if (currentPassword === newPassword) return NextResponse.json({ error: 'New password must be different from current password' }, { status: 400 });
+
+    const db = await getDb();
+    const user = await db.collection('users').findOne({ id: auth.id });
+    if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+
+    const valid = await bcrypt.compare(currentPassword, user.password);
+    if (!valid) return NextResponse.json({ error: 'Current password is incorrect' }, { status: 401 });
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await db.collection('users').updateOne({ id: auth.id }, { $set: { password: hashed } });
+    
+    await logAnalytics(db, 'password_changed', { userId: auth.id });
+    return NextResponse.json({ success: true, message: 'Password changed successfully' });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
 // --- CAREER CHAT ---
 async function handleChatSend(request) {
   const auth = verifyToken(request);
@@ -635,14 +667,32 @@ async function handleChatSend(request) {
   try {
     const fullMessages = [{ role: 'system', content: CAREER_SYSTEM }, ...recentMsgs, { role: 'user', content: message }];
     const client = getOpenAIClient();
-    const modelsToUse = activeModels ? ALL_MODELS.filter(m => activeModels.includes(m.name)) : ALL_MODELS;
+    let modelsToUse = activeModels ? ALL_MODELS.filter(m => activeModels.includes(m.name)) : ALL_MODELS;
+    
+    // Prioritize guaranteed models first for faster response
+    modelsToUse = [
+      ...modelsToUse.filter(m => m.guaranteed),
+      ...modelsToUse.filter(m => !m.guaranteed)
+    ];
 
-    const results = await Promise.all(modelsToUse.map(async (m) => {
+    // Sequential with early exit — much faster than Promise.all
+    const results = [];
+    const timeoutMs = 15000;
+    for (const m of modelsToUse) {
       const start = Date.now();
-      const modelStr = getModelStr(m.provider, m.model);
-      const response = await callModel(client, modelStr, fullMessages);
-      return { name: m.name, color: m.color, response, duration: Date.now() - start, success: !!response };
-    }));
+      try {
+        const modelStr = getModelStr(m.provider, m.model);
+        const modelPromise = callModel(client, modelStr, fullMessages);
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Model timeout')), timeoutMs));
+        const response = await Promise.race([modelPromise, timeoutPromise]);
+        results.push({ name: m.name, color: m.color, response, duration: Date.now() - start, success: !!response });
+      } catch (e) {
+        console.warn(`Chat model ${m.name} failed:`, e.message);
+        results.push({ name: m.name, color: m.color, response: null, duration: Date.now() - start, success: false });
+      }
+      // Early exit once we have a successful response
+      if (results.filter(r => r.success).length >= 1) break;
+    }
 
     const valid = results.filter(r => r.response);
     const failed = results.filter(r => !r.response);
@@ -693,15 +743,20 @@ async function handleGetSessions(request) {
 }
 
 async function handleGetSession(request, sessionId) {
+  const auth = verifyToken(request);
   const db = await getDb();
-  const session = await db.collection('sessions').findOne({ id: sessionId });
+  const filter = { id: sessionId };
+  if (auth) filter.userId = auth.id;
+  const session = await db.collection('sessions').findOne(filter);
   if (!session) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ session });
 }
 
-async function handleDeleteSession(sessionId) {
+async function handleDeleteSession(request, sessionId) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const db = await getDb();
-  await db.collection('sessions').deleteOne({ id: sessionId });
+  await db.collection('sessions').deleteOne({ id: sessionId, userId: auth.id });
   return NextResponse.json({ success: true });
 }
 
@@ -732,7 +787,7 @@ ${location ? `Location/Market: ${location}` : ''}
 Return a detailed JSON career roadmap with timeline phases, certifications, salary ranges, top roles, skill gaps, market demand, alternative paths, and networking tips. Make salary ranges location-appropriate if location is specified.`;
 
   try {
-    const result = await callMultiModel(CAREER_PATH_SYSTEM, prompt, ['GPT-4 Turbo', 'Claude 3.5 Sonnet', 'Perplexity Sonar Pro']);
+    const result = await callMultiModel(CAREER_PATH_SYSTEM, prompt, ['GPT-4.1', 'Claude 4 Sonnet', 'Perplexity Sonar']);
     
     if (!result || !result.combinedResponse) {
       return NextResponse.json({ error: 'Failed to generate career path: LLM did not return a valid response' }, { status: 500 });
@@ -1093,7 +1148,7 @@ Return ONLY valid JSON (no markdown):
   "recommendations": ["rec1", "rec2"]
 }`;
 
-      const result = await callMultiModel(JOB_MATCH_SYSTEM, prompt, ['GPT-4 Turbo', 'Claude 3.5 Sonnet']);
+      const result = await callMultiModel(JOB_MATCH_SYSTEM, prompt, ['GPT-4.1', 'Claude 4 Sonnet']);
 
       if (result && result.combinedResponse) {
         try {
@@ -2254,8 +2309,8 @@ export async function GET(request) {
     if (path === '/chat/sessions') return handleGetSessions(request);
     if (path.startsWith('/chat/sessions/')) return handleGetSession(request, path.split('/chat/sessions/')[1]);
     if (path === '/resumes') return handleGetResumes(request);
-    if (path.startsWith('/resume/')) return handleGetResume(path.split('/resume/')[1]);
     if (path.startsWith('/resume/compare/')) return handleGetResumeComparison(request, path.split('/resume/compare/')[1]);
+    if (path.startsWith('/resume/')) return handleGetResume(path.split('/resume/')[1]);
     if (path === '/career-paths') return handleGetCareerPaths(request);
     if (path.startsWith('/interview/report/')) return handleExportInterviewReport(request, path.split('/interview/report/')[1]);
     if (path === '/admin/analytics') return handleGetAnalytics(request);
@@ -2289,6 +2344,7 @@ export async function POST(request) {
     if (path === '/auth/verify-email') return handleVerifyEmail((await request.json()).token);
     if (path === '/auth/forgot-password') return handleForgotPassword(await request.json());
     if (path === '/auth/reset-password') return handleResetPassword(await request.json());
+    if (path === '/auth/change-password') return handleChangePassword(request);
     
     // Original endpoints
     if (path === '/chat/send') return handleChatSend(request);
@@ -2352,7 +2408,7 @@ export async function PUT(request) {
 export async function DELETE(request) {
   const path = getPath(request);
   try {
-    if (path.startsWith('/chat/sessions/')) return handleDeleteSession(path.split('/chat/sessions/')[1]);
+    if (path.startsWith('/chat/sessions/')) return handleDeleteSession(request, path.split('/chat/sessions/')[1]);
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
