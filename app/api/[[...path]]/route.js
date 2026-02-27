@@ -784,7 +784,24 @@ Experience: ${experience || 'Not specified'}
 ${targetRole ? `Target/Dream Role: ${targetRole}` : ''}
 ${location ? `Location/Market: ${location}` : ''}
 
-Return a detailed JSON career roadmap with timeline phases, certifications, salary ranges, top roles, skill gaps, market demand, alternative paths, and networking tips. Make salary ranges location-appropriate if location is specified.`;
+Return ONLY valid JSON (no markdown) with EXACTLY these field names:
+{
+  "title": "Career Path Title",
+  "summary": "Brief overview of the career path",
+  "timeline": [
+    { "phase": "Phase 1 (0-6 months)", "title": "Foundation", "goals": ["goal1"], "skills": ["skill1"], "milestones": ["milestone1"] },
+    { "phase": "Phase 2 (6-18 months)", "title": "Growth", "goals": ["goal1"], "skills": ["skill1"], "milestones": ["milestone1"] }
+  ],
+  "salaryRange": { "entry": "$X-Y", "mid": "$X-Y", "senior": "$X-Y" },
+  "certifications": [{ "name": "Cert Name", "provider": "Provider", "difficulty": "beginner|intermediate|advanced", "value": "high|medium" }],
+  "topRoles": [{ "title": "Role", "salary": "$X-Y", "demand": "high|medium", "description": "Brief" }],
+  "skillGaps": ["gap1", "gap2"],
+  "marketDemand": { "level": "high|medium|low", "trend": "growing|stable|declining", "hotSkills": ["skill1"] },
+  "alternativePaths": [{ "title": "Alt Path", "description": "Brief" }],
+  "networkingTips": ["tip1", "tip2"],
+  "recommendations": ["rec1", "rec2"]
+}
+Make salary ranges location-appropriate if location is specified. Include at least 3 timeline phases.`;
 
   try {
     const result = await callMultiModel(CAREER_PATH_SYSTEM, prompt, ['GPT-4.1', 'Claude 4 Sonnet', 'Perplexity Sonar']);
@@ -801,16 +818,48 @@ Return a detailed JSON career roadmap with timeline phases, certifications, sala
       parsed = { title: 'Career Path', summary: result.combinedResponse, raw: true };
     }
 
+    // Normalize career path fields — LLMs return varying structures
+    // Support nested structures like { careerPath: { ... } }
+    const src = parsed.careerPath || parsed.career_path || parsed.career || parsed;
+
+    // Find timeline-like array from any key
+    let timelineData = src.timeline || src.phases || src.roadmap || src.milestones || src.steps || src.careerTimeline || src.career_timeline || src.journey || [];
+    if (!Array.isArray(timelineData) || timelineData.length === 0) {
+      // Search all values for the first array with objects having phase/step/title
+      for (const val of Object.values(src)) {
+        if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object' && (val[0].phase || val[0].step || val[0].title || val[0].name || val[0].period)) {
+          timelineData = val;
+          break;
+        }
+      }
+    }
+
+    const normalized = {
+      ...src,
+      title: src.title || `Career Path: ${targetRole || 'Professional'}`,
+      summary: src.summary || src.overview || src.description || '',
+      timeline: timelineData,
+      salaryRange: src.salaryRange || src.salary || src.salaryRanges || src.salary_ranges || src.compensation || { entry: 'N/A', mid: 'N/A', senior: 'N/A' },
+      certifications: src.certifications || src.certs || src.recommendedCertifications || src.recommended_certifications || [],
+      topRoles: src.topRoles || src.top_roles || src.roles || src.suggestedRoles || src.careerOptions || [],
+      skillGaps: src.skillGaps || src.skill_gaps || src.gaps || src.missingSkills || [],
+      marketDemand: src.marketDemand || src.market_demand || src.demand || src.market || { level: 'medium' },
+      alternativePaths: src.alternativePaths || src.alternative_paths || src.alternatives || [],
+      networkingTips: src.networkingTips || src.networking_tips || src.networking || [],
+      recommendations: src.recommendations || src.tips || src.advice || [],
+      raw: parsed.raw || false
+    };
+
     const db = await getDb();
     const careerPath = {
       id: uuidv4(), userId: auth?.id || 'anonymous', input: { skills, interests, education, experience, targetRole, location },
-      result: parsed, models: result.modelResponses.map(r => r.name), synthesized: result.synthesized,
+      result: normalized, models: result.modelResponses.map(r => r.name), synthesized: result.synthesized,
       createdAt: new Date().toISOString(),
     };
     await db.collection('career_paths').insertOne(careerPath);
     await logAnalytics(db, 'career_path_generated', { userId: auth?.id });
 
-    return NextResponse.json({ careerPath: parsed, id: careerPath.id, models: result.modelResponses.map(r => r.name), synthesized: result.synthesized });
+    return NextResponse.json({ careerPath: normalized, path: normalized, id: careerPath.id, pathId: careerPath.id, models: result.modelResponses.map(r => r.name), synthesized: result.synthesized });
   } catch (error) {
     console.error('Career path generation error:', error.message);
     return NextResponse.json({ error: 'Failed: ' + error.message }, { status: 500 });
@@ -828,14 +877,33 @@ async function handleGetCareerPaths(request) {
 // --- RESUME UPLOAD & ATS ANALYSIS ---
 async function handleResumeUpload(request) {
   try {
-    const formData = await request.formData();
-    const file = formData.get('file');
-    if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
-
-    const buffer = Buffer.from(await file.arrayBuffer());
+    // Support both FormData (file upload) and JSON (text paste) formats
+    const contentType = request.headers.get('content-type') || '';
+    let file = null;
+    let buffer = null;
     let textContent = '';
+    let fileName = 'resume.txt';
+    let fileSize = 0;
+
+    if (contentType.includes('application/json')) {
+      // JSON body with text content directly
+      const body = await request.json();
+      if (!body.text || body.text.length < 20) return NextResponse.json({ error: 'Resume text too short (min 20 chars)' }, { status: 400 });
+      textContent = body.text;
+      fileName = body.fileName || 'pasted-resume.txt';
+      fileSize = Buffer.byteLength(textContent, 'utf-8');
+    } else {
+      // FormData file upload
+      const formData = await request.formData();
+      file = formData.get('file');
+      if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+      buffer = Buffer.from(await file.arrayBuffer());
+      fileName = file.name;
+      fileSize = file.size;
+    }
     
-    if (file.name.toLowerCase().endsWith('.pdf')) {
+    if (buffer && !textContent) {
+    if (fileName.toLowerCase().endsWith('.pdf')) {
       try {
         // Use pdf-parse v1.x - simple function call with buffer
         const pdfData = await pdf(buffer);
@@ -851,7 +919,7 @@ async function handleResumeUpload(request) {
           return NextResponse.json({ error: 'Failed to parse PDF. Please try a different file or use TXT format.' }, { status: 400 });
         }
       }
-    } else if (file.name.toLowerCase().endsWith('.docx')) {
+    } else if (fileName.toLowerCase().endsWith('.docx')) {
       try {
         const result = await mammoth.extractRawText({ buffer });
         textContent = result.value || '';
@@ -866,6 +934,7 @@ async function handleResumeUpload(request) {
     } else {
       textContent = buffer.toString('utf-8');
     }
+    } // end if (buffer && !textContent)
 
     // Clean up text content
     textContent = textContent.replace(/\s+/g, ' ').trim();
@@ -878,11 +947,11 @@ async function handleResumeUpload(request) {
     const resumeId = uuidv4();
     const db = await getDb();
     await db.collection('resumes').insertOne({
-      id: resumeId, userId: auth?.id || 'anonymous', fileName: file.name, fileSize: file.size,
+      id: resumeId, userId: auth?.id || 'anonymous', fileName: fileName, fileSize: fileSize,
       textContent: textContent.substring(0, 15000), analysis: null, createdAt: new Date().toISOString(),
     });
 
-    return NextResponse.json({ resumeId, fileName: file.name, textPreview: textContent.substring(0, 300), charCount: textContent.length });
+    return NextResponse.json({ resumeId, fileName: fileName, textPreview: textContent.substring(0, 300), charCount: textContent.length });
   } catch (error) {
     console.error('Resume upload error:', error);
     return NextResponse.json({ error: 'Upload failed: ' + error.message }, { status: 500 });
@@ -1174,23 +1243,29 @@ Return ONLY valid JSON (no markdown):
     }
 
     // Normalize all job fields to match display schema
-    finalMatches = finalMatches.map(m => ({
-      role: m.role || m.jobTitle || 'Unknown Role',
-      company_type: m.company_type || m.company || 'Company',
-      matchScore: m.matchScore || 0,
-      salary: m.salary || 'Not specified',
-      skills_matched: m.skills_matched || m.keyReasons || [],
-      skills_gap: m.skills_gap || m.skillGaps || [],
-      why_match: m.why_match || (m.keyReasons ? m.keyReasons.join('. ') : `Matches your ${skills ? 'skills' : 'profile'}`),
-      growth_potential: m.growth_potential || 'medium',
-      demand: m.demand || 'medium',
-      jobUrl: m.jobUrl || null,
-      postedDate: m.postedDate || null,
-      employmentType: m.employmentType || 'FULLTIME',
-      source: m.source || 'ai',
-      location: m.location || location || 'Remote',
-      jobDescription: m.jobDescription || ''
-    }));
+    finalMatches = finalMatches.map(m => {
+      const role = m.role || m.jobTitle || 'Unknown Role';
+      const company = m.company_type || m.company || 'Company';
+      return {
+        role,
+        jobTitle: role,
+        company_type: company,
+        company: company,
+        matchScore: m.matchScore || 0,
+        salary: m.salary || 'Not specified',
+        skills_matched: m.skills_matched || m.keyReasons || [],
+        skills_gap: m.skills_gap || m.skillGaps || [],
+        why_match: m.why_match || (m.keyReasons ? m.keyReasons.join('. ') : `Matches your ${skills ? 'skills' : 'profile'}`),
+        growth_potential: m.growth_potential || 'medium',
+        demand: m.demand || 'medium',
+        jobUrl: m.jobUrl || null,
+        postedDate: m.postedDate || null,
+        employmentType: m.employmentType || 'FULLTIME',
+        source: m.source || 'ai',
+        location: m.location || location || 'Remote',
+        jobDescription: m.jobDescription || ''
+      };
+    });
 
     const dataSource = realJobs.length > 0 ? 'real_jobs_ranked_by_ai' : (finalMatches.some(m => m.source === 'mock') ? 'mock_fallback' : 'ai_generated');
 
@@ -2292,7 +2367,8 @@ export async function GET(request) {
       return NextResponse.json({ message: 'Rate limiter reset', timestamp: new Date() });
     }
     // Auto-verify user by email (localhost/development only)
-    if (path.startsWith('/debug/verify-user/') && clientIp === '127.0.0.1') {
+    const isLocalIp = clientIp === '127.0.0.1' || clientIp === '::1' || clientIp === '::ffff:127.0.0.1' || clientIp.startsWith('192.168.') || clientIp === 'localhost';
+    if (path.startsWith('/debug/verify-user/') && isLocalIp) {
       const email = decodeURIComponent(path.split('/debug/verify-user/')[1]);
       const db = await getDb();
       const result = await db.collection('users').updateOne(
