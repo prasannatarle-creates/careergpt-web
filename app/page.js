@@ -323,8 +323,7 @@ function Sidebar({ currentPage, onNavigate, user, onLogout, collapsed, onToggle 
     { id: 'resume', label: 'Resume Analyzer', icon: FileText, color: 'from-teal-500 to-cyan-500', iconColor: 'text-teal-400' },
     { id: 'career', label: 'Career Path', icon: Compass, color: 'from-amber-500 to-orange-500', iconColor: 'text-amber-400' },
     { id: 'interview', label: 'Mock Interview', icon: Mic, color: 'from-violet-500 to-purple-500', iconColor: 'text-violet-400' },
-    { id: 'jobs', label: 'Job Matching', icon: Briefcase, color: 'from-green-500 to-emerald-500', iconColor: 'text-green-400' },
-    { id: 'livejobs', label: 'Job Board', icon: Globe, color: 'from-emerald-500 to-teal-500', iconColor: 'text-emerald-400' },
+    { id: 'jobs', label: 'Jobs', icon: Briefcase, color: 'from-green-500 to-emerald-500', iconColor: 'text-green-400' },
     { id: 'savedjobs', label: 'Saved Jobs', icon: Bookmark, color: 'from-yellow-500 to-amber-500', iconColor: 'text-yellow-400' },
     { id: 'learning', label: 'Learning Center', icon: GraduationCap, color: 'from-indigo-500 to-purple-500', iconColor: 'text-indigo-400' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, color: 'from-pink-500 to-rose-500', iconColor: 'text-pink-400' },
@@ -1524,7 +1523,7 @@ function ResumeAnalyzer() {
 }
 
 // ============ CAREER PATH GENERATOR ============
-function CareerPath() {
+function CareerPath({ onNavigate }) {
   const [skills, setSkills] = useState('');
   const [interests, setInterests] = useState('');
   const [education, setEducation] = useState('');
@@ -1692,8 +1691,9 @@ function CareerPath() {
       <div className="p-6 lg:p-8 max-w-4xl mx-auto page-transition">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-white">{cp.title || 'Career Path'}</h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {!isRaw && <Button onClick={downloadPDF} variant="outline" className="border-green-600/30 text-green-300 hover:bg-green-900/20 rounded-xl"><FileText className="w-4 h-4 mr-2" />Download PDF</Button>}
+            {onNavigate && <Button onClick={() => onNavigate('learning')} variant="outline" className="border-indigo-600/30 text-indigo-300 hover:bg-indigo-900/20 rounded-xl"><GraduationCap className="w-4 h-4 mr-2" />Create Learning Plan</Button>}
             <Button onClick={() => setShowHistory(true)} variant="outline" className="border-blue-600/30 text-blue-300 hover:bg-blue-900/20 rounded-xl"><Clock className="w-4 h-4 mr-2" />History</Button>
             <Button onClick={() => setResult(null)} variant="outline" className="border-slate-600/30 text-slate-300 hover:bg-slate-800/30 rounded-xl">Generate Another</Button>
           </div>
@@ -2494,8 +2494,30 @@ function MockInterview() {
   );
 }
 
-// ============ JOB MATCHING ============
-function JobMatching() {
+// ============ UNIFIED JOBS MODULE ============
+function Jobs() {
+  const [activeTab, setActiveTab] = useState('match');
+  return (
+    <div className="p-6 lg:p-8 max-w-5xl mx-auto page-transition">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-white mb-1">Jobs</h1>
+        <p className="text-sm text-slate-400">Find and apply to your ideal job opportunities</p>
+      </div>
+      {/* Tab Switcher */}
+      <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-white/[0.06] mb-6 w-fit">
+        <button onClick={() => setActiveTab('match')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab === 'match' ? 'bg-gradient-to-r from-green-600/80 to-emerald-500/80 text-white shadow-lg shadow-green-500/15' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'}`}>
+          <Sparkles className="w-4 h-4" />AI Match
+        </button>
+        <button onClick={() => setActiveTab('browse')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab === 'browse' ? 'bg-gradient-to-r from-emerald-600/80 to-teal-500/80 text-white shadow-lg shadow-emerald-500/15' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'}`}>
+          <Globe className="w-4 h-4" />Browse Jobs
+        </button>
+      </div>
+      {activeTab === 'match' ? <JobMatchingTab /> : <JobBrowseTab />}
+    </div>
+  );
+}
+
+function JobMatchingTab() {
   const [skills, setSkills] = useState('');
   const [interests, setInterests] = useState('');
   const [experience, setExperience] = useState('');
@@ -2585,10 +2607,10 @@ function JobMatching() {
     const isReal = result.dataSource === 'real_jobs_ranked_by_ai';
     const isMock = result.dataSource === 'mock_fallback';
     return (
-      <div className="p-6 max-w-4xl mx-auto page-transition">
+      <div className="page-transition">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Job Matches</h1>
+            <h1 className="text-xl font-bold text-white">Job Matches</h1>
             <div className="flex items-center gap-2 mt-1">
               <Badge className={`text-[10px] ${isReal ? 'bg-green-500/15 text-green-300 border-green-500/20' : isMock ? 'bg-amber-500/15 text-amber-300 border-amber-500/20' : 'bg-blue-500/15 text-blue-300 border-blue-500/20'}`}>
                 {isReal ? '✓ Live Jobs' : isMock ? 'Sample Data' : 'AI Generated'}
@@ -2712,11 +2734,11 @@ function JobMatching() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-2xl mx-auto page-transition">
+    <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">AI Job Matching</h1>
-          <p className="text-sm text-slate-400">Find the best job matches based on your profile</p>
+          <h2 className="text-lg font-semibold text-white mb-0.5">AI Job Matching</h2>
+          <p className="text-xs text-slate-400">Find the best job matches based on your profile</p>
         </div>
         {history.length > 0 && (
           <Button onClick={() => setShowHistory(!showHistory)} variant="outline" className="border-slate-600 text-slate-300 rounded-xl text-xs">
@@ -3089,8 +3111,8 @@ function SavedJobs() {
   );
 }
 
-// ============ LIVE JOB BOARD ============
-function LiveJobBoard() {
+// ============ JOB BROWSE TAB ============
+function JobBrowseTab() {
   const [keywords, setKeywords] = useState('');
   const [location, setLocation] = useState('');
   const [jobs, setJobs] = useState([]);
@@ -3168,17 +3190,7 @@ function LiveJobBoard() {
   if (sortBy === 'company') displayJobs.sort((a, b) => (a.company || '').localeCompare(b.company || ''));
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto page-transition">
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <h1 className="text-2xl font-bold text-white">Job Board</h1>
-          <Badge className={`text-[9px] ${hasRealJobs ? 'bg-green-500/15 text-green-300 border-green-500/20' : 'bg-blue-500/15 text-blue-300 border-blue-500/20'}`}>
-            {hasRealJobs ? 'Live' : 'Search'}
-          </Badge>
-        </div>
-        <p className="text-sm text-slate-400">Search and apply to job openings directly</p>
-      </div>
-
+    <div>
       {/* Search Bar */}
       <div className="glass-card overflow-hidden mb-4">
         <div className="p-5">
@@ -4047,10 +4059,9 @@ function App() {
       case 'profile': return <UserProfile user={user} onUpdate={(u) => setUser(u)} />;
       case 'chat': return <AIChat />;
       case 'resume': return <ResumeAnalyzer />;
-      case 'career': return <CareerPath />;
+      case 'career': return <CareerPath onNavigate={setPage} />;
       case 'interview': return <MockInterview />;
-      case 'jobs': return <JobMatching />;
-      case 'livejobs': return <LiveJobBoard />;
+      case 'jobs': return <Jobs />;
       case 'savedjobs': return <SavedJobs />;
       case 'learning': return <LearningCenter />;
       case 'analytics': return <Analytics />;
