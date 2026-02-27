@@ -608,6 +608,45 @@
         "score": 1
       },
       "createdAt": "2026-02-27T04:55:56.054Z"
+    },
+    {
+      "id": "553375bb-d0ee-483c-91be-df57b8faff1c",
+      "type": "interview_started",
+      "data": {
+        "role": "Software Engineer",
+        "level": "entry-level",
+        "type": "technical"
+      },
+      "createdAt": "2026-02-27T08:18:25.523Z"
+    },
+    {
+      "id": "814acb1a-d9ba-4d4c-ba50-4262f3008f87",
+      "type": "interview_started",
+      "data": {
+        "role": "Software Engineer",
+        "level": "mid-level",
+        "type": "system-design"
+      },
+      "createdAt": "2026-02-27T08:57:25.969Z"
+    },
+    {
+      "id": "01c25ee6-33f0-433f-bf47-7a23f94e103c",
+      "type": "interview_started",
+      "data": {
+        "role": "Software Engineer",
+        "level": "mid-level",
+        "type": "system-design"
+      },
+      "createdAt": "2026-02-27T08:57:59.729Z"
+    },
+    {
+      "id": "77e191d3-6bdf-4892-b031-a77c4e7a7214",
+      "type": "interview_answer",
+      "data": {
+        "sessionId": "db6c565b-3ae1-4edb-87ac-3b9881528954",
+        "score": 5
+      },
+      "createdAt": "2026-02-27T08:58:12.391Z"
     }
   ],
   "resumes": [
@@ -1514,6 +1553,94 @@
       ],
       "createdAt": "2026-02-27T04:49:43.740Z",
       "updatedAt": "2026-02-27T04:55:56.052Z"
+    },
+    {
+      "id": "484b7689-78f3-4f8c-8fec-586bcb53544c",
+      "userId": "anonymous",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "entry-level",
+      "interviewType": "technical",
+      "questionCount": 1,
+      "scores": [],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock technical interview for a entry-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Great, let's get started. Can you please explain to me the difference between a stack and a queue, and provide a practical example of where each might be used in software development?",
+          "timestamp": "2026-02-27T08:18:25.521Z"
+        }
+      ],
+      "createdAt": "2026-02-27T08:18:25.521Z",
+      "updatedAt": "2026-02-27T08:18:25.521Z"
+    },
+    {
+      "id": "aaaf443b-b4ed-49e2-80e2-80590327dbfc",
+      "userId": "anonymous",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "mid-level",
+      "interviewType": "system-design",
+      "questionCount": 1,
+      "scores": [],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock system-design interview for a mid-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Absolutely, let's get started.\n\n**Question:**\nCan you walk me through how you would design a scalable video streaming service, similar to YouTube, focusing on the key components and how they interact? Please include considerations for video uploading, storage, distribution, and playback.",
+          "timestamp": "2026-02-27T08:57:25.966Z"
+        }
+      ],
+      "createdAt": "2026-02-27T08:57:25.966Z",
+      "updatedAt": "2026-02-27T08:57:25.966Z"
+    },
+    {
+      "id": "db6c565b-3ae1-4edb-87ac-3b9881528954",
+      "userId": "anonymous",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "mid-level",
+      "interviewType": "system-design",
+      "questionCount": 2,
+      "scores": [
+        5
+      ],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock system-design interview for a mid-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Certainly! Let's start with the first question:\n\n\"Can you walk me through how you would design a scalable video streaming service similar to YouTube? Please start by outlining the key components and their interactions in the overall architecture.\"",
+          "timestamp": "2026-02-27T08:57:59.726Z"
+        },
+        {
+          "role": "user",
+          "content": "Uh, so to design A scalable video service similar to YouTube, focusing on key components and how they interact, please include consideration for video uploading, storage, distribution and playback. ",
+          "timestamp": "2026-02-27T08:58:12.389Z"
+        },
+        {
+          "role": "assistant",
+          "content": "{\"score\":5,\"maxScore\":10,\"technicalAccuracy\":5,\"communicationScore\":5,\"structureScore\":4,\"confidenceScore\":5,\"feedback\":\"The response provides a very high-level overview but lacks depth in explaining how the components interact or specific technologies that might be used. More details on each component and clearer communication would strengthen the answer.\",\"strengths\":[\"Identified core components needed for a video streaming service\"],\"improvements\":[\"Expand on each component by discussing specific technologies or strategies that could be used\",\"Improve clarity and structure of the response\",\"Include details on how components interact within the system\"],\"sampleAnswer\":\"To design a scalable video streaming service akin to YouTube, you would start with a robust architecture consisting of several key components. First, the video uploading feature needs to support large file sizes and concurrent uploads, which could be handled through a distributed system using services like Amazon S3 for storage. For video storage, employing a Content Delivery Network (CDN) would ensure efficient global distribution and caching strategies, minimizing latency. The playback component would require an adaptive bitrate streaming technology like HLS or DASH to cater to different user bandwidths and devices. Finally, considering the need for scalability, utilizing microservices architecture could allow each component to scale independently based on demand.\",\"usedSTAR\":false,\"nextQuestion\":\"Can you explain how you would implement security measures in this video streaming service to protect user data and prevent unauthorized access?\"}",
+          "timestamp": "2026-02-27T08:58:12.389Z",
+          "structured": true
+        }
+      ],
+      "createdAt": "2026-02-27T08:57:59.726Z",
+      "updatedAt": "2026-02-27T08:58:12.389Z"
     }
   ],
   "career_paths": [
