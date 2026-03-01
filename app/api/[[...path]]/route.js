@@ -2074,10 +2074,27 @@ async function handleGetSkillGaps(request) {
       limit: 3,
     });
 
+    // Flatten course recommendations into a flat array for the frontend
+    let flatCourses = [];
+    if (recommendations && recommendations.recommendations) {
+      Object.values(recommendations.recommendations).forEach(r => {
+        if (r.courses && Array.isArray(r.courses)) {
+          flatCourses.push(...r.courses);
+        }
+      });
+    }
+
     return NextResponse.json({
       success: true,
-      skillAnalysis: skillGapAnalysis,
-      courseRecommendations: recommendations,
+      skillAnalysis: {
+        existingSkills: skillGapAnalysis.currentSkills || [],
+        missingSkills: skillGapAnalysis.skillGaps || [],
+        prioritySkills: skillGapAnalysis.prioritySkills || [],
+        requiredSkills: skillGapAnalysis.requiredSkills || [],
+        completionPercentage: skillGapAnalysis.completionPercentage || 0,
+        targetRole: skillGapAnalysis.targetRole || targetRole,
+      },
+      courseRecommendations: flatCourses,
     });
   } catch (error) {
     console.error('Get skill gaps error:', error.message);
@@ -2475,6 +2492,9 @@ export async function GET(request) {
     if (path === '/career-paths') return handleGetCareerPaths(request);
     if (path.startsWith('/interview/report/')) return handleExportInterviewReport(request, path.split('/interview/report/')[1]);
     if (path === '/admin/analytics') return handleGetAnalytics(request);
+    if (path === '/saved-jobs') return handleGetSavedJobs(request);
+    if (path === '/job-match/history') return handleJobMatchHistory(request);
+    if (path === '/job-alerts') return handleGetJobAlerts(request);
     if (path === '/learning-paths') return handleGetLearningPaths(request);
     if (path === '/learning-progress') return handleGetLearningProgress(request);
     if (path === '/dashboard') return handleGetDashboard(request);
