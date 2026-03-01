@@ -325,9 +325,36 @@ const RESUME_ATS_SYSTEM = `You are an expert ATS (Applicant Tracking System) res
 }
 Evaluate ALL checklist items honestly based on the actual resume content. Set passed to true/false accurately.`;
 
-const INTERVIEW_SYSTEM = `You are an expert interviewer conducting a mock interview. Ask realistic questions one at a time. After the user answers, provide structured feedback. Be encouraging but honest. Use markdown formatting.`;
+const INTERVIEW_SYSTEM = `You are an expert senior interviewer at a top-tier company conducting a realistic mock interview. 
+You specialize in adapting to the specific role, level, and interview type.
 
-const INTERVIEW_FEEDBACK_SYSTEM = `You are an expert interview coach. Evaluate the candidate's answer and return ONLY valid JSON (no markdown, no code fences):
+Rules:
+1. Ask ONE clear, specific question at a time
+2. For behavioral interviews: Ask STAR-method questions about real situations (e.g., "Tell me about a time when...")
+3. For technical interviews: Ask coding, algorithm, or technical concept questions appropriate to the role and level
+4. For system design interviews: Present realistic system design problems scaled to the candidate's level
+5. For case study interviews: Present business scenarios requiring analytical thinking
+6. For coding interviews: Give a specific coding problem with clear constraints
+7. For mixed interviews: Alternate between behavioral and technical questions
+8. Start with an easier warm-up question, then progressively increase difficulty
+9. Make questions specific to the role (e.g., React questions for Frontend Developer, SQL for Data Engineer)
+10. Be professional and create a realistic interview atmosphere
+
+Format your question clearly in markdown. Include context when needed.`;
+
+const INTERVIEW_FEEDBACK_SYSTEM = `You are an expert interview coach with 20+ years of hiring experience at FAANG companies. 
+Evaluate the candidate's answer thoroughly and return ONLY valid JSON (no markdown, no code fences).
+
+Scoring Guide:
+- 9-10: Exceptional — would strongly recommend hire
+- 7-8: Good — solid answer with minor gaps
+- 5-6: Average — acceptable but needs improvement  
+- 3-4: Below average — significant gaps
+- 1-2: Poor — fundamental misunderstanding
+
+Score each dimension independently based on actual answer quality. Do NOT default to middle scores.
+
+Return this exact JSON structure:
 {
   "score": 7,
   "maxScore": 10,
@@ -335,32 +362,52 @@ const INTERVIEW_FEEDBACK_SYSTEM = `You are an expert interview coach. Evaluate t
   "communicationScore": 7,
   "structureScore": 6,
   "confidenceScore": 7,
-  "feedback": "Detailed feedback text",
-  "strengths": ["strength1"],
-  "improvements": ["improvement1"],
-  "sampleAnswer": "A better sample answer text",
+  "questionCategory": "behavioral|technical|system-design|coding|case-study",
+  "difficulty": "easy|medium|hard",
+  "feedback": "Detailed 3-4 sentence feedback explaining the score. Be specific about what was good and what was missing.",
+  "strengths": ["Specific strength 1", "Specific strength 2"],
+  "improvements": ["Specific actionable improvement 1", "Specific actionable improvement 2"],
+  "keyMissing": ["Critical point they should have mentioned"],
+  "sampleAnswer": "A comprehensive model answer (3-5 sentences) demonstrating the ideal response",
   "usedSTAR": false,
-  "nextQuestion": "Next interview question text"
+  "followUpTip": "A specific tip for answering this type of question better next time",
+  "nextQuestion": "The next interview question — make it progressively harder and relevant to the role"
 }`;
 
-const JOB_MATCH_SYSTEM = `You are a job matching expert. Given a user profile, find the best matching job roles. Return ONLY valid JSON (no markdown, no code fences):
+const JOB_MATCH_SYSTEM = `You are an expert job market analyst and career advisor with deep knowledge of current hiring trends, salary benchmarks, and industry demands across all sectors.
+
+Given a user profile, identify the BEST matching job roles that exist in the real market. Be realistic and specific.
+
+Rules:
+1. Match roles to the user's ACTUAL skill level — don't suggest senior roles for entry-level candidates
+2. Include a mix of obvious matches AND adjacent/emerging roles they might not have considered
+3. Provide REALISTIC salary ranges based on current market data for the specified location
+4. Be specific about company types (e.g., "Series B SaaS Startup" not just "Startup")
+5. Score matches honestly — only give 90+ for near-perfect fits
+6. Identify actionable skill gaps and concrete ways to fill them
+7. Consider remote vs on-site based on location preference
+8. Include roles from different company sizes (startup, mid-size, enterprise)
+
+Return ONLY valid JSON (no markdown, no code fences):
 {
   "matches": [
     {
-      "role": "Job Title",
-      "company_type": "Startup/Enterprise/etc",
+      "role": "Specific Job Title",
+      "company_type": "Series B SaaS Startup / Fortune 500 / Consulting Firm / etc",
       "matchScore": 85,
       "salary": "$80k-120k",
       "skills_matched": ["skill1","skill2"],
       "skills_gap": ["skill3"],
-      "why_match": "Explanation of why this matches",
+      "why_match": "2-3 sentence specific explanation of why this is a good match",
       "growth_potential": "high/medium/low",
-      "demand": "high/medium/low"
+      "demand": "high/medium/low",
+      "interviewFocus": ["Topic they should prepare for"],
+      "timeToReady": "Ready now / 1-3 months / 3-6 months"
     }
   ],
-  "summary": "Overall matching summary",
-  "topSkillGaps": ["skill1","skill2"],
-  "recommendations": ["recommendation1"]
+  "summary": "Overall career market analysis for this profile (2-3 sentences)",
+  "topSkillGaps": ["Most important skill to learn first", "Second priority"],
+  "recommendations": ["Specific actionable recommendation with resource or next step"]
 }`;
 
 // ============ ROUTE HANDLERS ============
@@ -1142,9 +1189,29 @@ async function handleGetResume(resumeId) {
 async function handleInterviewStart(request) {
   const auth = verifyToken(request);
   const body = await request.json();
-  const { role, level, type } = body;
+  const { role, level, type, questionCount, focusAreas } = body;
 
-  const prompt = `Start a mock ${type || 'behavioral'} interview for a ${level || 'mid-level'} ${role || 'Software Engineer'} position. Ask the FIRST question only. Be professional.`;
+  const totalQuestions = Math.min(Math.max(questionCount || 5, 3), 10);
+  const interviewType = type || 'behavioral';
+  const interviewLevel = level || 'mid-level';
+  const interviewRole = role || 'Software Engineer';
+
+  const typeGuide = {
+    'behavioral': 'Ask a STAR-method behavioral question about a real workplace situation (e.g., conflict resolution, leadership, failure, teamwork). Start with a moderately easy warm-up question.',
+    'technical': `Ask a technical concept or problem-solving question specific to ${interviewRole}. Start with fundamentals before moving to advanced topics.`,
+    'system-design': `Present a system design problem appropriate for a ${interviewLevel} ${interviewRole}. Start with a smaller-scope design question.`,
+    'coding': `Give a specific coding/algorithm problem with clear input/output examples. Start with an easy-medium difficulty problem appropriate for ${interviewLevel}.`,
+    'case-study': `Present a business case study or analytical problem relevant to ${interviewRole}. Include enough context for the candidate to analyze.`,
+    'mixed': `Start with a behavioral warm-up question. This is a mixed interview that will cover behavioral, technical, and role-specific questions for a ${interviewRole}.`
+  };
+
+  const prompt = `You are conducting a ${totalQuestions}-question mock ${interviewType} interview for a ${interviewLevel} ${interviewRole} position.
+${focusAreas ? `Focus areas: ${focusAreas}` : ''}
+
+${typeGuide[interviewType] || typeGuide['behavioral']}
+
+Ask the FIRST question now. Be professional and create a realistic interview atmosphere. Start with a brief greeting, then ask your question.
+Format: Use markdown. Bold the actual question.`;
 
   try {
     const response = await callSingleModel(INTERVIEW_SYSTEM, prompt);
@@ -1157,9 +1224,11 @@ async function handleInterviewStart(request) {
 
     await db.collection('sessions').insertOne({
       id: sessionId, userId: auth?.id || 'anonymous',
-      title: `Interview: ${role || 'Software Engineer'}`,
-      type: 'mock-interview', role: role || 'Software Engineer', level: level || 'mid-level',
-      interviewType: type || 'behavioral', questionCount: 1, scores: [],
+      title: `Interview: ${interviewRole}`,
+      type: 'mock-interview', role: interviewRole, level: interviewLevel,
+      interviewType, questionCount: 1, totalQuestions,
+      focusAreas: focusAreas || null,
+      scores: [], categoryScores: {},
       messages: [
         { role: 'system', content: prompt, hidden: true },
         { role: 'assistant', content: response, timestamp: new Date().toISOString() },
@@ -1167,8 +1236,8 @@ async function handleInterviewStart(request) {
       createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
     });
 
-    await logAnalytics(db, 'interview_started', { userId: auth?.id, role, level, type });
-    return NextResponse.json({ sessionId, question: response, questionNumber: 1 });
+    await logAnalytics(db, 'interview_started', { userId: auth?.id, role: interviewRole, level: interviewLevel, type: interviewType, totalQuestions });
+    return NextResponse.json({ sessionId, question: response, questionNumber: 1, totalQuestions });
   } catch (error) {
     console.error('Interview start error:', error.message);
     return NextResponse.json({ error: 'Failed: ' + error.message }, { status: 500 });
@@ -1185,14 +1254,38 @@ async function handleInterviewRespond(request) {
   if (!session) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   const newCount = (session.questionCount || 1) + 1;
-  const isLast = newCount > 5;
+  const totalQ = session.totalQuestions || 5;
+  const isLast = newCount > totalQ;
+  const currentQ = newCount - 1;
 
-  const evalPrompt = `The candidate is interviewing for ${session.role} (${session.level}).
-Question was the previous message. Their answer: "${answer}"
+  // Determine difficulty progression
+  const difficultyMap = { 1: 'easy', 2: 'medium' };
+  const targetDifficulty = difficultyMap[currentQ] || (currentQ >= totalQ ? 'hard' : 'medium-hard');
 
-${isLast ? 'This is the FINAL question. Provide overall interview assessment.' : `This is question ${newCount-1} of 5.`}
+  // Build context about previous performance
+  const prevScores = session.scores || [];
+  const avgSoFar = prevScores.length > 0 ? (prevScores.reduce((a, b) => a + b, 0) / prevScores.length).toFixed(1) : 'N/A';
 
-Evaluate and return structured JSON feedback with score, technical accuracy, communication, structure, confidence scores, strengths, improvements, a sample better answer, and ${isLast ? 'final assessment' : 'the next question'}.`;
+  const evalPrompt = `The candidate is interviewing for ${session.role} (${session.level}), interview type: ${session.interviewType}.
+This is question ${currentQ} of ${totalQ}. Current average score: ${avgSoFar}/10.
+${session.focusAreas ? `Focus areas: ${session.focusAreas}` : ''}
+
+The question was the previous assistant message. The candidate's answer: "${answer}"
+
+Word count: ${answer.split(/\s+/).filter(w => w).length} words.
+
+${isLast ? `This is the FINAL question. After evaluating this answer, also provide:
+- "overallGrade": "A+/A/B+/B/C+/C/D/F" based on all scores
+- "finalAssessment": "3-4 sentence overall assessment of interview performance"
+- "topStrengths": ["Their top 2-3 strengths across all answers"]
+- "topImprovements": ["Their top 2-3 areas to improve"]  
+- "hireRecommendation": "Strong Hire / Hire / Lean Hire / Lean No Hire / No Hire"
+- "improvementRoadmap": ["Step 1: ...", "Step 2: ...", "Step 3: ..."]
+Do NOT include "nextQuestion" field.` : `Generate the next question at "${targetDifficulty}" difficulty level.
+Make it progressively more challenging and specific to ${session.role}.
+Vary question categories \u2014 don't ask the same type twice in a row.`}
+
+Evaluate thoroughly. Be honest and specific in scoring. Return ONLY valid JSON matching the required schema.`;
 
   try {
     const recentMsgs = session.messages.filter(m => !m.hidden).slice(-6).map(m => ({ role: m.role, content: m.content }));
@@ -1215,6 +1308,24 @@ Evaluate and return structured JSON feedback with score, technical accuracy, com
       feedback = { score: 5, maxScore: 10, feedback: response, raw: true };
     }
 
+    // Ensure nextQuestion exists for non-final questions
+    if (!isLast && !feedback.nextQuestion) {
+      // Generate a fallback next question
+      try {
+        const fallbackQ = await callSingleModel(
+          INTERVIEW_SYSTEM,
+          `Continue the ${session.interviewType} interview for ${session.role} (${session.level}). This is question ${newCount} of ${totalQ}. Ask a ${targetDifficulty} difficulty question. Ask ONE question only, formatted in markdown with the question in bold.`
+        );
+        if (fallbackQ) feedback.nextQuestion = fallbackQ;
+      } catch { /* proceed without next question */ }
+    }
+
+    // Track category scores
+    const category = feedback.questionCategory || session.interviewType || 'general';
+    const categoryScores = session.categoryScores || {};
+    if (!categoryScores[category]) categoryScores[category] = [];
+    categoryScores[category].push(feedback.score || 5);
+
     await db.collection('sessions').updateOne({ id: sessionId }, {
       $push: {
         messages: { $each: [
@@ -1223,11 +1334,11 @@ Evaluate and return structured JSON feedback with score, technical accuracy, com
         ]},
         scores: feedback.score || 5,
       },
-      $set: { questionCount: newCount, updatedAt: new Date().toISOString() },
+      $set: { questionCount: newCount, updatedAt: new Date().toISOString(), categoryScores },
     });
 
-    await logAnalytics(db, 'interview_answer', { sessionId, score: feedback.score });
-    return NextResponse.json({ sessionId, feedback, questionNumber: newCount, isComplete: isLast });
+    await logAnalytics(db, 'interview_answer', { sessionId, score: feedback.score, category, questionNum: currentQ });
+    return NextResponse.json({ sessionId, feedback, questionNumber: newCount, isComplete: isLast, totalQuestions: totalQ });
   } catch (error) {
     console.error('Interview respond error:', error.message);
     return NextResponse.json({ error: 'Failed: ' + error.message }, { status: 500 });
@@ -1238,12 +1349,31 @@ Evaluate and return structured JSON feedback with score, technical accuracy, com
 async function handleJobMatch(request) {
   const auth = verifyToken(request);
   const body = await request.json();
-  const { skills, interests, experience, targetIndustry, location, minSalary } = body;
+  const { skills, interests, experience, targetIndustry, location, minSalary, employmentType, experienceLevel, resumeId } = body;
 
   try {
     const db = await getDb();
     const userId = auth?.id || 'anonymous';
-    const keywords = Array.isArray(skills) ? skills : (skills || '').split(',').map(s => s.trim()).filter(s => s);
+    let keywords = Array.isArray(skills) ? skills : (skills || '').split(',').map(s => s.trim()).filter(s => s);
+
+    // If resumeId provided, enrich skills from resume data
+    let resumeSkills = [];
+    if (resumeId) {
+      try {
+        const resume = await db.collection('resumes').findOne({ id: resumeId });
+        if (resume && resume.structured && resume.structured.skills) {
+          resumeSkills = resume.structured.skills;
+          // Merge resume skills with manually entered skills (deduplicate)
+          const allSkillsLower = new Set(keywords.map(k => k.toLowerCase()));
+          resumeSkills.forEach(s => {
+            if (!allSkillsLower.has(s.toLowerCase())) {
+              keywords.push(s);
+              allSkillsLower.add(s.toLowerCase());
+            }
+          });
+        }
+      } catch (e) { console.warn('Resume skills load error:', e.message); }
+    }
 
     // Try to fetch REAL jobs from job APIs (free APIs don't need keys)
     let realJobs = [];
@@ -1251,7 +1381,7 @@ async function handleJobMatch(request) {
       realJobs = await searchAllJobSources(keywords, {
         location: location || 'Remote',
         minSalary: minSalary || 50000,
-        limit: 15
+        limit: 20
       });
       console.log(`✓ Found ${realJobs.length} real job matches from APIs`);
     } catch (apiError) {
@@ -1268,10 +1398,10 @@ async function handleJobMatch(request) {
       // REAL JOBS found — rank them by relevance using LLM
       try {
         const ranked = await rankJobsByRelevance(realJobs, { skills: keywords, interests, experience, location }, callSingleModel);
-        finalMatches = ranked.slice(0, 10);
+        finalMatches = ranked.slice(0, 15);
       } catch (rankError) {
         console.warn('Job ranking failed:', rankError.message, '- using default scores');
-        finalMatches = realJobs.slice(0, 10).map((j, i) => ({
+        finalMatches = realJobs.slice(0, 15).map((j, i) => ({
           ...j,
           matchScore: Math.max(50, 90 - (i * 5)),
           keyReasons: [`Matches your ${skills ? 'skills' : 'profile'}`],
@@ -1283,23 +1413,23 @@ async function handleJobMatch(request) {
       // NO real jobs — use LLM to generate recommendations
       console.log('No real jobs from APIs, using LLM-based generation');
 
-      const prompt = `Find the best matching job roles for this profile:
+      const prompt = `Find the 8-10 best matching job roles for this profile:
 Skills: ${keywords.join(', ') || 'Not specified'}
 Interests: ${interests || 'Not specified'}
 Experience: ${experience || 'Not specified'}
 Target Industry: ${targetIndustry || 'Any'}
 Location: ${location || 'Any'}
 Minimum Salary: ${minSalary ? `$${minSalary}` : 'Any'}
+Employment Type: ${employmentType || 'Any'}
+Experience Level: ${experienceLevel || 'Not specified'}
+${resumeSkills.length > 0 ? `Resume Skills (verified): ${resumeSkills.join(', ')}` : ''}
 
-Return ONLY valid JSON (no markdown):
-{
-  "matches": [
-    { "role": "Job Title", "company_type": "Industry/Company Type", "matchScore": 85, "salary": "$X-Y", "skills_matched": ["skill1"], "skills_gap": ["gap1"], "why_match": "reason", "growth_potential": "high", "demand": "high" }
-  ],
-  "summary": "Brief overview",
-  "topSkillGaps": ["gap1", "gap2"],
-  "recommendations": ["rec1", "rec2"]
-}`;
+Include a mix of:
+- 3-4 strong direct matches
+- 2-3 adjacent/emerging roles they might not have considered
+- 1-2 stretch roles with clear skill gap paths
+
+Return ONLY valid JSON matching the system prompt schema.`;
 
       const result = await callMultiModel(JOB_MATCH_SYSTEM, prompt, ['GPT-4.1', 'Claude 4 Sonnet']);
 
@@ -1348,9 +1478,14 @@ Return ONLY valid JSON (no markdown):
         employmentType: m.employmentType || 'FULLTIME',
         source: m.source || 'ai',
         location: m.location || location || 'Remote',
-        jobDescription: m.jobDescription || ''
+        jobDescription: m.jobDescription || '',
+        interviewFocus: m.interviewFocus || [],
+        timeToReady: m.timeToReady || 'Ready now',
       };
     });
+
+    // Sort by match score descending
+    finalMatches.sort((a, b) => b.matchScore - a.matchScore);
 
     const dataSource = realJobs.length > 0 ? 'real_jobs_ranked_by_ai' : (finalMatches.some(m => m.source === 'mock') ? 'mock_fallback' : 'ai_generated');
 
