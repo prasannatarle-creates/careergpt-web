@@ -1730,14 +1730,19 @@ async function handleLiveJobSearch(request) {
     const keywordArr = Array.isArray(keywords) ? keywords : (keywords || '').split(',').map(s => s.trim()).filter(s => s);
     if (keywordArr.length === 0) return NextResponse.json({ error: 'Keywords required' }, { status: 400 });
     
-    let jobs = await searchAllJobSources(keywordArr, {
+    const searchOpts = {
       location: location || 'Remote',
       minSalary: minSalary || 0,
       limit: limit || 20
-    });
+    };
+
+    let jobs = await searchAllJobSources(keywordArr, searchOpts);
     
-    // Mark source type
-    const hasRealJobs = jobs.some(j => j.source !== 'mock');
+    // Fallback to mock data when no real jobs found
+    const hasRealJobs = jobs.length > 0 && jobs.some(j => j.source !== 'mock');
+    if (jobs.length === 0) {
+      jobs = getMockJobs(keywordArr, searchOpts, 'mock');
+    }
     
     return NextResponse.json({
       jobs: jobs.map(j => ({
@@ -1750,14 +1755,34 @@ async function handleLiveJobSearch(request) {
         url: j.jobUrl,
         postedDate: j.postedDate,
         type: j.employmentType || 'FULLTIME',
-        source: j.source
+        source: j.source,
+        tags: j.tags || []
       })),
       total: jobs.length,
       hasRealJobs,
-      message: hasRealJobs ? 'Live job listings from job boards' : 'Sample listings (configure API keys for real jobs)'
+      message: hasRealJobs
+        ? `Found ${jobs.length} live job listings from job boards`
+        : 'Showing sample listings — real jobs will appear when external APIs are reachable. Try different or broader keywords.'
     });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('Live job search error:', error.message);
+    // Even on error, return mock data so the UI isn't empty
+    try {
+      const keywordArr = Array.isArray(keywords) ? keywords : (keywords || '').split(',').map(s => s.trim()).filter(s => s);
+      const fallback = getMockJobs(keywordArr, { location: location || 'Remote' }, 'mock');
+      return NextResponse.json({
+        jobs: fallback.map(j => ({
+          id: j.jobId, title: j.jobTitle, company: j.company, location: j.location,
+          salary: j.salary, description: j.jobDescription, url: j.jobUrl,
+          postedDate: j.postedDate, type: j.employmentType || 'FULLTIME', source: j.source, tags: []
+        })),
+        total: fallback.length,
+        hasRealJobs: false,
+        message: 'Showing sample listings — job search APIs temporarily unavailable.'
+      });
+    } catch (e2) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 }
 

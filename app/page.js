@@ -3034,9 +3034,13 @@ function JobMatchingTab() {
                       <button onClick={() => setExpandedMatch(expandedMatch === i ? null : i)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] hover:text-white transition-colors text-[10px] font-medium">
                         <ChevronDown className={`w-3 h-3 transition-transform ${expandedMatch === i ? 'rotate-180' : ''}`} />Details
                       </button>
-                      {m.jobUrl && m.source !== 'mock' && (
+                      {m.jobUrl && m.source !== 'mock' && !m.jobUrl.includes('example.com') ? (
                         <a href={m.jobUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-300 hover:bg-blue-600/30 transition-colors text-[10px] font-medium border border-blue-500/20">
                           <ExternalLink className="w-3 h-3" />Apply Now
+                        </a>
+                      ) : (
+                        <a href={`https://www.google.com/search?q=${encodeURIComponent((m.role || '') + ' ' + (m.company_type || '') + ' careers apply')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-600/20 text-slate-300 hover:bg-slate-600/30 transition-colors text-[10px] font-medium border border-slate-500/20">
+                          <Search className="w-3 h-3" />Find & Apply
                         </a>
                       )}
                       <button
@@ -3480,9 +3484,13 @@ function SavedJobs() {
                         <option value="offered">✅ Offered</option>
                         <option value="rejected">❌ Rejected</option>
                       </select>
-                      {job.jobUrl && (
-                        <a href={job.jobUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
+                      {job.jobUrl && !job.jobUrl.includes('example.com') ? (
+                        <a href={job.jobUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors" title="Open job posting">
                           <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      ) : (
+                        <a href={`https://www.google.com/search?q=${encodeURIComponent((job.jobTitle || '') + ' ' + (job.company || '') + ' careers apply')}`} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg bg-slate-500/10 text-slate-400 hover:bg-slate-500/20 transition-colors" title="Search for this job">
+                          <Search className="w-3.5 h-3.5" />
                         </a>
                       )}
                       <button onClick={() => removeJob(job.jobId)} className="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors">
@@ -3659,6 +3667,16 @@ function JobBrowseTab() {
         </div>
       ) : (
         <div className="space-y-3">
+          {/* Mock data notice */}
+          {!hasRealJobs && jobs.length > 0 && (
+            <div className="rounded-xl p-4 mb-2 flex items-start gap-3 bg-amber-500/[0.05] border border-amber-500/10">
+              <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-400" />
+              <div>
+                <p className="text-sm text-amber-300 font-medium">Sample Listings</p>
+                <p className="text-xs text-slate-400 mt-0.5">These are sample listings. Real jobs will appear when external job APIs are reachable. You can still click "Search to Apply" to find real openings via Google.</p>
+              </div>
+            </div>
+          )}
           {displayJobs.map((job, i) => (
             <div key={job.id || i} className="glass-card overflow-hidden animate-slide-up" style={{ animationDelay: `${i * 0.04}s` }}>
               <div className="p-5">
@@ -3666,7 +3684,11 @@ function JobBrowseTab() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-base font-semibold text-white">{job.title}</h3>
-                      {job.source !== 'mock' && <Badge className="bg-emerald-500/15 text-emerald-300 border-emerald-500/20 text-[9px]">Live</Badge>}
+                      {job.source !== 'mock' ? (
+                        <Badge className="bg-emerald-500/15 text-emerald-300 border-emerald-500/20 text-[9px]">Live</Badge>
+                      ) : (
+                        <Badge className="bg-amber-500/15 text-amber-300 border-amber-500/20 text-[9px]">Sample</Badge>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 flex-wrap text-xs text-slate-400 mb-3">
                       <span className="flex items-center gap-1"><Building2 className="w-3 h-3" />{job.company}</span>
@@ -3680,12 +3702,14 @@ function JobBrowseTab() {
                     {job.postedDate && <p className="text-[10px] text-slate-600">Posted: {new Date(job.postedDate).toLocaleDateString()}</p>}
                   </div>
                   <div className="flex flex-col gap-2 flex-shrink-0">
-                    {job.url && job.url !== 'https://example.com/jobs/0' && job.url !== 'https://example.com/jobs/1' && job.url !== 'https://example.com/jobs/2' ? (
+                    {job.url && !job.url.includes('example.com') && job.source !== 'mock' ? (
                       <a href={job.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-medium hover:from-blue-500 hover:to-blue-400 transition-all shadow-lg shadow-blue-500/15">
                         <ExternalLink className="w-3.5 h-3.5" />Apply Now
                       </a>
                     ) : (
-                      <span className="px-4 py-2 rounded-xl bg-slate-700/30 text-slate-500 text-xs font-medium">No Link</span>
+                      <a href={`https://www.google.com/search?q=${encodeURIComponent((job.title || '') + ' ' + (job.company || '') + ' careers apply')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-slate-600 to-slate-500 text-white text-xs font-medium hover:from-slate-500 hover:to-slate-400 transition-all">
+                        <Search className="w-3.5 h-3.5" />Search to Apply
+                      </a>
                     )}
                     <button
                       onClick={() => saveJob(job)}
