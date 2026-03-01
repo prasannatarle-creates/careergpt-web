@@ -720,10 +720,21 @@ async function handleGetProfile(request) {
   const interviewCount = await db.collection('sessions').countDocuments({ userId: auth.id, type: 'mock-interview' });
   const chatCount = await db.collection('sessions').countDocuments({ userId: auth.id, type: 'career-chat' });
   const careerPathCount = await db.collection('career_paths').countDocuments({ userId: auth.id });
+  const savedJobsCount = await db.collection('saved_jobs').countDocuments({ userId: auth.id });
+  const jobMatchCount = await db.collection('sessions').countDocuments({ userId: auth.id, type: 'job-match' });
+  const learningPathCount = await db.collection('sessions').countDocuments({ userId: auth.id, type: 'learning-path' });
+
+  // Recent activity (last 10 events)
+  const recentActivity = await db.collection('analytics')
+    .find({ userId: auth.id })
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .toArray();
 
   return NextResponse.json({
     user: { id: user.id, name: user.name, email: user.email, role: user.role, profile: user.profile, createdAt: user.createdAt },
-    stats: { resumeCount, interviewCount, chatCount, careerPathCount },
+    stats: { resumeCount, interviewCount, chatCount, careerPathCount, savedJobsCount, jobMatchCount, learningPathCount },
+    recentActivity: recentActivity.map(a => ({ type: a.type, createdAt: a.createdAt, metadata: a.metadata })),
   });
 }
 

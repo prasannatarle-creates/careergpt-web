@@ -418,21 +418,35 @@ function Sidebar({ currentPage, onNavigate, user, onLogout, collapsed, onToggle 
 function Dashboard({ user, onNavigate }) {
   const [stats, setStats] = useState(null);
   const [profile, setProfile] = useState(null);
-  const [savedJobsCount, setSavedJobsCount] = useState(0);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (user) {
-      api.get('/profile').then(d => { setStats(d.stats); setProfile(d.profile); });
-      api.get('/saved-jobs').then(d => { if (d.jobs) setSavedJobsCount(d.jobs.length); }).catch(() => {});
+      api.get('/profile').then(d => {
+        setStats(d.stats);
+        setProfile(d.profile);
+        setRecentActivity(d.recentActivity || []);
+      }).catch(() => {}).finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
-  // Profile completeness
-  const profileFields = profile ? [profile.skills, profile.interests, profile.education, profile.experience, user?.name, user?.email] : [];
-  const filledFields = profileFields.filter(f => f && f.trim && f.trim().length > 0).length;
+  // Profile completeness — handle arrays (skills/interests) and strings
+  const profileFields = profile ? [
+    Array.isArray(profile.skills) ? (profile.skills.length > 0 ? 'filled' : '') : (profile.skills || ''),
+    Array.isArray(profile.interests) ? (profile.interests.length > 0 ? 'filled' : '') : (profile.interests || ''),
+    profile.education || '',
+    profile.experience || '',
+    profile.careerGoal || '',
+    user?.name || '',
+  ] : [];
+  const filledFields = profileFields.filter(f => typeof f === 'string' && f.trim().length > 0).length;
   const profileCompleteness = profileFields.length > 0 ? Math.round((filledFields / profileFields.length) * 100) : 0;
 
   // Activity totals
-  const totalActivity = stats ? (stats.chatCount || 0) + (stats.resumeCount || 0) + (stats.interviewCount || 0) + (stats.careerPathCount || 0) : 0;
+  const totalActivity = stats ? (stats.chatCount || 0) + (stats.resumeCount || 0) + (stats.interviewCount || 0) + (stats.careerPathCount || 0) + (stats.savedJobsCount || 0) + (stats.jobMatchCount || 0) + (stats.learningPathCount || 0) : 0;
 
   // Smart suggestions based on usage
   const getSuggestions = () => {
@@ -442,8 +456,10 @@ function Dashboard({ user, onNavigate }) {
     if ((stats.resumeCount || 0) === 0) tips.push({ text: 'Upload your resume for ATS scoring & feedback', action: 'resume', icon: FileText, color: 'text-teal-400' });
     if ((stats.interviewCount || 0) === 0) tips.push({ text: 'Practice with an AI mock interview', action: 'interview', icon: Mic, color: 'text-purple-400' });
     if ((stats.careerPathCount || 0) === 0) tips.push({ text: 'Generate a personalized career roadmap', action: 'career', icon: Compass, color: 'text-amber-400' });
-    if (savedJobsCount === 0) tips.push({ text: 'Search and save jobs to track applications', action: 'livejobs', icon: Briefcase, color: 'text-green-400' });
+    if ((stats.savedJobsCount || 0) === 0) tips.push({ text: 'Search and save jobs to track applications', action: 'livejobs', icon: Briefcase, color: 'text-green-400' });
     if ((stats.chatCount || 0) === 0) tips.push({ text: 'Ask AI for career guidance and advice', action: 'chat', icon: MessageSquare, color: 'text-cyan-400' });
+    if ((stats.jobMatchCount || 0) === 0) tips.push({ text: 'Find jobs that match your skills with AI', action: 'jobs', icon: Target, color: 'text-green-400' });
+    if ((stats.learningPathCount || 0) === 0) tips.push({ text: 'Discover skill gaps and learning resources', action: 'learning', icon: GraduationCap, color: 'text-indigo-400' });
     return tips.slice(0, 3);
   };
 
@@ -452,12 +468,55 @@ function Dashboard({ user, onNavigate }) {
     { id: 'resume', title: 'Resume Analyzer', desc: 'ATS scoring & feedback', icon: FileText, color: 'from-teal-500 to-cyan-500', count: stats?.resumeCount },
     { id: 'career', title: 'Career Path', desc: 'Structured roadmaps', icon: Compass, color: 'from-amber-500 to-orange-500', count: stats?.careerPathCount },
     { id: 'interview', title: 'Mock Interview', desc: 'AI interview practice', icon: Mic, color: 'from-violet-500 to-purple-500', count: stats?.interviewCount },
-    { id: 'jobs', title: 'Job Matching', desc: 'AI skill matching', icon: Briefcase, color: 'from-green-500 to-emerald-500' },
+    { id: 'jobs', title: 'Job Matching', desc: 'AI skill matching', icon: Briefcase, color: 'from-green-500 to-emerald-500', count: stats?.jobMatchCount },
     { id: 'livejobs', title: 'Job Board', desc: 'Live job openings', icon: Globe, color: 'from-emerald-500 to-teal-500' },
-    { id: 'savedjobs', title: 'Saved Jobs', desc: 'Track applications', icon: Bookmark, color: 'from-yellow-500 to-amber-500', count: savedJobsCount },
-    { id: 'learning', title: 'Learning Center', desc: 'Skill gap analysis', icon: GraduationCap, color: 'from-indigo-500 to-purple-500' },
+    { id: 'savedjobs', title: 'Saved Jobs', desc: 'Track applications', icon: Bookmark, color: 'from-yellow-500 to-amber-500', count: stats?.savedJobsCount },
+    { id: 'learning', title: 'Learning Center', desc: 'Skill gap analysis', icon: GraduationCap, color: 'from-indigo-500 to-purple-500', count: stats?.learningPathCount },
     { id: 'analytics', title: 'Analytics', desc: 'Usage insights', icon: BarChart3, color: 'from-pink-500 to-rose-500' },
   ];
+
+  // Activity type to readable label
+  const activityLabel = (type) => {
+    const labels = {
+      'user_login': 'Logged in',
+      'resume_analyzed': 'Analyzed a resume',
+      'chat_session': 'Chat session',
+      'mock_interview': 'Mock interview',
+      'career_path_generated': 'Generated career path',
+      'job_search': 'Searched for jobs',
+      'job_saved': 'Saved a job',
+      'job_match': 'Job matching',
+      'learning_path': 'Learning path',
+      'profile_updated': 'Updated profile',
+      'password_changed': 'Changed password',
+    };
+    return labels[type] || (type || 'Activity').replace(/_/g, ' ');
+  };
+
+  const activityIcon = (type) => {
+    const icons = {
+      'user_login': User,
+      'resume_analyzed': FileText,
+      'chat_session': MessageSquare,
+      'mock_interview': Mic,
+      'career_path_generated': Compass,
+      'job_search': Globe,
+      'job_saved': Bookmark,
+      'job_match': Briefcase,
+      'learning_path': GraduationCap,
+      'profile_updated': User,
+    };
+    return icons[type] || Zap;
+  };
+
+  if (loading) return (
+    <div className="p-6 flex items-center justify-center h-full min-h-[60vh]">
+      <div className="flex flex-col items-center gap-3">
+        <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+        <p className="text-sm text-slate-500">Loading your dashboard...</p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto page-transition">
@@ -519,26 +578,43 @@ function Dashboard({ user, onNavigate }) {
 
       {/* Quick Stats */}
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
-          {[
-            { label: 'Chat Sessions', value: stats.chatCount, icon: MessageSquare, bgColor: 'bg-cyan-500/10', textColor: 'text-cyan-400' },
-            { label: 'Resumes', value: stats.resumeCount, icon: FileText, bgColor: 'bg-teal-500/10', textColor: 'text-teal-400' },
-            { label: 'Interviews', value: stats.interviewCount, icon: Mic, bgColor: 'bg-violet-500/10', textColor: 'text-violet-400' },
-            { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, bgColor: 'bg-amber-500/10', textColor: 'text-amber-400' },
-            { label: 'Saved Jobs', value: savedJobsCount, icon: Bookmark, bgColor: 'bg-yellow-500/10', textColor: 'text-yellow-400' },
-          ].map((s, i) => (
-            <div key={i} className="glass-card p-5 group" style={{ animationDelay: `${i * 80}ms` }}>
-              <div className="flex items-center justify-between mb-3">
-                <div className={`w-10 h-10 rounded-xl ${s.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                  <s.icon className={`w-5 h-5 ${s.textColor}`} />
-                </div>
-                <TrendingUp className="w-4 h-4 text-slate-600" />
+        <>
+          {/* Total Activity Summary */}
+          <div className="glass-card-static p-5 mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/15">
+                <BarChart3 className="w-5 h-5 text-white" />
               </div>
-              <p className="text-2xl font-bold text-white">{s.value || 0}</p>
-              <p className="text-xs text-slate-400 mt-0.5">{s.label}</p>
+              <div>
+                <p className="text-sm font-semibold text-white">Total Activity</p>
+                <p className="text-[10px] text-slate-400">All-time interactions across all modules</p>
+              </div>
             </div>
-          ))}
-        </div>
+            <p className="text-3xl font-extrabold text-gradient">{totalActivity}</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-10">
+            {[
+              { label: 'Chat Sessions', value: stats.chatCount, icon: MessageSquare, bgColor: 'bg-cyan-500/10', textColor: 'text-cyan-400' },
+              { label: 'Resumes', value: stats.resumeCount, icon: FileText, bgColor: 'bg-teal-500/10', textColor: 'text-teal-400' },
+              { label: 'Interviews', value: stats.interviewCount, icon: Mic, bgColor: 'bg-violet-500/10', textColor: 'text-violet-400' },
+              { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, bgColor: 'bg-amber-500/10', textColor: 'text-amber-400' },
+              { label: 'Job Matches', value: stats.jobMatchCount, icon: Target, bgColor: 'bg-green-500/10', textColor: 'text-green-400' },
+              { label: 'Saved Jobs', value: stats.savedJobsCount, icon: Bookmark, bgColor: 'bg-yellow-500/10', textColor: 'text-yellow-400' },
+              { label: 'Learning', value: stats.learningPathCount, icon: GraduationCap, bgColor: 'bg-indigo-500/10', textColor: 'text-indigo-400' },
+            ].map((s, i) => (
+              <div key={i} className="glass-card p-4 group" style={{ animationDelay: `${i * 60}ms` }}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className={`w-9 h-9 rounded-xl ${s.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                    <s.icon className={`w-4 h-4 ${s.textColor}`} />
+                  </div>
+                </div>
+                <p className="text-xl font-bold text-white">{s.value || 0}</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {/* Feature Cards */}
@@ -577,6 +653,37 @@ function Dashboard({ user, onNavigate }) {
           </div>
         ))}
       </div>
+
+      {/* Recent Activity */}
+      {recentActivity.length > 0 && (
+        <div className="glass-card-static mb-10 animate-slide-up" style={{ animationDelay: '0.15s' }}>
+          <div className="p-5 pb-0 flex items-center justify-between">
+            <h3 className="text-base font-semibold text-white flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                <Clock className="w-4 h-4 text-cyan-400" />
+              </div>
+              Recent Activity
+            </h3>
+            <span className="text-[10px] text-slate-500">Last {recentActivity.length} events</span>
+          </div>
+          <div className="p-5">
+            <div className="space-y-2">
+              {recentActivity.slice(0, 8).map((event, i) => {
+                const IconComp = activityIcon(event.type);
+                return (
+                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                    <div className="w-8 h-8 rounded-lg bg-white/[0.05] flex items-center justify-center flex-shrink-0">
+                      <IconComp className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <span className="text-xs text-slate-300 flex-1 capitalize">{activityLabel(event.type)}</span>
+                    <span className="text-[10px] text-slate-500">{formatDateTime(event.createdAt)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* AI Models Status */}
       <div className="glass-card-static p-6 animate-slide-up" style={{ animationDelay: '0.3s' }}>
@@ -4156,7 +4263,7 @@ function UserProfile({ user, onUpdate }) {
   const [saved, setSaved] = useState(false);
   const [resumes, setResumes] = useState([]);
   const [stats, setStats] = useState(null);
-  const [savedJobsCount, setSavedJobsCount] = useState(0);
+  const [recentActivity, setRecentActivity] = useState([]);
   // Password change state
   const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [currentPw, setCurrentPw] = useState('');
@@ -4164,11 +4271,15 @@ function UserProfile({ user, onUpdate }) {
   const [confirmPw, setConfirmPw] = useState('');
   const [pwLoading, setPwLoading] = useState(false);
   const [pwMsg, setPwMsg] = useState(null);
+  // Validation
+  const [nameError, setNameError] = useState('');
 
   useEffect(() => {
     api.get('/resumes').then(d => setResumes(d.resumes || []));
-    api.get('/profile').then(d => setStats(d.stats));
-    api.get('/saved-jobs').then(d => { if (d.jobs) setSavedJobsCount(d.jobs.length); }).catch(() => {});
+    api.get('/profile').then(d => {
+      setStats(d.stats);
+      setRecentActivity(d.recentActivity || []);
+    });
   }, []);
 
   // Profile completeness
@@ -4179,10 +4290,35 @@ function UserProfile({ user, onUpdate }) {
   const initials = (user?.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 2);
 
   const save = async () => {
+    // Validate name
+    if (!name || name.trim().length < 2) {
+      setNameError('Name must be at least 2 characters');
+      return;
+    }
+    setNameError('');
     setSaving(true);
     setSaved(false);
     await api.put('/profile', {
-      name,
+      name: name.trim(),
+      profile: {
+        skills: skills.split(',').map(s => s.trim()).filter(Boolean),
+        interests: interests.split(',').map(s => s.trim()).filter(Boolean),
+        education: education.trim(),
+        experience: experience.trim(),
+        careerGoal: careerGoal.trim(),
+      },
+    });
+    setSaving(false);
+    setSaved(true);
+    if (onUpdate) onUpdate({ ...user, name: name.trim(), profile: { skills: skills.split(',').map(s => s.trim()).filter(Boolean), interests: interests.split(',').map(s => s.trim()).filter(Boolean), education: education.trim(), experience: experience.trim(), careerGoal: careerGoal.trim() } });
+    setTimeout(() => setSaved(false), 3000);
+  };
+
+  // Export profile data
+  const exportProfileData = () => {
+    const data = {
+      name: user?.name,
+      email: user?.email,
       profile: {
         skills: skills.split(',').map(s => s.trim()).filter(Boolean),
         interests: interests.split(',').map(s => s.trim()).filter(Boolean),
@@ -4190,11 +4326,21 @@ function UserProfile({ user, onUpdate }) {
         experience,
         careerGoal,
       },
-    });
-    setSaving(false);
-    setSaved(true);
-    if (onUpdate) onUpdate({ ...user, name, profile: { skills: skills.split(',').map(s => s.trim()).filter(Boolean), interests: interests.split(',').map(s => s.trim()).filter(Boolean), education, experience, careerGoal } });
-    setTimeout(() => setSaved(false), 3000);
+      stats,
+      resumes: resumes.map(r => ({
+        fileName: r.fileName,
+        atsScore: r.analysis?.atsScore,
+        createdAt: r.createdAt,
+      })),
+      exportedAt: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `careergpt_profile_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const changePassword = async () => {
@@ -4252,7 +4398,8 @@ function UserProfile({ user, onUpdate }) {
             <div className="p-5 space-y-4">
               <div>
                 <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Full Name</label>
-                <Input value={name} onChange={e => setName(e.target.value)} className="input-glass h-11" />
+                <Input value={name} onChange={e => { setName(e.target.value); if (nameError) setNameError(''); }} className={`input-glass h-11 ${nameError ? 'border-red-500/50' : ''}`} placeholder="Your full name" />
+                {nameError && <p className="text-[10px] text-red-400 mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{nameError}</p>}
               </div>
               <div>
                 <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Email</label>
@@ -4274,10 +4421,24 @@ function UserProfile({ user, onUpdate }) {
               <div>
                 <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Skills <span className="text-slate-500 normal-case">(comma separated)</span></label>
                 <textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL, Machine Learning..." className="w-full input-glass resize-none text-sm" />
+                {skills.trim() && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {skills.split(',').map(s => s.trim()).filter(Boolean).map((skill, i) => (
+                      <span key={i} className="px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-300 text-[10px] font-medium border border-cyan-500/20">{skill}</span>
+                    ))}
+                  </div>
+                )}
               </div>
               <div>
                 <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Interests <span className="text-slate-500 normal-case">(comma separated)</span></label>
                 <textarea value={interests} onChange={e => setInterests(e.target.value)} rows={2} placeholder="AI, Web Development, Data Science..." className="w-full input-glass resize-none text-sm" />
+                {interests.trim() && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {interests.split(',').map(s => s.trim()).filter(Boolean).map((interest, i) => (
+                      <span key={i} className="px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-300 text-[10px] font-medium border border-violet-500/20">{interest}</span>
+                    ))}
+                  </div>
+                )}
               </div>
               <div>
                 <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Education</label>
@@ -4337,8 +4498,11 @@ function UserProfile({ user, onUpdate }) {
         {/* Stats & Resume History */}
         <div className="space-y-5">
           <div className="glass-card overflow-hidden">
-            <div className="p-5 pb-0">
+            <div className="p-5 pb-0 flex items-center justify-between">
               <h3 className="text-base font-semibold text-white">Stats</h3>
+              <Button onClick={exportProfileData} variant="ghost" className="text-slate-400 hover:text-white h-8 px-2 text-[10px]">
+                <Download className="w-3.5 h-3.5 mr-1" />Export Data
+              </Button>
             </div>
             <div className="p-5 space-y-2.5">
               {stats && [
@@ -4346,7 +4510,9 @@ function UserProfile({ user, onUpdate }) {
                 { label: 'Resumes Analyzed', value: stats.resumeCount, icon: FileText, color: 'text-teal-400', bgColor: 'bg-teal-500/10' },
                 { label: 'Mock Interviews', value: stats.interviewCount, icon: Mic, color: 'text-violet-400', bgColor: 'bg-violet-500/10' },
                 { label: 'Career Paths', value: stats.careerPathCount, icon: Compass, color: 'text-amber-400', bgColor: 'bg-amber-500/10' },
-                { label: 'Saved Jobs', value: savedJobsCount, icon: Bookmark, color: 'text-yellow-400', bgColor: 'bg-yellow-500/10' },
+                { label: 'Job Matches', value: stats.jobMatchCount, icon: Target, color: 'text-green-400', bgColor: 'bg-green-500/10' },
+                { label: 'Saved Jobs', value: stats.savedJobsCount, icon: Bookmark, color: 'text-yellow-400', bgColor: 'bg-yellow-500/10' },
+                { label: 'Learning Paths', value: stats.learningPathCount, icon: GraduationCap, color: 'text-indigo-400', bgColor: 'bg-indigo-500/10' },
               ].map((s, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
                   <div className={`w-8 h-8 rounded-lg ${s.bgColor} flex items-center justify-center`}>
@@ -4356,8 +4522,9 @@ function UserProfile({ user, onUpdate }) {
                   <span className="text-sm font-bold text-white">{s.value || 0}</span>
                 </div>
               ))}
-              <div className="text-center pt-3">
+              <div className="text-center pt-3 space-y-1">
                 <p className="text-[10px] text-slate-500">Member since {formatDate(user?.createdAt)}</p>
+                {stats && <p className="text-[10px] text-slate-600">Total: {(stats.chatCount || 0) + (stats.resumeCount || 0) + (stats.interviewCount || 0) + (stats.careerPathCount || 0) + (stats.jobMatchCount || 0) + (stats.savedJobsCount || 0) + (stats.learningPathCount || 0)} interactions</p>}
               </div>
             </div>
           </div>
@@ -4401,6 +4568,29 @@ function UserProfile({ user, onUpdate }) {
               )}
             </div>
           </div>
+
+          {/* Recent Activity */}
+          {recentActivity.length > 0 && (
+            <div className="glass-card overflow-hidden">
+              <div className="p-5 pb-0">
+                <h3 className="text-base font-semibold text-white flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-cyan-400" />
+                  Recent Activity
+                </h3>
+              </div>
+              <div className="p-5">
+                <div className="space-y-2">
+                  {recentActivity.slice(0, 5).map((event, i) => (
+                    <div key={i} className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                      <div className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0" />
+                      <span className="text-[11px] text-slate-300 flex-1 capitalize">{(event.type || 'activity').replace(/_/g, ' ')}</span>
+                      <span className="text-[10px] text-slate-500">{formatDateTime(event.createdAt)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
