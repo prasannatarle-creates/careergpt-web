@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareerGPT — Complete Project Documentation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1a1a2e;
+      line-height: 1.7;
+      background: #ffffff;
+      font-size: 11pt;
+    }
+    
+    @media print {
+      body { font-size: 10pt; }
+      .page-break { page-break-before: always; }
+      .no-break { page-break-inside: avoid; }
+      h2 { page-break-after: avoid; }
+      h3 { page-break-after: avoid; }
+    }
+    
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 40px 50px;
+    }
+
+    /* Cover Page */
+    .cover {
+      text-align: center;
+      padding: 120px 40px 80px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+    }
+    .cover-logo {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, #3b82f6, #06b6d4, #14b8a6);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 30px;
+      font-size: 36px;
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.3);
+    }
+    .cover h1 {
+      font-size: 42pt;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+    .cover h1 span { color: #22d3ee; }
+    .cover .subtitle {
+      font-size: 16pt;
+      color: #94a3b8;
+      margin-bottom: 40px;
+      font-weight: 400;
+    }
+    .cover .meta-info {
+      margin-top: 60px;
+      font-size: 11pt;
+      color: #64748b;
+      line-height: 2;
+    }
+    .cover .meta-info strong { color: #cbd5e1; }
+    .cover .line { width: 80px; height: 3px; background: linear-gradient(90deg, #3b82f6, #06b6d4); margin: 30px auto; border-radius: 2px; }
+
+    /* Section Headers */
+    h2 {
+      font-size: 18pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 40px 0 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #3b82f6;
+      letter-spacing: -0.5px;
+    }
+    h2 .num {
+      display: inline-block;
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      color: white;
+      width: 32px; height: 32px;
+      text-align: center;
+      line-height: 32px;
+      border-radius: 8px;
+      font-size: 14pt;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    
+    h3 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #1e40af;
+      margin: 25px 0 12px;
+    }
+    
+    h4 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #334155;
+      margin: 18px 0 8px;
+    }
+
+    p { margin-bottom: 10px; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 10pt;
+    }
+    th {
+      background: #1e293b;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 9pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+    tr:nth-child(even) { background-color: #f8fafc; }
+    tr:hover { background-color: #eff6ff; }
+
+    /* Code blocks */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9pt;
+      color: #0f172a;
+    }
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 18px 22px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+      line-height: 1.6;
+      margin: 15px 0;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    /* Lists */
+    ul, ol {
+      margin: 8px 0 12px 20px;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+
+    /* Callout boxes */
+    .callout {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 15px 0;
+      font-size: 10pt;
+    }
+    .callout-green {
+      background: #f0fdf4;
+      border-left-color: #22c55e;
+    }
+    .callout-amber {
+      background: #fffbeb;
+      border-left-color: #f59e0b;
+    }
+    .callout-red {
+      background: #fef2f2;
+      border-left-color: #ef4444;
+    }
+    .callout strong { display: block; margin-bottom: 4px; }
+
+    /* Flow diagram */
+    .flow {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin: 15px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5pt;
+      line-height: 2;
+      color: #334155;
+    }
+    .flow .arrow { color: #3b82f6; font-weight: 700; }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 8pt;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-blue { background: #dbeafe; color: #1d4ed8; }
+    .badge-green { background: #dcfce7; color: #15803d; }
+    .badge-amber { background: #fef3c7; color: #b45309; }
+    .badge-red { background: #fee2e2; color: #dc2626; }
+    .badge-purple { background: #f3e8ff; color: #7c3aed; }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 15px 0;
+    }
+    .stat-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-card .value {
+      font-size: 20pt;
+      font-weight: 800;
+      color: #1e40af;
+    }
+    .stat-card .label {
+      font-size: 8pt;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    /* TOC */
+    .toc {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 25px 30px;
+      margin: 30px 0;
+    }
+    .toc h3 { color: #0f172a; margin-bottom: 15px; font-size: 14pt; }
+    .toc ol { counter-reset: toc; list-style: none; margin: 0; padding: 0; }
+    .toc li {
+      counter-increment: toc;
+      padding: 6px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 10pt;
+    }
+    .toc li:last-child { border-bottom: none; }
+    .toc li::before {
+      content: counter(toc) ".";
+      font-weight: 700;
+      color: #3b82f6;
+      margin-right: 10px;
+    }
+    
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
+      margin: 35px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: #94a3b8;
+      font-size: 9pt;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover">
+  <div class="cover-logo">🧠</div>
+  <h1>Career<span>GPT</span></h1>
+  <p class="subtitle">AI-Powered Career Guidance Platform</p>
+  <div class="line"></div>
+  <p class="subtitle" style="font-size: 12pt; margin-bottom: 10px;">Complete Project Documentation &amp; Interview Defense Guide</p>
+  <div class="meta-info">
+    <strong>Developer:</strong> Prasanna Tarle<br>
+    <strong>Technology:</strong> Next.js 16 + React 18 + MongoDB Atlas + OpenRouter AI<br>
+    <strong>Total Lines of Code:</strong> 16,958 across 76 files<br>
+    <strong>API Endpoints:</strong> 61 endpoints across 12 modules<br>
+    <strong>AI Models:</strong> 5 (GPT-4.1, Claude 4, Gemini 2.5, Grok 3, Perplexity)<br>
+    <strong>GitHub:</strong> github.com/prasannatarle-creates/careergpt-web<br>
+    <strong>Date:</strong> February 2026
+  </div>
+</div>
+
+<!-- ==================== TABLE OF CONTENTS ==================== -->
+<div class="container">
+<div class="page-break"></div>
+
+<div class="toc">
+  <h3>📑 Table of Contents</h3>
+  <ol>
+    <li>Problem Statement &amp; Project Overview</li>
+    <li>System Architecture</li>
+    <li>Technology Stack &amp; Dependencies</li>
+    <li>Frontend Architecture (page.js — 4,084 lines)</li>
+    <li>Backend Architecture (route.js — 2,583 lines)</li>
+    <li>Module 1: Multi-Model AI Career Chat</li>
+    <li>Module 2: Resume ATS Analyzer</li>
+    <li>Module 3: Mock Interview Analyzer</li>
+    <li>Module 4: Job Role Matcher (Real Jobs)</li>
+    <li>Module 5: Career Path Generator</li>
+    <li>Module 6: Learning Path &amp; Skill Gap Analysis</li>
+    <li>Module 7: Analytics Dashboard</li>
+    <li>Additional Modules (Chat Export, A/B Testing, Streaming, Alerts)</li>
+    <li>Database Design (MongoDB)</li>
+    <li>Authentication &amp; Security</li>
+    <li>Lib Modules Deep Dive (12 utility files)</li>
+    <li>UI Component Library (30+ Radix Components)</li>
+    <li>Styling System (globals.css — 449 lines)</li>
+    <li>Deployment &amp; DevOps</li>
+    <li>Complete API Endpoint Reference (61 endpoints)</li>
+    <li>Error Handling Patterns</li>
+    <li>Code-Level Knowledge (Interview Answers)</li>
+    <li>Tradeoffs &amp; Design Decisions</li>
+    <li>Scalability — What Breaks at 10,000 Users</li>
+    <li>Debugging Scenarios</li>
+    <li>Weaknesses a Senior Engineer Would Notice</li>
+    <li>Limitations &amp; Future Improvements</li>
+    <li>Quick Interview Cheat Sheet</li>
+    <li>Project Statistics Summary</li>
+  </ol>
+</div>
+
+<!-- ==================== 1. PROBLEM STATEMENT ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">1</span> Problem Statement &amp; Project Overview</h2>
+
+<h3>What Real-World Problem Does It Solve?</h3>
+<p>CareerGPT solves the <strong>fragmentation problem in career development</strong>. Today, a job seeker needs 5-6 different tools — one for resume checking, one for interview prep, one for job search, one for career planning, one for learning recommendations. CareerGPT unifies all of this into a single AI-powered platform.</p>
+
+<h3>Who Is The Target User?</h3>
+<ul>
+  <li>College students planning their first career move</li>
+  <li>Job seekers switching careers or looking for new opportunities</li>
+  <li>Working professionals wanting to upskill toward a target role</li>
+</ul>
+
+<h3>Why Is This Better Than Existing Solutions?</h3>
+<table>
+  <tr><th>Feature</th><th>ChatGPT / Generic AI</th><th>LinkedIn</th><th>CareerGPT</th></tr>
+  <tr><td>Career-specific prompts</td><td>❌ Generic</td><td>❌ No AI chat</td><td>✅ Structured JSON outputs</td></tr>
+  <tr><td>Resume ATS scoring</td><td>❌ Manual</td><td>❌ Basic</td><td>✅ 10-point checklist + rewritten bullets</td></tr>
+  <tr><td>Multi-model AI</td><td>❌ Single model</td><td>❌ None</td><td>✅ 5 models with synthesis</td></tr>
+  <tr><td>Real job data</td><td>❌ None</td><td>✅ Yes</td><td>✅ 4 real APIs + AI ranking</td></tr>
+  <tr><td>Skill gap → Courses</td><td>❌ Manual</td><td>✅ LinkedIn Learning</td><td>✅ Auto-detected from resume</td></tr>
+  <tr><td>Mock interviews</td><td>⚠️ Unstructured</td><td>❌ None</td><td>✅ Scored feedback with STAR detection</td></tr>
+  <tr><td>All-in-one platform</td><td>❌ Chat only</td><td>⚠️ Jobs + Learning</td><td>✅ Everything unified</td></tr>
+</table>
+
+<div class="callout">
+  <strong>🎯 Elevator Pitch (30 seconds):</strong>
+  "CareerGPT is an AI-powered career guidance platform that provides personalized career paths, resume ATS evaluation, mock interview analysis, real job matching from live APIs, and skill gap-based learning recommendations — all powered by 5 different AI models that synthesize their responses for the most comprehensive career advice."
+</div>
+
+<!-- ==================== 2. SYSTEM ARCHITECTURE ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">2</span> System Architecture</h2>
+
+<h3>High-Level Architecture Diagram</h3>
+<div class="flow">
+  <strong>User (Browser)</strong><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;↓ HTTPS Request<br>
+  <strong>Next.js Frontend (React 18 SPA)</strong> — app/page.js (4,084 lines)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;↓ fetch('/api/...') with JWT in Authorization header<br>
+  <strong>Next.js API Routes</strong> — app/api/[[...path]]/route.js (2,583 lines)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;↓ verifyToken() → Route matching → Handler function<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;├── <strong>MongoDB Atlas</strong> (users, sessions, resumes, career_paths, analytics...)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;├── <strong>OpenRouter API</strong> → 5 AI Models (GPT-4.1, Claude 4, Gemini 2.5, Grok 3, Perplexity)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;├── <strong>Job APIs</strong> → Remotive + Arbeitnow + JSearch + Jooble<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;└── <strong>Lib Modules</strong> → 12 utility files (resumeParser, jobApi, rateLimiter, etc.)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;↓ JSON Response<br>
+  <strong>React Component</strong> → Renders UI (cards, charts, timelines, scores)
+</div>
+
+<h3>Request Flow Example: "Generate Career Path"</h3>
+<div class="flow">
+  1. User fills form → clicks "Generate Career Path"<br>
+  2. Frontend sends <code>POST /api/career-path/generate</code> with JWT token<br>
+  3. <code>route.js</code> catches request → matches path → calls <code>handleGenerateCareerPath()</code><br>
+  4. <code>verifyToken()</code> validates JWT → extracts user ID<br>
+  5. <code>callMultiModel()</code> sends prompt to 3 models: GPT-4.1, Claude 4, Perplexity<br>
+  6. Sequential calling with 15-second timeout per model + early exit on first success<br>
+  7. If 2+ models succeed → GPT-4.1 synthesizes responses into one<br>
+  8. JSON response parsed → normalized (handles 15+ field name variations)<br>
+  9. Result stored in MongoDB <code>career_paths</code> collection<br>
+  10. Analytics event logged → JSON response sent to frontend<br>
+  11. React component renders timeline, salary cards, certifications, market demand
+</div>
+
+<!-- ==================== 3. TECH STACK ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">3</span> Technology Stack &amp; Dependencies</h2>
+
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+  <tr><td>Framework</td><td>Next.js</td><td>16.1.6</td><td>Full-stack React framework (frontend + API routes)</td></tr>
+  <tr><td>Frontend</td><td>React</td><td>18.x</td><td>UI component rendering</td></tr>
+  <tr><td>Styling</td><td>Tailwind CSS</td><td>3.4.1</td><td>Utility-first CSS framework</td></tr>
+  <tr><td>UI Components</td><td>Radix UI</td><td>Various</td><td>30+ accessible, unstyled primitives</td></tr>
+  <tr><td>Database</td><td>MongoDB</td><td>6.6.0 (driver)</td><td>Document database (Atlas cloud)</td></tr>
+  <tr><td>Authentication</td><td>jsonwebtoken</td><td>9.0.3</td><td>JWT token generation &amp; verification</td></tr>
+  <tr><td>Password Hashing</td><td>bcryptjs</td><td>3.0.3</td><td>Secure password hashing with salt</td></tr>
+  <tr><td>AI/LLM</td><td>OpenAI SDK</td><td>6.18.0</td><td>OpenRouter API client (compatible)</td></tr>
+  <tr><td>PDF Parsing</td><td>pdf-parse</td><td>1.1.1</td><td>Extract text from PDF resumes</td></tr>
+  <tr><td>DOCX Parsing</td><td>mammoth</td><td>1.11.0</td><td>Extract text from Word documents</td></tr>
+  <tr><td>PDF Generation</td><td>jspdf</td><td>4.1.0</td><td>Generate PDF exports</td></tr>
+  <tr><td>Markdown</td><td>react-markdown</td><td>10.1.0</td><td>Render AI responses as formatted text</td></tr>
+  <tr><td>Charts</td><td>recharts</td><td>2.15.3</td><td>Analytics visualizations</td></tr>
+  <tr><td>File Upload</td><td>react-dropzone</td><td>14.4.0</td><td>Drag-and-drop file uploads</td></tr>
+  <tr><td>Forms</td><td>react-hook-form + Zod</td><td>7.58 / 3.25</td><td>Form validation</td></tr>
+  <tr><td>Icons</td><td>lucide-react</td><td>0.516.0</td><td>40+ icons used throughout UI</td></tr>
+  <tr><td>HTTP</td><td>axios</td><td>1.10.0</td><td>HTTP client (backup)</td></tr>
+  <tr><td>Email</td><td>nodemailer</td><td>8.0.1</td><td>Email sending (SMTP/SendGrid)</td></tr>
+  <tr><td>UUID</td><td>uuid</td><td>9.0.1</td><td>Unique ID generation</td></tr>
+</table>
+
+<h3>AI Models Connected via OpenRouter</h3>
+<table>
+  <tr><th>Model</th><th>Provider</th><th>OpenRouter ID</th><th>Status</th><th>Color</th></tr>
+  <tr><td>GPT-4.1</td><td>OpenAI</td><td>openai/gpt-4.1</td><td><span class="badge badge-green">Guaranteed</span></td><td>#10a37f</td></tr>
+  <tr><td>Claude 4 Sonnet</td><td>Anthropic</td><td>anthropic/claude-sonnet-4</td><td><span class="badge badge-green">Guaranteed</span></td><td>#d97706</td></tr>
+  <tr><td>Gemini 2.5 Flash</td><td>Google</td><td>google/gemini-2.5-flash-preview</td><td><span class="badge badge-green">Guaranteed</span></td><td>#4285f4</td></tr>
+  <tr><td>Grok 3 Mini</td><td>x-ai</td><td>x-ai/grok-3-mini</td><td><span class="badge badge-amber">Beta</span></td><td>#ef4444</td></tr>
+  <tr><td>Perplexity Sonar</td><td>Perplexity</td><td>perplexity/sonar-pro</td><td><span class="badge badge-amber">Beta</span></td><td>#22d3ee</td></tr>
+</table>
+
+<h3>External Job APIs</h3>
+<table>
+  <tr><th>API</th><th>Type</th><th>Auth Required</th><th>Coverage</th></tr>
+  <tr><td>Remotive</td><td>Free</td><td>None</td><td>Remote tech jobs worldwide</td></tr>
+  <tr><td>Arbeitnow</td><td>Free</td><td>None</td><td>EU/German market jobs</td></tr>
+  <tr><td>JSearch (RapidAPI)</td><td>Paid</td><td>API Key</td><td>Global jobs via Google Jobs</td></tr>
+  <tr><td>Jooble</td><td>Paid</td><td>API Key</td><td>Global job aggregator</td></tr>
+</table>
+
+<!-- ==================== 4. FRONTEND ARCHITECTURE ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">4</span> Frontend Architecture (page.js — 4,084 lines)</h2>
+
+<p>The entire frontend is a <strong>Single Page Application (SPA)</strong> built as one React component file. It uses client-side rendering (<code>'use client'</code> directive) with 17 React components.</p>
+
+<h3>Component Hierarchy</h3>
+<table>
+  <tr><th>Component</th><th>Lines</th><th>Purpose</th></tr>
+  <tr><td><code>App</code> (root)</td><td>3998–4084</td><td>Root component, auth state, hydration handling, page routing</td></tr>
+  <tr><td><code>AuthPage</code></td><td>120–315</td><td>Login / Register / Guest login + Email verification + Password toggle</td></tr>
+  <tr><td><code>Sidebar</code></td><td>318–415</td><td>10-item navigation with collapse/expand, gradient active states</td></tr>
+  <tr><td><code>Dashboard</code></td><td>418–608</td><td>Stats overview, profile completeness SVG ring, quick actions, AI model status</td></tr>
+  <tr><td><code>AIChat</code></td><td>610–980</td><td>Multi-model chat, model selector, session history, export, share, message copy, rename</td></tr>
+  <tr><td><code>ResumeAnalyzer</code></td><td>983–1524</td><td>Drag-and-drop upload, ATS score, section breakdown, checklist, rewritten bullets, history</td></tr>
+  <tr><td><code>CareerPath</code></td><td>1526–2044</td><td>Profile form, timeline visualization, salary cards, certifications, market demand</td></tr>
+  <tr><td><code>MockInterview</code></td><td>2046–2496</td><td>Role/level/type selector, Q&A flow, live feedback, score display, sample answers</td></tr>
+  <tr><td><code>Jobs</code></td><td>2498–2518</td><td>Tab container for Job Matching + Job Browse</td></tr>
+  <tr><td><code>JobMatchingTab</code></td><td>2520–2890</td><td>AI job matching with match scores, skill gaps, real apply links</td></tr>
+  <tr><td><code>JobBrowseTab</code></td><td>3115–3318</td><td>Live job board with keyword search, location filter, direct apply links</td></tr>
+  <tr><td><code>SavedJobs</code></td><td>2892–3113</td><td>Application tracker: saved → applied → interviewing → offered/rejected</td></tr>
+  <tr><td><code>LearningCenter</code></td><td>3320–3567</td><td>Skill gap analysis, course recommendations, progress tracking</td></tr>
+  <tr><td><code>Analytics</code></td><td>3569–3733</td><td>Admin-level stats, daily activity chart, module usage breakdown</td></tr>
+  <tr><td><code>UserProfile</code></td><td>3735–3996</td><td>Edit name/skills/interests/education/experience, change password</td></tr>
+  <tr><td><code>formatDate / formatDateTime</code></td><td>29–56</td><td>Hydration-safe date formatters (avoid server/client mismatch)</td></tr>
+  <tr><td><code>api</code> object</td><td>58–115</td><td>Centralized API helper with token management, error handling</td></tr>
+</table>
+
+<h3>Frontend State Management</h3>
+<ul>
+  <li><strong>No Redux/Zustand</strong> — Pure <code>useState</code> + <code>useEffect</code> hooks</li>
+  <li>Token stored in <code>localStorage</code> via <code>api.setToken()</code></li>
+  <li>User state managed in <code>App</code> component, passed down as props</li>
+  <li>Each module component manages its own local state independently</li>
+</ul>
+
+<h3>Hydration Safety</h3>
+<ul>
+  <li><code>suppressHydrationWarning</code> on <code>&lt;html&gt;</code> and <code>&lt;body&gt;</code> tags</li>
+  <li><code>formatDate()</code> uses manual ISO formatting instead of <code>toLocaleDateString()</code></li>
+  <li><code>App</code> shows loading spinner until <code>mounted === true</code></li>
+  <li><code>api.getToken()</code> only accesses <code>localStorage</code> after initialization flag</li>
+</ul>
+
+<h3>Page Routing (Client-Side)</h3>
+<pre><code>const renderPage = () => {
+  switch (page) {
+    case 'dashboard': return &lt;Dashboard /&gt;;
+    case 'profile':   return &lt;UserProfile /&gt;;
+    case 'chat':      return &lt;AIChat /&gt;;
+    case 'resume':    return &lt;ResumeAnalyzer /&gt;;
+    case 'career':    return &lt;CareerPath /&gt;;
+    case 'interview': return &lt;MockInterview /&gt;;
+    case 'jobs':      return &lt;Jobs /&gt;;
+    case 'savedjobs': return &lt;SavedJobs /&gt;;
+    case 'learning':  return &lt;LearningCenter /&gt;;
+    case 'analytics': return &lt;Analytics /&gt;;
+    default:          return &lt;Dashboard /&gt;;
+  }
+};</code></pre>
+
+<h3>Guest Login Flow</h3>
+<ul>
+  <li>No API call — just sets <code>localStorage.setItem('cgpt_guest', 'true')</code></li>
+  <li>Creates <code>{ name: 'Guest', role: 'guest' }</code> user object</li>
+  <li>Some endpoints work without auth (career path, chat, resume) — uses <code>'anonymous'</code> as userId</li>
+  <li>Protected endpoints (saved jobs, profile) require auth → return 401</li>
+</ul>
+
+<!-- ==================== 5. BACKEND ARCHITECTURE ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">5</span> Backend Architecture (route.js — 2,583 lines)</h2>
+
+<p>All 61 API endpoints are in a single <strong>catch-all route file</strong>: <code>app/api/[[...path]]/route.js</code></p>
+
+<h3>Why Catch-All Route?</h3>
+<ul>
+  <li>Next.js App Router convention — <code>[[...path]]</code> means <strong>optional catch-all</strong></li>
+  <li>Matches <code>/api</code>, <code>/api/anything</code>, <code>/api/a/b/c</code></li>
+  <li>Inside, path is parsed and routed manually with if-statements</li>
+  <li>One deployment, unified codebase, explicit routing</li>
+</ul>
+
+<h3>Code Organization</h3>
+<table>
+  <tr><th>Section</th><th>Lines</th><th>Purpose</th></tr>
+  <tr><td>Imports &amp; Config</td><td>1–40</td><td>MongoDB, OpenAI, JWT, bcrypt, parsers, lib imports</td></tr>
+  <tr><td>Database Connection</td><td>42–100</td><td><code>getDb()</code> — MongoDB with MockDB fallback</td></tr>
+  <tr><td>LLM Setup</td><td>102–230</td><td><code>getOpenAIClient()</code>, <code>callModel()</code>, <code>callMultiModel()</code>, <code>callSingleModel()</code></td></tr>
+  <tr><td>Auth Helpers</td><td>232–255</td><td><code>generateToken()</code>, <code>verifyToken()</code></td></tr>
+  <tr><td>System Prompts</td><td>257–380</td><td>6 detailed system prompts (career, resume ATS, interview, job match, career path, feedback)</td></tr>
+  <tr><td>Auth Handlers</td><td>382–700</td><td>Register, login, verify email, forgot/reset password, guest login</td></tr>
+  <tr><td>Profile Handlers</td><td>700–730</td><td>Get/update profile, change password</td></tr>
+  <tr><td>Chat Handlers</td><td>730–870</td><td>Send message, get sessions, delete, rename</td></tr>
+  <tr><td>Career Path</td><td>870–960</td><td>Generate &amp; list career paths</td></tr>
+  <tr><td>Resume Handlers</td><td>960–1130</td><td>Upload (PDF/DOCX/TXT), analyze, list, get</td></tr>
+  <tr><td>Interview Handlers</td><td>1130–1300</td><td>Start interview, respond, transcribe, report</td></tr>
+  <tr><td>Job Matching</td><td>1300–1600</td><td>Match, history, saved jobs, alerts, live search</td></tr>
+  <tr><td>Resume A/B Testing</td><td>1600–1720</td><td>Create variant, track metrics, compare, recommend</td></tr>
+  <tr><td>Streaming Chat</td><td>1720–1740</td><td>SSE streaming wrapper</td></tr>
+  <tr><td>Learning Resources</td><td>1920–2100</td><td>Generate path, skill gaps, track progress</td></tr>
+  <tr><td>Analytics Dashboard</td><td>2100–2230</td><td>DAU/WAU/MAU, funnel, segmentation, cohorts</td></tr>
+  <tr><td>Chat Export &amp; Sharing</td><td>2230–2430</td><td>Markdown/HTML export, share links, public access</td></tr>
+  <tr><td>Router</td><td>2430–2583</td><td>GET/POST/PUT/DELETE/OPTIONS handlers with path matching</td></tr>
+</table>
+
+<h3>Multi-Model AI Orchestration</h3>
+<pre><code>// Sequential calling with early exit (not parallel)
+for (const model of modelsToUse) {
+  const modelPromise = callModel(client, modelStr, messages);
+  const timeoutPromise = new Promise((_, reject) =&gt;
+    setTimeout(() =&gt; reject(new Error('Model timeout')), 15000)
+  );
+  const response = await Promise.race([modelPromise, timeoutPromise]);
+  
+  // Early exit once we have 1 successful response
+  if (results.filter(r =&gt; r.success).length &gt;= 1) break;
+}
+
+// If 2+ models succeed → synthesize into unified response
+if (valid.length &gt; 1) {
+  const synthResult = await callModel(client, 'openai/gpt-4.1', synthPrompt);
+}</code></pre>
+
+<!-- ==================== 6-12. MODULES ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">6</span> Module 1: Multi-Model AI Career Chat</h2>
+
+<h4>How It Works Internally:</h4>
+<ol>
+  <li>User sends message → <code>handleChatSend()</code> called</li>
+  <li>System prompt prepended: <em>"You are CareerGPT, an expert AI career guidance counselor..."</em></li>
+  <li>Last 10 messages from session history included for <strong>conversational context</strong></li>
+  <li>Models called <strong>sequentially with early exit</strong>: guaranteed models first (GPT-4.1, Claude, Gemini), then beta (Grok, Perplexity)</li>
+  <li>Each model gets a <strong>15-second timeout</strong> via <code>Promise.race()</code></li>
+  <li>Once 1 model succeeds → stop calling others (saves cost &amp; time)</li>
+  <li>If 2+ models succeed → GPT-4.1 <strong>synthesizes</strong> them into unified response</li>
+  <li>Messages stored in MongoDB <code>sessions</code> collection</li>
+</ol>
+
+<h4>Hallucination Control:</h4>
+<ul>
+  <li>Structured JSON output enforced via system prompts with exact field definitions</li>
+  <li>JSON parsing with fallback: <code>try { JSON.parse() } catch { fallback }</code></li>
+  <li>Field normalization handles varying LLM output structures (15+ variations)</li>
+</ul>
+
+<h4>Frontend Features:</h4>
+<ul>
+  <li>Model selector toggle (choose which AI models to use)</li>
+  <li>Session list sidebar with search, rename, delete</li>
+  <li>Export to Markdown / HTML / PDF</li>
+  <li>Shareable links with password protection &amp; expiration</li>
+  <li>Copy individual messages to clipboard</li>
+  <li>View individual model responses (before synthesis)</li>
+</ul>
+
+<div class="section-divider"></div>
+
+<h2><span class="num">7</span> Module 2: Resume ATS Analyzer</h2>
+
+<h4>Processing Pipeline:</h4>
+<ol>
+  <li><strong>File Upload</strong> — Accepts PDF (<code>pdf-parse</code>), DOCX (<code>mammoth</code>), or plain text. Max 5MB.</li>
+  <li><strong>Text Extraction</strong> — Binary buffer → readable text. PDF: <code>pdfData.text</code>. DOCX: <code>mammoth.extractRawText()</code></li>
+  <li><strong>LLM Structural Parsing</strong> — <code>parseResumeStructure()</code> sends text to GPT-4.1 with JSON schema → extracts contact, experience[], education[], skills[], certifications[]</li>
+  <li><strong>ATS Scoring</strong> — <code>RESUME_ATS_SYSTEM</code> prompt evaluates 10 checklist items</li>
+  <li><strong>Enhancement</strong> — Word count, page estimate, experience years, seniority detection, focus area detection</li>
+</ol>
+
+<h4>ATS Checklist (10 items):</h4>
+<table>
+  <tr><th>#</th><th>Check Item</th><th>What It Evaluates</th></tr>
+  <tr><td>1</td><td>Standard section headings</td><td>Experience, Education, Skills labeled correctly</td></tr>
+  <tr><td>2</td><td>No tables/complex formatting</td><td>Clean formatting helps ATS parsing</td></tr>
+  <tr><td>3</td><td>Contact information complete</td><td>Email + phone present</td></tr>
+  <tr><td>4</td><td>Consistent date formatting</td><td>MM/YYYY throughout</td></tr>
+  <tr><td>5</td><td>Action verbs in bullets</td><td>"Developed", "Led", "Implemented"</td></tr>
+  <tr><td>6</td><td>Quantified achievements</td><td>Numbers, percentages, metrics</td></tr>
+  <tr><td>7</td><td>Appropriate length</td><td>1-2 pages for experience level</td></tr>
+  <tr><td>8</td><td>No spelling/grammar errors</td><td>Clean text</td></tr>
+  <tr><td>9</td><td>Skills match target role</td><td>Relevant keyword density</td></tr>
+  <tr><td>10</td><td>Professional summary present</td><td>Intro paragraph quality</td></tr>
+</table>
+
+<h4>Is it rule-based or ML?</h4>
+<p><strong>Hybrid approach:</strong> LLM does intelligent analysis + scoring. Helper functions do deterministic calculations:</p>
+<ul>
+  <li><code>calculateExperienceYears()</code> — Sum of <code>durationMonths</code> from parsed experience entries</li>
+  <li><code>detectSeniorityLevel()</code> — Rule-based: &lt;2 years = Junior, 2-5 = Mid, 5-10 = Senior, 10+ = Lead/Principal</li>
+  <li><code>extractSkills()</code> — Aggregates skills from all parsed sections into unique Set</li>
+  <li><code>detectFocusArea()</code> — Analyzes skill keywords to determine domain (frontend, backend, data, etc.)</li>
+</ul>
+
+<div class="page-break"></div>
+<h2><span class="num">8</span> Module 3: Mock Interview Analyzer</h2>
+
+<h4>Interview Flow:</h4>
+<ol>
+  <li>User selects role (e.g., Software Engineer), level (Junior/Mid/Senior), type (behavioral/technical)</li>
+  <li><code>handleInterviewStart()</code> → LLM generates first question</li>
+  <li>User answers → <code>handleInterviewRespond()</code> evaluates answer</li>
+  <li>LLM returns <strong>structured JSON feedback</strong></li>
+  <li>5-question session → final comprehensive assessment</li>
+</ol>
+
+<h4>Scoring Dimensions:</h4>
+<table>
+  <tr><th>Metric</th><th>Scale</th><th>What It Measures</th></tr>
+  <tr><td>Overall Score</td><td>0-10</td><td>Combined answer quality</td></tr>
+  <tr><td>Technical Accuracy</td><td>0-10</td><td>Correctness of technical claims</td></tr>
+  <tr><td>Communication Score</td><td>0-10</td><td>Clarity and articulation</td></tr>
+  <tr><td>Structure Score</td><td>0-10</td><td>Organization of answer</td></tr>
+  <tr><td>Confidence Score</td><td>0-10</td><td>Perceived confidence level</td></tr>
+  <tr><td>STAR Method</td><td>Yes/No</td><td>Used Situation-Task-Action-Result format</td></tr>
+</table>
+
+<h4>Audio Transcription (Optional):</h4>
+<ul>
+  <li>Upload audio → OpenAI Whisper API transcribes to text</li>
+  <li>Speech quality analysis: filler words (um, like), pace, clarity, confidence level</li>
+  <li>Comprehensive interview report: generates PDF with all metrics + recommendations</li>
+</ul>
+
+<div class="section-divider"></div>
+
+<h2><span class="num">9</span> Module 4: Job Role Matcher (Real Jobs)</h2>
+
+<h4>How Job Matching Works:</h4>
+<ol>
+  <li>Search <strong>4 real job APIs in parallel</strong> using <code>Promise.all()</code>: Remotive + Arbeitnow + JSearch + Jooble</li>
+  <li><strong>Deduplication</strong> by title+company using a <code>Set</code></li>
+  <li>Filter out placeholder URLs (<code>example.com</code>)</li>
+  <li><strong>LLM-based ranking</strong>: Send all jobs + user profile to GPT-4.1 → returns matchScore (0-100) + keyReasons[] + skillGaps[]</li>
+  <li>If APIs return nothing → LLM generates role recommendations</li>
+  <li>If LLM also fails → mock jobs as last resort (clearly labeled)</li>
+</ol>
+
+<div class="callout">
+  <strong>⚡ This is NOT keyword matching. It's semantic AI ranking.</strong>
+  The LLM understands context: "React developer with AWS experience" matched against "Frontend Cloud Engineer" gets a high score even though keywords don't exactly match.
+</div>
+
+<h4>Fallback Chain:</h4>
+<pre><code>Real Job APIs (4 sources in parallel)
+  → If some fail, others continue
+    → If all fail, LLM generates recommendations
+      → If LLM fails, show mock jobs (clearly labeled)
+        → Never show empty state to user</code></pre>
+
+<h4>Job Normalization:</h4>
+<pre><code>// Every job gets normalized to this schema:
+{
+  title, role, jobTitle,    // All set to same value
+  company, company_type,    // Company name
+  matchScore,               // 0-100 AI ranking
+  salary, location,         // From API data
+  jobUrl,                   // Real apply link (or null for mocks)
+  source,                   // 'remotive' | 'arbeitnow' | 'jsearch' | 'jooble' | 'ai' | 'mock'
+  skills_matched, skills_gap, why_match  // AI analysis
+}</code></pre>
+
+<div class="page-break"></div>
+<h2><span class="num">10</span> Module 5: Career Path Generator</h2>
+
+<h4>Input:</h4>
+<ul>
+  <li>Skills (e.g., "JavaScript, React, Node.js")</li>
+  <li>Interests (e.g., "AI, startups")</li>
+  <li>Education (e.g., "B.Tech Computer Science")</li>
+  <li>Experience (e.g., "2 years web development")</li>
+  <li>Target Role (e.g., "Full Stack Developer")</li>
+  <li>Location (e.g., "Bangalore, India")</li>
+</ul>
+
+<h4>Output Structure (JSON):</h4>
+<pre><code>{
+  "title": "Full Stack Developer Career Path",
+  "summary": "A comprehensive roadmap for transitioning to...",
+  "timeline": [
+    { "phase": "Phase 1 (0-6 months)", "title": "Foundation",
+      "goals": [...], "skills": [...], "milestones": [...] },
+    { "phase": "Phase 2 (6-18 months)", "title": "Growth", ... },
+    { "phase": "Phase 3 (18-36 months)", "title": "Senior", ... }
+  ],
+  "salaryRange": { "entry": "$50k-70k", "mid": "$90k-130k", "senior": "$140k-200k" },
+  "certifications": [{ "name": "AWS Certified", "provider": "Amazon", ... }],
+  "topRoles": [{ "title": "Senior Engineer", "salary": "$150k", "demand": "high" }],
+  "skillGaps": ["System Design", "Kubernetes"],
+  "marketDemand": { "level": "high", "trend": "growing", "hotSkills": ["AI/ML"] },
+  "alternativePaths": [{ "title": "DevOps Engineer", "description": "..." }],
+  "networkingTips": ["Join local meetups", "Contribute to open source"],
+  "recommendations": ["Start with AWS certification", "Build portfolio projects"]
+}</code></pre>
+
+<h4>Response Normalization (handles LLM variations):</h4>
+<pre><code>// The normalizer checks 15+ possible field names:
+timeline = src.timeline || src.phases || src.roadmap || src.steps 
+         || src.careerTimeline || src.journey || [];
+salaryRange = src.salaryRange || src.salary || src.salary_ranges 
+            || src.compensation || { entry: 'N/A', mid: 'N/A', senior: 'N/A' };
+skillGaps = src.skillGaps || src.skill_gaps || src.gaps || src.missingSkills || [];</code></pre>
+
+<div class="section-divider"></div>
+
+<h2><span class="num">11</span> Module 6: Learning Path &amp; Skill Gap Analysis</h2>
+
+<h4>Skill Gap Detection:</h4>
+<ul>
+  <li><code>analyzeSkillGaps()</code> compares user's resume skills against a <strong>role-skill mapping</strong></li>
+  <li>8 predefined roles with 7-8 required skills each</li>
+  <li>Calculates <code>completionPercentage = (matched / required) × 100</code></li>
+  <li>Priority skills = top 3 gaps</li>
+</ul>
+
+<h4>Role-Skill Mapping:</h4>
+<table>
+  <tr><th>Role</th><th>Required Skills</th></tr>
+  <tr><td>Software Engineer</td><td>JavaScript, Python, Java, System Design, Data Structures, SQL, Git, Testing</td></tr>
+  <tr><td>Frontend Developer</td><td>React, TypeScript, CSS, HTML5, Vue.js, Webpack, Performance</td></tr>
+  <tr><td>Backend Developer</td><td>Node.js, Python, Java, REST APIs, Databases, Docker, Kubernetes</td></tr>
+  <tr><td>Data Scientist</td><td>Python, SQL, Machine Learning, Statistics, TensorFlow, Pandas</td></tr>
+  <tr><td>DevOps Engineer</td><td>Docker, Kubernetes, AWS, CI/CD, Linux, Terraform, Monitoring</td></tr>
+  <tr><td>Product Manager</td><td>Product Strategy, Analytics, User Research, Roadmapping</td></tr>
+  <tr><td>UX Designer</td><td>UI Design, Figma, User Research, Wireframing, Prototyping</td></tr>
+  <tr><td>Cloud Architect</td><td>AWS, Azure, GCP, Networking, Security, Scalability</td></tr>
+</table>
+
+<h4>Course Discovery:</h4>
+<ul>
+  <li>Coursera API search (when <code>COURSERA_API_KEY</code> configured)</li>
+  <li>Udemy API search (when <code>UDEMY_CLIENT_ID</code> configured)</li>
+  <li>Progress tracking per course: 0-100% with database persistence</li>
+</ul>
+
+<div class="section-divider"></div>
+
+<h2><span class="num">12</span> Module 7: Analytics Dashboard</h2>
+
+<h4>Metrics Tracked:</h4>
+<table>
+  <tr><th>Metric</th><th>Calculation Method</th></tr>
+  <tr><td>DAU (Daily Active Users)</td><td>Unique userIds in analytics events for past 24h</td></tr>
+  <tr><td>WAU (Weekly Active Users)</td><td>Unique userIds since start of current week + daily breakdown</td></tr>
+  <tr><td>MAU (Monthly Active Users)</td><td>Unique userIds since start of current month + weekly breakdown</td></tr>
+  <tr><td>Funnel Analysis</td><td>signup → resume → interview → offer (with conversion rates and drop-off)</td></tr>
+  <tr><td>User Segmentation</td><td>Segment by role, experience level, location</td></tr>
+  <tr><td>Cohort Analysis</td><td>Users grouped by signup date, retention rates</td></tr>
+  <tr><td>Module Usage</td><td>Count of analytics events per type (chat_message, resume_analyzed, etc.)</td></tr>
+  <tr><td>Average ATS Score</td><td>Mean of all resume analysis scores</td></tr>
+  <tr><td>Daily Activity</td><td>Event counts for last 7 days</td></tr>
+</table>
+
+<!-- ==================== 13. ADDITIONAL MODULES ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">13</span> Additional Modules</h2>
+
+<h3>Chat Export &amp; Sharing (lib/chatExportSharing.js — 498 lines)</h3>
+<ul>
+  <li><code>convertToMarkdown(session)</code> — Session → Markdown with role labels, model attribution, timestamps</li>
+  <li><code>convertToHTML(session)</code> — Session → styled HTML document with CSS (printable to PDF)</li>
+  <li><code>createShareLink(db, sessionId, options)</code> — Generate unique share code, optional password, expiration (default 30 days)</li>
+  <li><code>getSharedChat(db, shareCode, password)</code> — Public read-only access with view count tracking</li>
+  <li><code>revokeShareLink(db, shareCode, userId)</code> — Revoke access (owner only)</li>
+</ul>
+
+<h3>Resume A/B Testing (lib/resumeABTesting.js — 284 lines)</h3>
+<ul>
+  <li><code>createResumeVariant()</code> — Create modified copy with tracked changes</li>
+  <li><code>trackResumeMetric()</code> — Log: views, clicks, interviews, offers, applications</li>
+  <li><code>getResumeComparison()</code> — Compare base vs variant performance metrics</li>
+  <li><code>recommendResumeOptimizations()</code> — LLM suggests which variant works better</li>
+</ul>
+
+<h3>Streaming Chat (lib/streamingChat.js — 267 lines)</h3>
+<ul>
+  <li>Server-Sent Events (SSE) for real-time token-by-token response delivery</li>
+  <li>Events: <code>connected</code>, <code>model_start</code>, <code>model_chunk</code>, <code>model_complete</code>, <code>model_error</code>, <code>synthesis_start</code>, <code>synthesis_chunk</code>, <code>done</code></li>
+  <li>Uses <code>ReadableStream</code> + <code>TextEncoder</code> for SSE format</li>
+</ul>
+
+<h3>Job Alerts (lib/jobAlerts.js — 337 lines)</h3>
+<ul>
+  <li><code>JobAlert</code> class with criteria matching (<code>matchesJob()</code>)</li>
+  <li>Checks skills overlap, salary minimum, location, job type</li>
+  <li>Frequency: daily, weekly, or immediately</li>
+  <li>Max <strong>5 active alerts per user</strong></li>
+  <li>Email notifications via configured email provider</li>
+</ul>
+
+<h3>Chat Memory (lib/chatMemory.js — 225 lines)</h3>
+<ul>
+  <li><code>ChatMemory</code> class — <code>addMessage()</code>, <code>getHistoryForLLM(maxMessages=20)</code>, <code>searchMessages(keyword)</code></li>
+  <li><code>getContextSummary()</code> — Extracts key user messages for context</li>
+  <li><code>getStats()</code> — Token estimation (1 char ≈ 0.25 tokens), message counts, avg lengths</li>
+  <li>Database persistence: <code>saveChatMemory()</code> / <code>loadChatMemory()</code></li>
+</ul>
+
+<h3>Profile Picture &amp; LinkedIn (lib/profilePictureLinkedIn.js — 455 lines)</h3>
+<ul>
+  <li><code>processProfilePicture(buffer, mimeType)</code> — Validates JPEG/PNG/WebP via magic bytes, max 5MB</li>
+  <li><code>getLinkedInAuthURL()</code> — OAuth authorization URL generation</li>
+  <li><code>exchangeLinkedInCode(code)</code> — Code → access token exchange</li>
+  <li><code>getLinkedInProfile(accessToken)</code> — Fetch profile, email, position from LinkedIn API</li>
+  <li><code>syncLinkedInData()</code> — Merge LinkedIn data into user profile</li>
+  <li>Requires <code>LINKEDIN_CLIENT_ID</code> + <code>LINKEDIN_CLIENT_SECRET</code></li>
+</ul>
+
+<h3>PDF Export (lib/pdfExport.js — 410 lines)</h3>
+<ul>
+  <li>Custom <code>PDFGenerator</code> class — generates PDF 1.4 binary from scratch</li>
+  <li>Content streams, page objects, font references</li>
+  <li>Used for interview reports and chat session exports</li>
+</ul>
+
+<h3>Email Service (lib/email.js — 166 lines)</h3>
+<ul>
+  <li>Development mode: emails logged to console</li>
+  <li>Production: SendGrid API or SMTP (Nodemailer)</li>
+  <li>Templates: <code>verifyEmail()</code>, <code>welcomeEmail()</code>, <code>resetPassword()</code></li>
+</ul>
+
+<!-- ==================== 14. DATABASE DESIGN ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">14</span> Database Design (MongoDB)</h2>
+
+<h3>Why MongoDB?</h3>
+<ul>
+  <li>Career data is <strong>document-oriented</strong> — a resume, career path, or interview session is naturally a nested JSON document</li>
+  <li>Schema flexibility — LLM responses have varying structures, MongoDB handles that without migrations</li>
+  <li>MongoDB Atlas provides cloud hosting, auto-scaling, and backups</li>
+</ul>
+
+<h3>Collections (10 total)</h3>
+<table>
+  <tr><th>Collection</th><th>Purpose</th><th>Key Fields</th></tr>
+  <tr><td><code>users</code></td><td>User accounts</td><td>id, name, email, password (hashed), role, profile, verified, verificationToken, createdAt</td></tr>
+  <tr><td><code>sessions</code></td><td>Chat &amp; interview sessions</td><td>id, userId, title, type (career-chat | mock-interview), messages[], scores[], questionCount</td></tr>
+  <tr><td><code>resumes</code></td><td>Uploaded resumes</td><td>id, userId, fileName, fileSize, textContent, analysis, structured, targetRole</td></tr>
+  <tr><td><code>career_paths</code></td><td>Generated career paths</td><td>id, userId, input, result (normalized), models[], synthesized</td></tr>
+  <tr><td><code>job_matches</code></td><td>Job search results</td><td>id, userId, input, matches[], totalMatches, dataSource</td></tr>
+  <tr><td><code>saved_jobs</code></td><td>Bookmarked jobs</td><td>jobId, userId, jobTitle, company, jobUrl, status (saved/applied/interviewing/offered/rejected)</td></tr>
+  <tr><td><code>job_alerts</code></td><td>Alert configurations</td><td>alertId, userId, criteria, frequency, isActive</td></tr>
+  <tr><td><code>learning_paths</code></td><td>Learning recommendations</td><td>pathId, userId, resumeId, targetRole, learningPath, status</td></tr>
+  <tr><td><code>analytics</code></td><td>Event tracking</td><td>type, data, createdAt</td></tr>
+  <tr><td><code>interview_reports</code></td><td>Interview reports</td><td>reportId, sessionId, userId, metrics, recommendations</td></tr>
+</table>
+
+<h3>Database Indexes</h3>
+<pre><code>users        → { email: 1 } (unique)       // Fast login, prevent duplicate emails
+sessions     → { userId: 1, updatedAt: -1 } // Recent sessions per user
+resumes      → { userId: 1, createdAt: -1 } // User's resume history
+career_paths → { userId: 1 }               // User's career paths
+job_matches  → { userId: 1 }               // User's job searches
+analytics    → { type: 1, createdAt: -1 }  // Event queries for dashboard</code></pre>
+
+<h3>Duplication Prevention</h3>
+<ul>
+  <li><code>users</code> — Unique index on email → MongoDB rejects duplicate signup</li>
+  <li>Saved jobs — <code>findOne({ userId, jobTitle })</code> before insert</li>
+  <li>Job search — Deduplication by <code>title:company</code> using a <code>Set</code></li>
+</ul>
+
+<h3>MockDB Fallback (lib/mockdb.js — 186 lines)</h3>
+<ul>
+  <li>In-memory JavaScript implementation mirroring MongoDB's API</li>
+  <li>Persists to <code>.mockdb.json</code> file (gitignored)</li>
+  <li>Implements: <code>findOne</code>, <code>find</code>, <code>insertOne</code>, <code>updateOne</code>, <code>deleteOne</code>, <code>countDocuments</code></li>
+  <li>Supports: projection, sorting, limit, <code>$set</code>, <code>$push</code>, <code>$each</code>, <code>$gt</code> operators</li>
+  <li>Auto-fallback when <code>MONGO_URL</code> is not set or connection fails</li>
+</ul>
+
+<!-- ==================== 15. AUTH & SECURITY ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">15</span> Authentication &amp; Security</h2>
+
+<h3>JWT Implementation</h3>
+<pre><code>// Token generation (on login/register)
+jwt.sign(
+  { id: user.id, email: user.email, role: user.role },
+  JWT_SECRET,
+  { expiresIn: '7d' }
+);
+
+// Token verification (every protected request)
+function verifyToken(request) {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader?.startsWith('Bearer ')) return null;
+  const token = authHeader.split(' ')[1];
+  return jwt.verify(token, JWT_SECRET);  // Returns { id, email, role }
+}</code></pre>
+
+<h3>Why JWT Instead of Sessions?</h3>
+<ul>
+  <li><strong>Stateless</strong> — No server-side session storage needed</li>
+  <li><strong>Scalable</strong> — Works across multiple server instances without shared session store</li>
+  <li><strong>Mobile-friendly</strong> — Same mechanism works for mobile apps</li>
+</ul>
+
+<h3>Password Security</h3>
+<ul>
+  <li>Hashed with <code>bcryptjs</code> using <strong>10 salt rounds</strong></li>
+  <li>Password validation: min 6 chars, warns if no uppercase/numbers</li>
+  <li><code>bcrypt.compare()</code> for login — never stores plaintext</li>
+  <li>Old password required to change password</li>
+</ul>
+
+<h3>Rate Limiting (Brute Force Protection)</h3>
+<table>
+  <tr><th>Endpoint</th><th>Limit</th><th>Window</th></tr>
+  <tr><td>Login (<code>/auth/login</code>)</td><td>5 attempts</td><td>15 minutes per IP</td></tr>
+  <tr><td>Registration (<code>/auth/register</code>)</td><td>3 attempts</td><td>1 hour per IP</td></tr>
+  <tr><td>General API</td><td>30 requests</td><td>1 minute per IP</td></tr>
+</table>
+
+<h3>Security Measures</h3>
+<table>
+  <tr><th>Measure</th><th>Implementation</th></tr>
+  <tr><td>Email enumeration prevention</td><td>Forgot password always returns "If account exists..." (doesn't reveal if email is registered)</td></tr>
+  <tr><td>JWT expiry</td><td>Tokens expire in 7 days</td></tr>
+  <tr><td>Password reset tokens</td><td>Expire in 30 minutes</td></tr>
+  <tr><td>Guest isolation</td><td>Separate <code>role: 'guest'</code>, limited permissions</td></tr>
+  <tr><td>Input validation</td><td>All endpoints validate required fields</td></tr>
+  <tr><td>CORS headers</td><td>Configured via <code>next.config.js</code></td></tr>
+  <tr><td>Admin route protection</td><td>Checks <code>auth.role !== 'admin'</code></td></tr>
+  <tr><td>IP detection for rate limiting</td><td><code>x-forwarded-for</code> → <code>x-real-ip</code> → <code>127.0.0.1</code></td></tr>
+  <tr><td>Email verification</td><td>JWT-based verification tokens with 24h expiry</td></tr>
+  <tr><td>Auto-verify in dev</td><td>When no email provider configured, users auto-verified</td></tr>
+</table>
+
+<h3>Auth Flow Diagram</h3>
+<div class="flow">
+  <strong>Registration:</strong><br>
+  User submits form → Validate fields → Check email uniqueness → Hash password (bcrypt, 10 rounds) → Create user document → If email provider: send verification email, else auto-verify → Generate JWT → Return token + user<br><br>
+  <strong>Login:</strong><br>
+  User submits email/password → Rate limit check → Find user by email → Check if verified → bcrypt.compare() → Generate JWT → Return token + user<br><br>
+  <strong>Protected Request:</strong><br>
+  Request comes in → Extract Bearer token from Authorization header → jwt.verify() → If valid: return { id, email, role } → Use id to query database → If invalid: return 401
+</div>
+
+<!-- ==================== 16. LIB MODULES ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">16</span> Lib Modules Deep Dive (12 utility files)</h2>
+
+<table>
+  <tr><th>File</th><th>Lines</th><th>Purpose</th><th>Key Functions</th></tr>
+  <tr><td>jobApi.js</td><td>336</td><td>Real job API integration</td><td><code>searchAllJobSources()</code>, <code>rankJobsByRelevance()</code>, <code>getMockJobs()</code></td></tr>
+  <tr><td>chatExportSharing.js</td><td>498</td><td>Export &amp; sharing</td><td><code>convertToMarkdown()</code>, <code>convertToHTML()</code>, <code>createShareLink()</code></td></tr>
+  <tr><td>careerLearningResources.js</td><td>485</td><td>Skill gaps &amp; courses</td><td><code>analyzeSkillGaps()</code>, <code>searchCourseraAPI()</code>, <code>generateLearningPath()</code></td></tr>
+  <tr><td>analyticsDashboard.js</td><td>482</td><td>DAU/WAU/MAU metrics</td><td><code>calculateDAU()</code>, <code>analyzeFunnel()</code>, <code>getUserSegmentation()</code></td></tr>
+  <tr><td>profilePictureLinkedIn.js</td><td>455</td><td>Profile pic &amp; LinkedIn OAuth</td><td><code>processProfilePicture()</code>, <code>getLinkedInProfile()</code></td></tr>
+  <tr><td>pdfExport.js</td><td>410</td><td>PDF generation</td><td><code>PDFGenerator</code> class, content streams</td></tr>
+  <tr><td>interviewTranscription.js</td><td>353</td><td>Audio → text, reports</td><td><code>transcribeInterviewAudio()</code>, <code>generateInterviewReport()</code></td></tr>
+  <tr><td>jobAlerts.js</td><td>337</td><td>Job alert management</td><td><code>createJobAlert()</code>, <code>matchesJob()</code></td></tr>
+  <tr><td>resumeABTesting.js</td><td>284</td><td>Resume variants &amp; metrics</td><td><code>createResumeVariant()</code>, <code>trackResumeMetric()</code></td></tr>
+  <tr><td>streamingChat.js</td><td>267</td><td>SSE streaming</td><td><code>handleChatSendStream()</code></td></tr>
+  <tr><td>chatMemory.js</td><td>225</td><td>Conversation memory</td><td><code>ChatMemory</code> class, <code>getHistoryForLLM()</code></td></tr>
+  <tr><td>resumeParser.js</td><td>190</td><td>Resume text → structured JSON</td><td><code>parseResumeStructure()</code>, <code>calculateExperienceYears()</code></td></tr>
+  <tr><td>mockdb.js</td><td>186</td><td>In-memory MongoDB mock</td><td><code>MockDB</code> class, <code>MockCollection</code></td></tr>
+  <tr><td>email.js</td><td>166</td><td>Email sending</td><td><code>sendEmail()</code>, <code>emailTemplates</code></td></tr>
+  <tr><td>rateLimiter.js</td><td>~100</td><td>Rate limiting</td><td><code>RateLimiter</code> class, <code>authLimiter</code>, <code>registerLimiter</code></td></tr>
+  <tr><td>utils.js</td><td>~20</td><td>Tailwind utility</td><td><code>cn()</code> — class name merger</td></tr>
+</table>
+
+<!-- ==================== 17. UI COMPONENTS ==================== -->
+<h2><span class="num">17</span> UI Component Library (30+ Radix Components)</h2>
+
+<p>All in <code>components/ui/</code> — pre-built, accessible Radix UI primitives styled with Tailwind CSS:</p>
+
+<table>
+  <tr><th>Category</th><th>Components</th></tr>
+  <tr><td>Layout</td><td>accordion, card, tabs, separator, resizable, scroll-area, sheet, sidebar, aspect-ratio</td></tr>
+  <tr><td>Forms</td><td>input, textarea, select, checkbox, radio-group, switch, slider, form, label, input-otp</td></tr>
+  <tr><td>Feedback</td><td>alert, alert-dialog, dialog, toast, toaster, sonner, progress, skeleton</td></tr>
+  <tr><td>Navigation</td><td>breadcrumb, navigation-menu, menubar, pagination, dropdown-menu, context-menu</td></tr>
+  <tr><td>Data Display</td><td>avatar, badge, table, chart, calendar, hover-card, tooltip, popover</td></tr>
+  <tr><td>Actions</td><td>button, toggle, toggle-group, command, carousel, collapsible, drawer</td></tr>
+</table>
+
+<!-- ==================== 18. STYLING ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">18</span> Styling System (globals.css — 449 lines)</h2>
+
+<h3>Custom CSS Classes (Beyond Tailwind):</h3>
+<table>
+  <tr><th>Class</th><th>What It Does</th></tr>
+  <tr><td><code>bg-animated-mesh</code></td><td>Multi-stop radial gradient background (dark blue/teal/slate)</td></tr>
+  <tr><td><code>glass-card</code> / <code>glass-card-bright</code></td><td>Glassmorphism with <code>backdrop-blur</code>, semi-transparent backgrounds</td></tr>
+  <tr><td><code>text-gradient-cyan</code></td><td><code>background: linear-gradient(135deg, #22d3ee, #3b82f6)</code> with <code>-webkit-background-clip: text</code></td></tr>
+  <tr><td><code>btn-glow</code></td><td>Hover glow effect using <code>box-shadow</code></td></tr>
+  <tr><td><code>input-glass</code></td><td>Dark glass-styled input fields with border glow on focus</td></tr>
+  <tr><td><code>custom-scrollbar</code></td><td>Custom thin scrollbar (4px width, blue thumb)</td></tr>
+  <tr><td><code>badge-primary</code></td><td>Gradient badge with border</td></tr>
+  <tr><td><code>bg-grid-pattern</code></td><td>Subtle dot grid overlay using <code>radial-gradient</code></td></tr>
+</table>
+
+<h3>10 Keyframe Animations:</h3>
+<table>
+  <tr><th>Animation</th><th>Effect</th><th>Used For</th></tr>
+  <tr><td><code>float</code></td><td>Up/down floating with slight rotation</td><td>Logo, emoji, floating elements</td></tr>
+  <tr><td><code>gradient-shift</code></td><td>Moving gradient background position</td><td>Background animations</td></tr>
+  <tr><td><code>shimmer</code></td><td>Left-to-right shimmer</td><td>Loading states</td></tr>
+  <tr><td><code>pulse-glow</code></td><td>Pulsing box-shadow glow</td><td>Active elements</td></tr>
+  <tr><td><code>slide-up</code></td><td>Fade in from below</td><td>Page transitions, card entry</td></tr>
+  <tr><td><code>slide-in-left</code></td><td>Fade in from left</td><td>Sidebar animations</td></tr>
+  <tr><td><code>fade-in</code></td><td>Simple opacity transition</td><td>Content reveal</td></tr>
+  <tr><td><code>scale-in</code></td><td>Scale from 0.95 to 1</td><td>Modal/card entry</td></tr>
+  <tr><td><code>blob</code></td><td>Morphing border-radius</td><td>Background decorative orbs</td></tr>
+  <tr><td><code>typing-dot</code></td><td>Bouncing opacity dots</td><td>Chat typing indicator</td></tr>
+</table>
+
+<!-- ==================== 19. DEPLOYMENT ==================== -->
+<h2><span class="num">19</span> Deployment &amp; DevOps</h2>
+
+<h3>Deployment Platform: Render</h3>
+<table>
+  <tr><th>Setting</th><th>Value</th></tr>
+  <tr><td>Build Command</td><td><code>next build</code></td></tr>
+  <tr><td>Start Command</td><td><code>next start</code></td></tr>
+  <tr><td>Output Mode</td><td><code>standalone</code> (next.config.js)</td></tr>
+  <tr><td>Auto Deploy</td><td>Push to <code>main</code> → auto deploys</td></tr>
+  <tr><td>SSL</td><td>HTTPS by default</td></tr>
+</table>
+
+<h3>Environment Variables (Set in Render Dashboard):</h3>
+<pre><code>MONGO_URL=mongodb+srv://user:pass@cluster...    # MongoDB Atlas connection
+OPENROUTER_API_KEY=sk-or-...                     # LLM access (5 models)
+JWT_SECRET=your-secure-secret-key                # Token signing
+DB_NAME=careergpt                                # Database name
+NODE_ENV=production                              # Environment flag
+APP_URL=https://your-app.onrender.com            # For email links
+CORS_ORIGINS=*                                   # CORS configuration</code></pre>
+
+<h3>Why .env Is Not Pushed to GitHub:</h3>
+<ul>
+  <li>Contains secrets (API keys, database passwords, JWT secret)</li>
+  <li><code>.gitignore</code> includes <code>.env.local</code></li>
+  <li>Each environment (dev, staging, prod) has different values</li>
+  <li>Render dashboard provides a secure UI for setting env vars</li>
+</ul>
+
+<h3>Next.js Config (next.config.js):</h3>
+<pre><code>output: 'standalone'                          // Self-contained build
+images: { unoptimized: true }                 // No Image Optimization API
+serverExternalPackages: ['mongodb', 'pdf-parse'] // Don't bundle
+turbopack: {}                                 // Faster dev builds
+// Security headers for all routes:
+X-Frame-Options: ALLOWALL
+Content-Security-Policy: frame-ancestors *
+Access-Control-Allow-Origin: * (configurable)</code></pre>
+
+<!-- ==================== 20. API REFERENCE ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">20</span> Complete API Endpoint Reference (61 endpoints)</h2>
+
+<h3>Authentication (8 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/auth/register</td><td>No</td><td>Create account (rate limited: 3/hr)</td></tr>
+  <tr><td>POST</td><td>/auth/login</td><td>No</td><td>Login with email/password (rate limited: 5/15min)</td></tr>
+  <tr><td>POST</td><td>/auth/guest</td><td>No</td><td>Guest login (returns short-lived token)</td></tr>
+  <tr><td>POST</td><td>/auth/verify-email</td><td>No</td><td>Verify email with token</td></tr>
+  <tr><td>POST</td><td>/auth/resend-verification</td><td>No</td><td>Resend verification email</td></tr>
+  <tr><td>POST</td><td>/auth/forgot-password</td><td>No</td><td>Request password reset</td></tr>
+  <tr><td>POST</td><td>/auth/reset-password</td><td>No</td><td>Reset password with token</td></tr>
+  <tr><td>POST</td><td>/auth/change-password</td><td>Yes</td><td>Change password (requires current)</td></tr>
+</table>
+
+<h3>Profile (2 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/profile</td><td>Yes</td><td>Get user profile + stats</td></tr>
+  <tr><td>PUT</td><td>/profile</td><td>Yes</td><td>Update profile fields</td></tr>
+</table>
+
+<h3>AI Career Chat (7 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/chat/send</td><td>Optional</td><td>Send message to multi-model AI</td></tr>
+  <tr><td>POST</td><td>/chat/send-stream</td><td>Optional</td><td>Stream response via SSE</td></tr>
+  <tr><td>GET</td><td>/chat/sessions</td><td>Yes</td><td>List all chat sessions</td></tr>
+  <tr><td>GET</td><td>/chat/sessions/:id</td><td>Yes</td><td>Get session with messages</td></tr>
+  <tr><td>DELETE</td><td>/chat/sessions/:id</td><td>Yes</td><td>Delete a session</td></tr>
+  <tr><td>POST</td><td>/chat/rename-session</td><td>Yes</td><td>Rename a session</td></tr>
+  <tr><td>GET</td><td>/models</td><td>No</td><td>List available AI models</td></tr>
+</table>
+
+<h3>Resume (7 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/resume/upload</td><td>Optional</td><td>Upload PDF/DOCX/TXT resume</td></tr>
+  <tr><td>POST</td><td>/resume/analyze</td><td>Optional</td><td>Run ATS analysis on uploaded resume</td></tr>
+  <tr><td>GET</td><td>/resumes</td><td>Yes</td><td>List user's resumes</td></tr>
+  <tr><td>GET</td><td>/resume/:id</td><td>No</td><td>Get specific resume + analysis</td></tr>
+  <tr><td>POST</td><td>/resume/create-variant</td><td>Yes</td><td>Create A/B test variant</td></tr>
+  <tr><td>POST</td><td>/resume/track-metric</td><td>Yes</td><td>Track resume performance metric</td></tr>
+  <tr><td>GET</td><td>/resume/compare/:id</td><td>Yes</td><td>Compare base vs variant</td></tr>
+  <tr><td>POST</td><td>/resume/recommendations</td><td>Yes</td><td>Get optimization recommendations</td></tr>
+</table>
+
+<h3>Career Path (2 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/career-path/generate</td><td>Optional</td><td>Generate structured career path</td></tr>
+  <tr><td>GET</td><td>/career-paths</td><td>Yes</td><td>List user's career paths</td></tr>
+</table>
+
+<h3>Mock Interview (4 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/mock-interview/start</td><td>Optional</td><td>Start interview session</td></tr>
+  <tr><td>POST</td><td>/mock-interview/respond</td><td>Optional</td><td>Submit answer, get feedback</td></tr>
+  <tr><td>POST</td><td>/interview/upload-audio</td><td>Yes</td><td>Upload audio for transcription</td></tr>
+  <tr><td>POST</td><td>/interview/generate-report</td><td>Yes</td><td>Generate interview report</td></tr>
+  <tr><td>GET</td><td>/interview/report/:id</td><td>Yes</td><td>Export interview report as PDF</td></tr>
+</table>
+
+<h3>Job Matching (11 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/job-match</td><td>Optional</td><td>AI-powered job matching</td></tr>
+  <tr><td>POST</td><td>/job-match/history</td><td>Yes</td><td>Get job match history</td></tr>
+  <tr><td>POST</td><td>/jobs/live-search</td><td>Optional</td><td>Live job board search</td></tr>
+  <tr><td>POST</td><td>/saved-jobs/save</td><td>Yes</td><td>Save/bookmark a job</td></tr>
+  <tr><td>POST</td><td>/saved-jobs/update</td><td>Yes</td><td>Update job status/notes</td></tr>
+  <tr><td>POST</td><td>/saved-jobs/delete</td><td>Yes</td><td>Remove saved job</td></tr>
+  <tr><td>POST</td><td>/saved-jobs</td><td>Yes</td><td>Get all saved jobs + stats</td></tr>
+  <tr><td>POST</td><td>/job-alerts/create</td><td>Yes</td><td>Create job alert (max 5)</td></tr>
+  <tr><td>POST</td><td>/job-alerts</td><td>Yes</td><td>Get user's alerts</td></tr>
+  <tr><td>POST</td><td>/job-alerts/toggle</td><td>Yes</td><td>Enable/disable alert</td></tr>
+  <tr><td>POST</td><td>/job-alerts/delete</td><td>Yes</td><td>Delete job alert</td></tr>
+</table>
+
+<h3>Learning (4 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/learning-path/generate</td><td>Yes</td><td>Generate learning path from resume</td></tr>
+  <tr><td>POST</td><td>/learning-path/skill-gaps</td><td>Yes</td><td>Analyze skill gaps</td></tr>
+  <tr><td>POST</td><td>/course/track-progress</td><td>Yes</td><td>Track course completion</td></tr>
+  <tr><td>GET</td><td>/learning-paths</td><td>Yes</td><td>List learning paths</td></tr>
+  <tr><td>GET</td><td>/learning-progress</td><td>Yes</td><td>Get learning progress</td></tr>
+</table>
+
+<h3>Analytics (8 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/admin/analytics</td><td>Yes</td><td>Full analytics overview</td></tr>
+  <tr><td>GET</td><td>/dashboard</td><td>No</td><td>Dashboard metrics</td></tr>
+  <tr><td>GET</td><td>/analytics/dau</td><td>No</td><td>Daily active users</td></tr>
+  <tr><td>GET</td><td>/analytics/wau</td><td>No</td><td>Weekly active users</td></tr>
+  <tr><td>GET</td><td>/analytics/mau</td><td>No</td><td>Monthly active users</td></tr>
+  <tr><td>GET</td><td>/analytics/funnel</td><td>No</td><td>Funnel analysis</td></tr>
+  <tr><td>GET</td><td>/analytics/segmentation</td><td>No</td><td>User segmentation</td></tr>
+  <tr><td>GET</td><td>/analytics/cohorts</td><td>No</td><td>Cohort analysis</td></tr>
+  <tr><td>GET</td><td>/analytics/module-usage</td><td>No</td><td>Module usage stats</td></tr>
+</table>
+
+<h3>Chat Export &amp; Sharing (5 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/chat/export-markdown</td><td>Yes</td><td>Export chat as Markdown</td></tr>
+  <tr><td>POST</td><td>/chat/export-html</td><td>Yes</td><td>Export chat as HTML</td></tr>
+  <tr><td>POST</td><td>/chat/create-share</td><td>Yes</td><td>Create shareable link</td></tr>
+  <tr><td>POST</td><td>/chat/revoke-share</td><td>Yes</td><td>Revoke share link</td></tr>
+  <tr><td>GET</td><td>/chat-shares</td><td>Yes</td><td>List user's share links</td></tr>
+  <tr><td>GET</td><td>/shared-chat/:code</td><td>No</td><td>Access shared chat (public)</td></tr>
+</table>
+
+<h3>System (3 endpoints)</h3>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+  <tr><td>GET</td><td>/health</td><td>No</td><td>Health check (pings DB)</td></tr>
+  <tr><td>GET</td><td>/debug/rate-limiter-reset</td><td>No</td><td>Reset rate limiters (dev only)</td></tr>
+  <tr><td>GET</td><td>/debug/verify-user/:email</td><td>Local only</td><td>Auto-verify user (localhost only)</td></tr>
+  <tr><td>OPTIONS</td><td>*</td><td>No</td><td>CORS preflight for all routes</td></tr>
+</table>
+
+<!-- ==================== 21. ERROR HANDLING ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">21</span> Error Handling Patterns</h2>
+
+<h3>Frontend Error Handling (api.fetch)</h3>
+<pre><code>// Handles 5 error scenarios:
+1. 5xx server errors → "Server error (500). Please try again."
+2. Non-JSON responses → "Unexpected server response."
+3. Network errors (TypeError) → "Network error. Please check your connection."
+4. 401 Unauthorized → Returns error object (no infinite redirect)
+5. FormData detection → Doesn't set Content-Type (lets browser set boundary)</code></pre>
+
+<h3>Backend Error Handling</h3>
+<pre><code>// Every handler wrapped in try/catch:
+async function handleSomething(request) {
+  try {
+    // ... business logic
+  } catch (error) {
+    console.error('Handler error:', error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// LLM failures:
+if (!response) return { error: 'LLM did not return a response' };
+
+// JSON parse failures:
+try { JSON.parse(response) } catch { fallbackObject }
+
+// Database fallback:
+Try MongoDB → catch → fallback to MockDB
+
+// Job API resilience:
+Promise.all([...apis.map(fn => fn().catch(() => []))]) // If one fails, others continue</code></pre>
+
+<h3>Fallback Chain Philosophy</h3>
+<div class="flow">
+  <strong>Every external dependency has a fallback:</strong><br>
+  MongoDB fails → MockDB<br>
+  LLM Model 1 fails → try Model 2 → try Model 3 → error message<br>
+  Job APIs fail → other APIs continue → LLM generates → mock jobs<br>
+  Resume parsing fails → raw text analysis<br>
+  Email provider missing → auto-verify users<br>
+  <strong>Result: The app never shows a blank/broken state to the user</strong>
+</div>
+
+<!-- ==================== 22. CODE-LEVEL KNOWLEDGE ==================== -->
+<h2><span class="num">22</span> Code-Level Knowledge (Interview Answers)</h2>
+
+<h3>Why async/await everywhere?</h3>
+<p>Database operations (<code>db.collection().findOne()</code>) are I/O-bound — async prevents blocking. LLM API calls take 2-15 seconds — can't block the main thread. <code>Promise.race()</code> for model timeout: whichever finishes first (model or timer) wins.</p>
+
+<h3>Why catch-all route [[...path]]?</h3>
+<p>Next.js App Router convention. Double brackets = optional catch-all — matches <code>/api</code>, <code>/api/anything</code>, <code>/api/a/b/c</code>. Inside, we parse the URL path and route manually with if-statements. This keeps all routing explicit in one file.</p>
+
+<h3>Why separated lib/ folder?</h3>
+<p>Each module has focused responsibility. Keeps route.js focused on HTTP handling. Business logic in lib/ is reusable and testable independently.</p>
+
+<h3>Why verifyToken() middleware pattern?</h3>
+<p>Called at the start of every protected handler. Returns <code>null</code> for unauthenticated (handler responds 401) or <code>{ id, email, role }</code> for authenticated (handler queries database by user ID). Keeps auth logic DRY across 40+ endpoints.</p>
+
+<h3>Why sequential model calling instead of parallel?</h3>
+<p>Parallel would call all 5 models simultaneously (expensive). Sequential with early exit calls models one-by-one, stops after the first success. Saves 4x API cost. Only trades off synthesis quality (fewer models to combine).</p>
+
+<!-- ==================== 23. TRADEOFFS ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">23</span> Tradeoffs &amp; Design Decisions</h2>
+
+<table>
+  <tr><th>Decision</th><th>Why This Choice</th><th>Counter-argument</th></tr>
+  <tr><td><strong>MongoDB vs SQL</strong></td><td>Career data is document-shaped (nested JSON), schema flexibility for varying LLM outputs</td><td>SQL gives better relationships (user→resumes→analyses), ACID transactions, JOIN queries</td></tr>
+  <tr><td><strong>JWT vs Sessions</strong></td><td>Stateless, no server-side storage, easier horizontal scaling</td><td>Sessions can be revoked instantly, JWT can't be invalidated until expiry</td></tr>
+  <tr><td><strong>Single file vs Microservices</strong></td><td>Simpler deployment, no inter-service communication overhead, faster solo development</td><td>Not scalable for teams, one bug can crash everything, hard to maintain 2,583 lines</td></tr>
+  <tr><td><strong>OpenRouter vs Direct APIs</strong></td><td>One key for 5 models, unified billing, simpler codebase</td><td>Adds latency (proxy hop), dependency on third-party, slightly higher cost</td></tr>
+  <tr><td><strong>Sequential models vs Parallel</strong></td><td>Faster response (stop after 1 success), cheaper (don't call all 5)</td><td>Parallel gives better synthesis quality when multiple models respond</td></tr>
+  <tr><td><strong>In-memory rate limiter vs Redis</strong></td><td>Zero dependencies, works locally, simple implementation</td><td>Resets on restart, doesn't work across multiple server instances</td></tr>
+  <tr><td><strong>localStorage vs httpOnly cookie</strong></td><td>Simple implementation, works with SPA architecture</td><td>httpOnly cookies are more secure against XSS attacks</td></tr>
+  <tr><td><strong>Client-side routing vs Pages</strong></td><td>Faster navigation (no full page reloads), simpler state management</td><td>No individual URLs for each module, worse SEO (all content is one page)</td></tr>
+</table>
+
+<!-- ==================== 24. SCALABILITY ==================== -->
+<h2><span class="num">24</span> Scalability — What Breaks at 10,000 Users</h2>
+
+<table>
+  <tr><th>Component</th><th>What Breaks</th><th>Solution</th></tr>
+  <tr><td>In-memory rate limiter</td><td>Each server has separate memory. Limits don't sync.</td><td>Use <strong>Redis</strong> as shared rate limit store</td></tr>
+  <tr><td>Single route.js</td><td>All requests through one file. CPU bottleneck during LLM calls.</td><td>Split into <strong>microservices</strong> with message queue</td></tr>
+  <tr><td>MongoDB free tier</td><td>Atlas free = 512MB storage, limited connections</td><td>Upgrade to <strong>M10+ cluster</strong> with connection pooling</td></tr>
+  <tr><td>LLM API costs</td><td>10K users × 5 chats/day × $0.01 = <strong>$500/day</strong></td><td><strong>Cache</strong> frequent responses, use cheaper models for simple queries</td></tr>
+  <tr><td>File uploads</td><td>Resume text stored in MongoDB (document size limit)</td><td>Use <strong>AWS S3</strong> for file storage, metadata in DB</td></tr>
+  <tr><td>No CDN</td><td>Static assets from single server</td><td>Add <strong>Cloudflare CDN</strong> or Vercel Edge</td></tr>
+  <tr><td>No load balancer</td><td>Single server instance</td><td><strong>Auto-scaling</strong> on Render Pro or AWS ECS/K8s</td></tr>
+  <tr><td>No response caching</td><td>Same career path query hits LLM every time</td><td>Add <strong>Redis cache</strong> for frequent queries</td></tr>
+</table>
+
+<!-- ==================== 25. DEBUGGING ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">25</span> Debugging Scenarios</h2>
+
+<div class="callout no-break">
+  <strong>Scenario 1: "User gets 401 on every request after login"</strong>
+  Check if JWT_SECRET in production matches what was used to sign the token. If server restarted and JWT_SECRET was generated dynamically, all existing tokens become invalid. Solution: Use a fixed secret in environment variables.
+</div>
+
+<div class="callout no-break">
+  <strong>Scenario 2: "Career path returns empty timeline"</strong>
+  The LLM sometimes wraps JSON in markdown code fences (<code>```json ... ```</code>). Our parser strips them: <code>response.replace(/```json\n?/g, '').replace(/```\n?/g, '')</code>. We also normalize 15+ field name variations.
+</div>
+
+<div class="callout no-break">
+  <strong>Scenario 3: "Job search returns only German jobs"</strong>
+  The free API (Arbeitnow) has mostly EU listings. Solution: Add location filtering, or configure JSearch API key for global results.
+</div>
+
+<div class="callout no-break">
+  <strong>Scenario 4: "Resume upload fails for large PDFs"</strong>
+  <code>pdf-parse</code> loads the entire buffer into memory. For files >10MB, serverless function could timeout. Solution: Stream parsing, enforce file size limit. Currently text is capped at 15,000 chars.
+</div>
+
+<div class="callout no-break">
+  <strong>Scenario 5: "Two users register with same email simultaneously"</strong>
+  MongoDB unique index on <code>{ email: 1 }</code> prevents this at database level. The second <code>insertOne()</code> gets a duplicate key error. We catch it and return "Email already registered" (409).
+</div>
+
+<div class="callout no-break">
+  <strong>Scenario 6: "Infinite reload loop on 401"</strong>
+  When JWT expired, frontend detected 401, cleared token, redirected to login, which triggered another API call → another 401 → infinite loop. Fix: Check token validity BEFORE making API calls, add flag to prevent multiple redirects.
+</div>
+
+<!-- ==================== 26. WEAKNESSES ==================== -->
+<h2><span class="num">26</span> Weaknesses a Senior Engineer Would Notice</h2>
+
+<table>
+  <tr><th>#</th><th>Weakness</th><th>Impact</th></tr>
+  <tr><td>1</td><td>All 61 endpoints in one 2,583-line file</td><td>Hard to maintain, test, and debug. Should split into route groups.</td></tr>
+  <tr><td>2</td><td>No input sanitization for LLM prompts</td><td>Prompt injection risk: user could inject "Ignore previous instructions..."</td></tr>
+  <tr><td>3</td><td>No Zod validation on API inputs</td><td>Manual <code>if (!field)</code> checks instead of schema validation (Zod is installed but unused for API)</td></tr>
+  <tr><td>4</td><td>JWT secret has a default fallback</td><td><code>JWT_SECRET || 'careergpt-jwt-secret-2025'</code> — if env var missing, everyone uses same known secret</td></tr>
+  <tr><td>5</td><td>No automated test suite</td><td>No Jest/Vitest unit tests in the project. Only manual testing scripts (now deleted).</td></tr>
+  <tr><td>6</td><td>No response caching</td><td>Same career path query hits LLM every time. Wastes API budget.</td></tr>
+  <tr><td>7</td><td>Analytics fire-and-forget</td><td><code>logAnalytics()</code> failure is silently caught. Important events could be lost.</td></tr>
+  <tr><td>8</td><td>localStorage for JWT</td><td>Vulnerable to XSS. httpOnly cookies would be more secure.</td></tr>
+  <tr><td>9</td><td>No rate limiting on LLM endpoints</td><td>A user could spam career path generation, racking up API costs.</td></tr>
+  <tr><td>10</td><td>MockDB matches() is simplified</td><td>Only supports basic equality, <code>$gt</code>, <code>$regex</code> — not full MongoDB query syntax.</td></tr>
+</table>
+
+<!-- ==================== 27. FUTURE IMPROVEMENTS ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">27</span> Limitations &amp; Future Improvements</h2>
+
+<h3>Current Limitations</h3>
+<table>
+  <tr><th>Limitation</th><th>Explanation</th></tr>
+  <tr><td>LLM hallucination</td><td>Career paths might include non-existent certifications or inaccurate salary data</td></tr>
+  <tr><td>No real-time job scraping</td><td>Jobs from API snapshots, not live scraping. Free APIs mostly return remote/EU jobs</td></tr>
+  <tr><td>Single-file backend</td><td>All 61 endpoints in one file — not ideal for team development</td></tr>
+  <tr><td>In-memory rate limiter</td><td>Resets on server restart. Should use Redis for production</td></tr>
+  <tr><td>No real-time voice interview</td><td>Audio upload supported but no live speech-to-text during interview</td></tr>
+  <tr><td>No embeddings/RAG</td><td>Career advice is prompt-only, no vector database for grounded knowledge</td></tr>
+</table>
+
+<h3>Future Improvements</h3>
+<table>
+  <tr><th>Improvement</th><th>Description</th><th>Tech</th></tr>
+  <tr><td>RAG System</td><td>Vector database with real career data, salary surveys, job market reports. LLM responses grounded in real data.</td><td>Pinecone/ChromaDB + embeddings</td></tr>
+  <tr><td>Real-time Interview</td><td>WebRTC for browser audio + Whisper for real-time transcription. Analyze tone, pace, confidence in real-time.</td><td>WebRTC + OpenAI Whisper</td></tr>
+  <tr><td>Microservices</td><td>Split into auth-service, resume-service, interview-service, job-service. Independent scaling.</td><td>Docker + Kubernetes</td></tr>
+  <tr><td>Redis Caching</td><td>Cache LLM responses for common queries. Redis for rate limiting and sessions.</td><td>Redis / Upstash</td></tr>
+  <tr><td>Job Scraping Pipeline</td><td>Scheduled scraper for LinkedIn, Indeed, Glassdoor. Daily database updates.</td><td>Puppeteer + cron</td></tr>
+  <tr><td>Mobile App</td><td>React Native app sharing the same API backend.</td><td>React Native / Expo</td></tr>
+  <tr><td>CI/CD Pipeline</td><td>Automated testing, linting, and deployment on every push.</td><td>GitHub Actions</td></tr>
+</table>
+
+<!-- ==================== 28. CHEAT SHEET ==================== -->
+<h2><span class="num">28</span> Quick Interview Cheat Sheet</h2>
+
+<div class="callout no-break">
+  <strong>🎤 "Walk me through your codebase"</strong>
+  "The project has 4 main directories. <code>app/page.js</code> is the entire frontend — a single-page React app with 12 module views. <code>app/api/[[...path]]/route.js</code> is the backend — 61 API endpoints handling auth, chat, resume, interviews, jobs, learning, and analytics. <code>lib/</code> has 12 utility modules for job API integration, rate limiting, resume parsing, and analytics. <code>components/ui/</code> has 30+ Radix UI components styled with Tailwind."
+</div>
+
+<div class="callout no-break">
+  <strong>🎤 "What's the most complex part?"</strong>
+  "The multi-model AI orchestration. We call up to 5 LLM models with 15-second timeouts, prioritizing reliable models first. We use sequential calling with early exit — once one model succeeds, we stop. If multiple succeed, GPT-4.1 synthesizes them. The response normalization handles 15+ field name variations because different LLMs return different JSON structures."
+</div>
+
+<div class="callout no-break">
+  <strong>🎤 "What would you do differently?"</strong>
+  "Three things. First, split the monolithic route.js into separate route files per module — Next.js supports this natively. Second, add a Redis cache for LLM responses — many users ask similar questions. Third, implement Zod schema validation for API inputs — it's already in our dependencies but unused for validation."
+</div>
+
+<div class="callout no-break">
+  <strong>🎤 "How do you handle failures?"</strong>
+  "Every external dependency has a fallback chain. MongoDB fails → MockDB. Model 1 fails → try Model 2 → try Model 3. Job APIs fail → other APIs continue → LLM generates → mock jobs. Resume parsing fails → raw text. We use try/catch on every handler and Promise.race() for timeouts. The app never shows a blank state."
+</div>
+
+<div class="callout no-break">
+  <strong>🎤 "Explain a bug you fixed"</strong>
+  "We had a 401 infinite reload loop. When JWT expired, the frontend detected 401, cleared the token, and redirected to login. But the redirect triggered another API call which also got 401, creating an infinite loop. I fixed it by checking token validity BEFORE making API calls and adding a flag to prevent multiple redirects."
+</div>
+
+<div class="callout no-break">
+  <strong>🎤 "Is the data real or fake?"</strong>
+  "Jobs come from 4 real external APIs — Remotive and Arbeitnow are free, JSearch and Jooble need API keys. The job URLs are real clickable apply links. Career paths are AI-generated based on user profile — not templates. Resume analysis uses LLM evaluation against ATS criteria. Analytics are from real user event tracking."
+</div>
+
+<!-- ==================== 29. STATISTICS ==================== -->
+<div class="page-break"></div>
+<h2><span class="num">29</span> Project Statistics Summary</h2>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="value">16,958</div>
+    <div class="label">Total Lines of Code</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">76</div>
+    <div class="label">Source Files</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">61</div>
+    <div class="label">API Endpoints</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">12</div>
+    <div class="label">Modules</div>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="value">5</div>
+    <div class="label">AI Models</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">4</div>
+    <div class="label">Job APIs</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">10</div>
+    <div class="label">DB Collections</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">30+</div>
+    <div class="label">UI Components</div>
+  </div>
+</div>
+
+<h3>Lines of Code Breakdown</h3>
+<table>
+  <tr><th>File/Category</th><th>Lines</th><th>% of Total</th></tr>
+  <tr><td>app/page.js (Frontend)</td><td>4,084</td><td>24.1%</td></tr>
+  <tr><td>app/api/[[...path]]/route.js (Backend)</td><td>2,583</td><td>15.2%</td></tr>
+  <tr><td>lib/ modules (12 files)</td><td>~4,400</td><td>25.9%</td></tr>
+  <tr><td>components/ui/ (30+ files)</td><td>~2,200</td><td>13.0%</td></tr>
+  <tr><td>globals.css (Styling)</td><td>449</td><td>2.6%</td></tr>
+  <tr><td>Config files</td><td>~200</td><td>1.2%</td></tr>
+  <tr><td>Other (hooks, layout, etc.)</td><td>~3,042</td><td>18.0%</td></tr>
+  <tr style="font-weight: bold; background: #eff6ff;"><td>TOTAL</td><td>16,958</td><td>100%</td></tr>
+</table>
+
+<h3>Top Files by Size</h3>
+<table>
+  <tr><th>#</th><th>File</th><th>Lines</th></tr>
+  <tr><td>1</td><td>app/page.js</td><td>4,084</td></tr>
+  <tr><td>2</td><td>app/api/[[...path]]/route.js</td><td>2,583</td></tr>
+  <tr><td>3</td><td>components/ui/sidebar.jsx</td><td>578</td></tr>
+  <tr><td>4</td><td>lib/chatExportSharing.js</td><td>498</td></tr>
+  <tr><td>5</td><td>lib/careerLearningResources.js</td><td>485</td></tr>
+  <tr><td>6</td><td>lib/analyticsDashboard.js</td><td>482</td></tr>
+  <tr><td>7</td><td>lib/profilePictureLinkedIn.js</td><td>455</td></tr>
+  <tr><td>8</td><td>globals.css</td><td>449</td></tr>
+  <tr><td>9</td><td>lib/pdfExport.js</td><td>410</td></tr>
+  <tr><td>10</td><td>lib/interviewTranscription.js</td><td>353</td></tr>
+</table>
+
+<div class="section-divider"></div>
+
+<div style="text-align: center; padding: 40px 0;">
+  <p style="font-size: 14pt; font-weight: 700; color: #1e40af;">All the best for your presentation! 🚀</p>
+  <p style="color: #64748b; font-size: 10pt; margin-top: 8px;">Focus on: Request Flow, Multi-Model Orchestration, Job API Integration, and Error Handling Chain</p>
+</div>
+
+<footer>
+  <p>CareerGPT — Complete Project Documentation</p>
+  <p>Generated February 2026 | 16,958 lines of code | 61 API endpoints | 12 modules | 5 AI models</p>
+  <p>Developer: Prasanna Tarle | GitHub: prasannatarle-creates/careergpt-web</p>
+</footer>
+
+</div>
+</body>
+</html>

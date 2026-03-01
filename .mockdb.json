@@ -1,0 +1,2991 @@
+{
+  "resumes": [
+    {
+      "id": "d66fe938-d2a9-4850-af23-901fe3450f06",
+      "userId": "anonymous",
+      "fileName": "Resume (2).docx",
+      "fileSize": 27532,
+      "textContent": "Prasanna Tarle Software Developer +91 901283681 | prasannatarle@gmail.com | Nashik, India | Professional Summary Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset. Technical Skills Languages: Python, JavaScript, C++, JavaWeb Development: FastAPI, HTML5, CSS3, React.js, Tailwind CSSDatabase: MongoDB, PostgreSQLAI & ML: OpenAI GPT-4 API, Prompt Engineering, Resume Parsing (PyMuPDF, docx2txt), LangChainTools: Git, GitHub, Postman, Vercel, Render, VS CodeAPIs: RESTful API, Axios Soft Skills Communication, Problem Solving, Stress Management, Decision Making, Team Collaboration Core Competency Data Structures & Algorithms (DSA), DBMS, Operating System, Computer Networks, REST API Design Projects CareerGPT – AI-based Career Guidance PlatformDeveloped a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.Tech Stack: FastAPI, React.js, OpenAI GPT-4, MongoDB, Tailwind CSS, Python, JavaScript Education Sandip University, Nashik – B.Tech in Computer Science & Engineering (Expected 2025)K.K. Wagh Polytechnic, Nashik – Diploma in Computer Technology (Completed 2022)",
+      "analysis": {
+        "atsScore": 76,
+        "sections": {
+          "contact": {
+            "score": 90,
+            "feedback": "Contact details are clear and complete, including phone, email, and location.",
+            "present": true
+          },
+          "summary": {
+            "score": 75,
+            "feedback": "Summary is concise, highlights technical strengths, and includes relevant accomplishments. Could be improved by mentioning soft skills and career goals.",
+            "present": true
+          },
+          "experience": {
+            "score": 60,
+            "feedback": "No dedicated work experience section; experience is demonstrated through project work. Adding internships or work history would enhance this section.",
+            "present": false
+          },
+          "education": {
+            "score": 85,
+            "feedback": "Education section is present, includes degree names, institutions, and dates. Formatting could be clearer with bullet points or separate lines.",
+            "present": true
+          },
+          "skills": {
+            "score": 70,
+            "feedback": "Technical and soft skills are listed with good organization. Consider grouping or prioritizing most relevant skills for target roles.",
+            "present": true
+          },
+          "projects": {
+            "score": 80,
+            "feedback": "Strong project section with detailed description, tech stack, and impact. Could be expanded with more projects or highlighting specific outcomes.",
+            "present": true
+          }
+        },
+        "keywords": {
+          "found": [
+            "Python",
+            "FastAPI",
+            "React.js",
+            "OpenAI",
+            "MongoDB",
+            "REST API",
+            "Resume Parsing",
+            "Prompt Engineering",
+            "Git",
+            "Team Collaboration"
+          ],
+          "missing": [
+            "Agile",
+            "Unit Testing",
+            "CI/CD",
+            "Cloud",
+            "Docker",
+            "Leadership",
+            "TypeScript"
+          ],
+          "suggestions": [
+            "Add Agile methodologies to show familiarity with modern development processes",
+            "Include experience with CI/CD or cloud platforms if applicable",
+            "Mention unit testing frameworks or Docker for a more robust technical profile"
+          ]
+        },
+        "strengths": [
+          "Strong technical skills in Python, React.js, and AI integration",
+          "Demonstrated ability to build and deploy full-stack applications",
+          "Clear communication and collaboration abilities"
+        ],
+        "weaknesses": [
+          "Lack of formal work experience section",
+          "Missing metrics or quantified impacts in project description",
+          "Limited mention of methodologies like Agile or testing"
+        ],
+        "rewrittenBullets": [
+          {
+            "original": "Developed a full-stack AI web application using Python (FastAPI) and React.js.",
+            "improved": "Designed and deployed a full-stack AI web application using Python (FastAPI) and React.js, serving over 100 users within the first month.",
+            "reason": "Adds measurable impact and highlights deployment success."
+          },
+          {
+            "original": "Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions.",
+            "improved": "Integrated OpenAI’s GPT-4 API to automate personalized career path generation, resume analysis, and job-role recommendations, reducing manual processing time by 80%.",
+            "reason": "Quantifies the impact and clarifies automation benefits."
+          }
+        ],
+        "experienceLevel": "entry",
+        "matchingRoles": [
+          "Junior Software Developer",
+          "AI/ML Developer Intern",
+          "Full Stack Developer (Entry Level)"
+        ],
+        "overallFeedback": "This resume demonstrates strong technical skills and project experience, particularly in AI and full-stack web development. The inclusion of a major project helps compensate for limited formal work experience. To improve ATS compatibility and competitiveness, add a dedicated experience section (even for internships or freelance work), quantify project outcomes, and include more keywords relating to Agile, testing, and cloud. Formatting is clear, but separating sections more distinctly will help readability for both ATS and human reviewers.",
+        "atsChecklist": [
+          {
+            "item": "Uses standard section headings (Experience, Education, Skills)",
+            "passed": false,
+            "tip": "Add a dedicated 'Experience' section with clear heading"
+          },
+          {
+            "item": "No tables or complex formatting detected",
+            "passed": true,
+            "tip": "Clean formatting helps ATS parsing"
+          },
+          {
+            "item": "Contact information is complete",
+            "passed": true,
+            "tip": "Email and phone are present"
+          },
+          {
+            "item": "Consistent date formatting",
+            "passed": false,
+            "tip": "Use MM/YYYY format consistently in education and experience"
+          },
+          {
+            "item": "Action verbs used in bullet points",
+            "passed": true,
+            "tip": "Strong action verbs improve readability"
+          },
+          {
+            "item": "Quantified achievements present",
+            "passed": false,
+            "tip": "Add numbers and metrics to bullets"
+          },
+          {
+            "item": "Appropriate resume length",
+            "passed": true,
+            "tip": "Length is suitable for entry level"
+          },
+          {
+            "item": "No spelling or grammar errors",
+            "passed": true,
+            "tip": "Text appears clean"
+          },
+          {
+            "item": "Skills section matches target role",
+            "passed": true,
+            "tip": "Skills are highly relevant to software development roles"
+          },
+          {
+            "item": "Professional summary/objective present",
+            "passed": true,
+            "tip": "Summary effectively introduces candidate"
+          }
+        ],
+        "readability": {
+          "score": 78,
+          "level": "Good",
+          "avgSentenceLength": 16,
+          "suggestions": [
+            "Break up long technical skill lists with subheadings or bullet points",
+            "Add more white space between sections for easier scanning"
+          ]
+        },
+        "wordCount": 200,
+        "charCount": 1619,
+        "pageEstimate": 1,
+        "structuredData": {
+          "contact": {
+            "name": "Prasanna Tarle",
+            "email": "prasannatarle@gmail.com",
+            "phone": "+91 901283681",
+            "location": "Nashik, India",
+            "website": null,
+            "linkedin": null
+          },
+          "experience": [
+            {
+              "company": "CareerGPT",
+              "role": "Full-stack Developer",
+              "startDate": "2023",
+              "endDate": "Present",
+              "description": "Developed a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.",
+              "durationMonths": 12
+            }
+          ],
+          "education": [
+            {
+              "school": "Sandip University, Nashik",
+              "degree": "B.Tech",
+              "fieldOfStudy": "Computer Science & Engineering",
+              "graduationDate": "2025",
+              "gpa": null
+            },
+            {
+              "school": "K.K. Wagh Polytechnic, Nashik",
+              "degree": "Diploma",
+              "fieldOfStudy": "Computer Technology",
+              "graduationDate": "2022",
+              "gpa": null
+            }
+          ],
+          "skills": [
+            "Python",
+            "JavaScript",
+            "C++",
+            "Java",
+            "FastAPI",
+            "HTML5",
+            "CSS3",
+            "React.js",
+            "Tailwind CSS",
+            "MongoDB",
+            "PostgreSQL",
+            "OpenAI GPT-4 API",
+            "Prompt Engineering",
+            "Resume Parsing",
+            "LangChain",
+            "Git",
+            "GitHub",
+            "Postman",
+            "Vercel",
+            "Render",
+            "VS Code",
+            "RESTful API",
+            "Axios",
+            "Communication",
+            "Problem Solving",
+            "Stress Management",
+            "Decision Making",
+            "Team Collaboration",
+            "Data Structures & Algorithms (DSA)",
+            "DBMS",
+            "Operating System",
+            "Computer Networks",
+            "REST API Design",
+            "Go",
+            "React"
+          ],
+          "totalExperienceYears": 1,
+          "seniority": "entry",
+          "focusArea": "Full-Stack Engineer",
+          "certifications": [],
+          "metadata": {
+            "totalExperienceYears": 1,
+            "projectsCount": 1,
+            "languagesCount": 4,
+            "certificationCount": 0,
+            "pages": 1
+          }
+        }
+      },
+      "createdAt": "2026-02-28T05:25:24.578Z",
+      "structured": {
+        "contact": {
+          "name": "Prasanna Tarle",
+          "email": "prasannatarle@gmail.com",
+          "phone": "+91 901283681",
+          "location": "Nashik, India",
+          "website": null,
+          "linkedin": null
+        },
+        "summary": "Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset.",
+        "experience": [
+          {
+            "company": "CareerGPT",
+            "role": "Full-stack Developer",
+            "startDate": "2023",
+            "endDate": "Present",
+            "description": "Developed a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.",
+            "durationMonths": 12
+          }
+        ],
+        "education": [
+          {
+            "school": "Sandip University, Nashik",
+            "degree": "B.Tech",
+            "fieldOfStudy": "Computer Science & Engineering",
+            "graduationDate": "2025",
+            "gpa": null
+          },
+          {
+            "school": "K.K. Wagh Polytechnic, Nashik",
+            "degree": "Diploma",
+            "fieldOfStudy": "Computer Technology",
+            "graduationDate": "2022",
+            "gpa": null
+          }
+        ],
+        "skills": [
+          "Python",
+          "JavaScript",
+          "C++",
+          "Java",
+          "FastAPI",
+          "HTML5",
+          "CSS3",
+          "React.js",
+          "Tailwind CSS",
+          "MongoDB",
+          "PostgreSQL",
+          "OpenAI GPT-4 API",
+          "Prompt Engineering",
+          "Resume Parsing",
+          "LangChain",
+          "Git",
+          "GitHub",
+          "Postman",
+          "Vercel",
+          "Render",
+          "VS Code",
+          "RESTful API",
+          "Axios",
+          "Communication",
+          "Problem Solving",
+          "Stress Management",
+          "Decision Making",
+          "Team Collaboration",
+          "Data Structures & Algorithms (DSA)",
+          "DBMS",
+          "Operating System",
+          "Computer Networks",
+          "REST API Design"
+        ],
+        "certifications": [],
+        "metadata": {
+          "totalExperienceYears": 1,
+          "projectsCount": 1,
+          "languagesCount": 4,
+          "certificationCount": 0,
+          "pages": 1
+        }
+      },
+      "analyzedAt": "2026-02-28T05:25:43.282Z",
+      "targetRole": ""
+    },
+    {
+      "id": "98848255-7c6c-414e-b118-e2d8d287be19",
+      "userId": "anonymous",
+      "fileName": "resumeP3.pdf",
+      "fileSize": 383236,
+      "textContent": "Prasanna Tarle S O F T W A R E D E V E L O P E R +91901283681 | prasannatarlegmail.com | Nashik, India 422201 | P R O F E S S I O N A L O V E R V I E W Detail-oriented web developer with strong communication skills. Experience designing and building user-friendly websites using HTML, CSS, JavaScript, and UI/UX design tools like Figma and Adobe. Proven ability to present work to peers and collaborate on development projects. A solution-oriented strategist with a focus on long-term goals and cross-functional collaboration, having the ability to successfully launch, build, and scale brands in competitive industries. P R O J E C T S Project Name :- Phishing Defense Website ● This project is a website designed to help users identify and avoid fake phishing sites. ● The project was well received for its innovative approach to tackle Phishing attack. ● As the design lead, I created the website's layout, ensuring it was user-friendly and visually appealing with tools like HTML, JavaScript and CSS and other tools like Figma for UI part. T E C H N I C A L S K I L L S  HTML  CSS  JavaScript  Java  Figma (UI/UX)  JIRA (Project Management) S O F T S K I L L S  Communication  Problem Solving  Stress Management  Decision making C O R E C O M P E T E N C Y  DBMS  Computer Network  operating System E D U C A T I O N K.K Wagh Polytechnic | Nashik , Maharashtra| Diploma in Computer Technology Sandip University | Nashik, Maharashtra | B-Tech",
+      "analysis": {
+        "atsScore": 63,
+        "sections": {
+          "contact": {
+            "score": 80,
+            "feedback": "Contact information is mostly present and clear, but the email is missing the '@' symbol. Consider using a standard format and adding LinkedIn if available.",
+            "present": true
+          },
+          "summary": {
+            "score": 65,
+            "feedback": "A short professional overview is included and highlights relevant skills and approach. Can be improved by tailoring more closely to desired roles and quantifying achievements.",
+            "present": true
+          },
+          "experience": {
+            "score": 35,
+            "feedback": "No dedicated professional work experience section is present. Only projects are described. Consider adding internships, freelance, or part-time experiences.",
+            "present": false
+          },
+          "education": {
+            "score": 85,
+            "feedback": "Education section lists both diploma and degree with institution names and locations. Add years of graduation for completeness.",
+            "present": true
+          },
+          "skills": {
+            "score": 70,
+            "feedback": "Technical, soft, and core competency skills are listed. Consolidate under clear headings and add more role-specific or in-demand skills if possible.",
+            "present": true
+          },
+          "projects": {
+            "score": 75,
+            "feedback": "Project section is present with a detailed description of a relevant project. Add more projects or provide more metrics/impact if possible.",
+            "present": true
+          }
+        },
+        "keywords": {
+          "found": [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "Figma",
+            "UI/UX",
+            "DBMS",
+            "Computer Network",
+            "Operating System",
+            "Communication",
+            "Problem Solving"
+          ],
+          "missing": [
+            "React",
+            "Agile",
+            "REST API",
+            "Version Control",
+            "Git",
+            "Responsive Design",
+            "Testing"
+          ],
+          "suggestions": [
+            "Add 'React' or another popular JavaScript framework if you have experience.",
+            "Include 'Git' or 'Version Control' in your skills to show modern development practices.",
+            "Mention 'Agile' or other development methodologies if relevant.",
+            "Add 'REST API' and 'Testing' if you have experience with these areas."
+          ]
+        },
+        "strengths": [
+          "Strong foundation in front-end technologies (HTML, CSS, JavaScript)",
+          "Good communication and problem-solving skills",
+          "Relevant project experience with a security focus"
+        ],
+        "weaknesses": [
+          "No dedicated professional experience section",
+          "Missing key technical keywords for modern web development roles (e.g., React, Git, Agile)",
+          "Contact information format could be improved"
+        ],
+        "rewrittenBullets": [
+          {
+            "original": "The project was well received for its innovative approach to tackle Phishing attack.",
+            "improved": "Received positive feedback for designing an innovative website that educates users on identifying and avoiding phishing attacks.",
+            "reason": "Combines achievement with clear impact and uses active language."
+          },
+          {
+            "original": "As the design lead, I created the website's layout, ensuring it was user-friendly and visually appealing with tools like HTML, JavaScript and CSS and other tools like Figma for UI part.",
+            "improved": "Led the design and development of a user-friendly website interface using HTML, CSS, JavaScript, and Figma, enhancing usability and visual appeal.",
+            "reason": "More concise, highlights leadership, and lists key technologies."
+          }
+        ],
+        "experienceLevel": "entry",
+        "matchingRoles": [
+          "Junior Web Developer",
+          "Front-End Developer",
+          "UI/UX Designer"
+        ],
+        "overallFeedback": "This resume demonstrates a solid foundation in front-end web development and UI/UX design, with strong soft skills and a detailed project. However, it lacks a dedicated work experience section, which is important even at the entry level (internships, freelance, or volunteering can be included). The skills section could be expanded with more in-demand technologies and methodologies like version control (Git), frameworks (React), and Agile development. Contact details should be formatted more professionally. Clarify section headings, add quantifiable achievements, and consider including more projects or relevant coursework for a stronger ATS and recruiter impact.",
+        "atsChecklist": [
+          {
+            "item": "Uses standard section headings (Experience, Education, Skills)",
+            "passed": false,
+            "tip": "Add a dedicated 'Experience' section and standardize all headings for better ATS recognition"
+          },
+          {
+            "item": "No tables or complex formatting detected",
+            "passed": true,
+            "tip": "Clean formatting helps ATS parsing"
+          },
+          {
+            "item": "Contact information is complete",
+            "passed": false,
+            "tip": "Email is missing '@' and LinkedIn is not provided"
+          },
+          {
+            "item": "Consistent date formatting",
+            "passed": false,
+            "tip": "No dates are present; add dates in MM/YYYY format for education and future experience"
+          },
+          {
+            "item": "Action verbs used in bullet points",
+            "passed": true,
+            "tip": "Strong action verbs improve readability"
+          },
+          {
+            "item": "Quantified achievements present",
+            "passed": false,
+            "tip": "Add numbers and metrics to bullets"
+          },
+          {
+            "item": "Appropriate resume length",
+            "passed": true,
+            "tip": "Length is suitable for entry-level candidate"
+          },
+          {
+            "item": "No spelling or grammar errors",
+            "passed": true,
+            "tip": "Text appears clean"
+          },
+          {
+            "item": "Skills section matches target role",
+            "passed": false,
+            "tip": "Add more role-relevant skills (e.g., React, Git, Agile)"
+          },
+          {
+            "item": "Professional summary/objective present",
+            "passed": true,
+            "tip": "Summary effectively introduces candidate"
+          }
+        ],
+        "readability": {
+          "score": 70,
+          "level": "Good",
+          "avgSentenceLength": 17,
+          "suggestions": [
+            "Improve section headings for easier navigation",
+            "Shorten and clarify some sentences in the summary",
+            "Use bullet points for skills and experience for better readability"
+          ]
+        },
+        "wordCount": 285,
+        "charCount": 1458,
+        "pageEstimate": 1,
+        "structuredData": {
+          "contact": {
+            "name": "Prasanna Tarle",
+            "email": "prasannatarlegmail.com",
+            "phone": "+91901283681",
+            "location": "Nashik, India",
+            "website": null,
+            "linkedin": null
+          },
+          "experience": [],
+          "education": [
+            {
+              "school": "K.K Wagh Polytechnic",
+              "degree": "Diploma",
+              "fieldOfStudy": "Computer Technology",
+              "graduationDate": null,
+              "gpa": null
+            },
+            {
+              "school": "Sandip University",
+              "degree": "B-Tech",
+              "fieldOfStudy": null,
+              "graduationDate": null,
+              "gpa": null
+            }
+          ],
+          "skills": [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "Java",
+            "Figma (UI/UX)",
+            "JIRA (Project Management)",
+            "DBMS",
+            "Computer Network",
+            "operating System",
+            "Communication",
+            "Problem Solving",
+            "Stress Management",
+            "Decision making"
+          ],
+          "totalExperienceYears": 0,
+          "seniority": "entry",
+          "focusArea": "Frontend Engineer",
+          "certifications": [],
+          "metadata": {
+            "totalExperienceYears": 0,
+            "projectsCount": 1,
+            "languagesCount": 2,
+            "certificationCount": 0,
+            "pages": 1
+          }
+        }
+      },
+      "createdAt": "2026-02-28T05:27:00.044Z",
+      "structured": {
+        "contact": {
+          "name": "Prasanna Tarle",
+          "email": "prasannatarlegmail.com",
+          "phone": "+91901283681",
+          "location": "Nashik, India",
+          "website": null,
+          "linkedin": null
+        },
+        "summary": "Detail-oriented web developer with strong communication skills. Experience designing and building user-friendly websites using HTML, CSS, JavaScript, and UI/UX design tools like Figma and Adobe. Proven ability to present work to peers and collaborate on development projects. A solution-oriented strategist with a focus on long-term goals and cross-functional collaboration, having the ability to successfully launch, build, and scale brands in competitive industries.",
+        "experience": [],
+        "education": [
+          {
+            "school": "K.K Wagh Polytechnic",
+            "degree": "Diploma",
+            "fieldOfStudy": "Computer Technology",
+            "graduationDate": null,
+            "gpa": null
+          },
+          {
+            "school": "Sandip University",
+            "degree": "B-Tech",
+            "fieldOfStudy": null,
+            "graduationDate": null,
+            "gpa": null
+          }
+        ],
+        "skills": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "Java",
+          "Figma (UI/UX)",
+          "JIRA (Project Management)",
+          "DBMS",
+          "Computer Network",
+          "operating System",
+          "Communication",
+          "Problem Solving",
+          "Stress Management",
+          "Decision making"
+        ],
+        "certifications": [],
+        "metadata": {
+          "totalExperienceYears": 0,
+          "projectsCount": 1,
+          "languagesCount": 2,
+          "certificationCount": 0,
+          "pages": 1
+        }
+      },
+      "analyzedAt": "2026-02-28T05:27:14.641Z",
+      "targetRole": ""
+    },
+    {
+      "id": "a0d41502-8935-423a-915a-3a2d5ea55cb8",
+      "userId": "anonymous",
+      "fileName": "Resume (2).docx",
+      "fileSize": 27532,
+      "textContent": "Prasanna Tarle Software Developer +91 901283681 | prasannatarle@gmail.com | Nashik, India | Professional Summary Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset. Technical Skills Languages: Python, JavaScript, C++, JavaWeb Development: FastAPI, HTML5, CSS3, React.js, Tailwind CSSDatabase: MongoDB, PostgreSQLAI & ML: OpenAI GPT-4 API, Prompt Engineering, Resume Parsing (PyMuPDF, docx2txt), LangChainTools: Git, GitHub, Postman, Vercel, Render, VS CodeAPIs: RESTful API, Axios Soft Skills Communication, Problem Solving, Stress Management, Decision Making, Team Collaboration Core Competency Data Structures & Algorithms (DSA), DBMS, Operating System, Computer Networks, REST API Design Projects CareerGPT – AI-based Career Guidance PlatformDeveloped a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.Tech Stack: FastAPI, React.js, OpenAI GPT-4, MongoDB, Tailwind CSS, Python, JavaScript Education Sandip University, Nashik – B.Tech in Computer Science & Engineering (Expected 2025)K.K. Wagh Polytechnic, Nashik – Diploma in Computer Technology (Completed 2022)",
+      "analysis": {
+        "atsScore": 76,
+        "sections": {
+          "contact": {
+            "score": 90,
+            "feedback": "Contact information is present and clear, including phone, email, and location. Consider adding LinkedIn or GitHub profile links for more credibility.",
+            "present": true
+          },
+          "summary": {
+            "score": 75,
+            "feedback": "Strong and concise, clearly stating value proposition and relevant technologies. Could be improved by referencing soft skills or quantifiable achievements.",
+            "present": true
+          },
+          "experience": {
+            "score": 65,
+            "feedback": "Professional experience section is missing; only projects are listed. Add internships, freelance, or relevant work to strengthen this section.",
+            "present": false
+          },
+          "education": {
+            "score": 85,
+            "feedback": "Education is listed with institution names, degrees, and dates. Expected graduation is clear.",
+            "present": true
+          },
+          "skills": {
+            "score": 75,
+            "feedback": "Technical and soft skills are well-categorized and relevant, but could be formatted more clearly and include more role-specific keywords.",
+            "present": true
+          },
+          "projects": {
+            "score": 80,
+            "feedback": "Projects section is present, with one detailed and relevant project described. Consider adding more projects or breaking down accomplishments within each.",
+            "present": true
+          }
+        },
+        "keywords": {
+          "found": [
+            "Python",
+            "FastAPI",
+            "React.js",
+            "OpenAI API",
+            "MongoDB",
+            "Resume Parsing",
+            "Prompt Engineering",
+            "RESTful API"
+          ],
+          "missing": [
+            "Agile",
+            "Unit Testing",
+            "Continuous Integration",
+            "Docker",
+            "Cloud Deployment"
+          ],
+          "suggestions": [
+            "Add experience with Agile methodologies",
+            "Mention any unit testing frameworks you have used",
+            "Include Docker or CI/CD experience if applicable"
+          ]
+        },
+        "strengths": [
+          "Clear technical stack alignment",
+          "Strong project-based demonstration of skills",
+          "Good mix of technical and soft skills"
+        ],
+        "weaknesses": [
+          "Lack of professional work experience section",
+          "Limited quantifiable achievements",
+          "Some missing role-specific keywords"
+        ],
+        "rewrittenBullets": [
+          {
+            "original": "Developed a full-stack AI web application using Python (FastAPI) and React.js.",
+            "improved": "Led the development of an AI-powered web application using FastAPI and React.js, delivering a personalized career guidance platform to over 100 users.",
+            "reason": "Improved by specifying leadership and quantifying impact."
+          },
+          {
+            "original": "Implemented resume file parsing, job skill matching, and MongoDB for data storage.",
+            "improved": "Implemented resume file parsing and job skill matching algorithms, optimizing data storage and retrieval with MongoDB for enhanced application performance.",
+            "reason": "Highlights optimization and impact."
+          }
+        ],
+        "experienceLevel": "entry",
+        "matchingRoles": [
+          "Full Stack Developer (Entry Level)",
+          "Junior Python Developer",
+          "AI Application Developer"
+        ],
+        "overallFeedback": "This resume demonstrates a strong technical background and relevant project experience for an entry-level software developer. The summary and skills sections are well-crafted and targeted, but the absence of a professional experience section may limit ATS ranking for some roles. Adding internships, freelance projects, or volunteer work will strengthen the profile. More quantifiable achievements and use of additional role-specific keywords (such as Agile, testing, or deployment tools) are recommended. Formatting is clean and ATS-friendly, with clear section headings and no complex formatting. Overall, this is a solid foundation for entry-level developer roles, but can be improved with more diverse experience and enhanced keyword coverage.",
+        "atsChecklist": [
+          {
+            "item": "Uses standard section headings (Experience, Education, Skills)",
+            "passed": false,
+            "tip": "Add a standard 'Experience' section, even if listing internships or freelance work"
+          },
+          {
+            "item": "No tables or complex formatting detected",
+            "passed": true,
+            "tip": "Clean formatting helps ATS parsing"
+          },
+          {
+            "item": "Contact information is complete",
+            "passed": true,
+            "tip": "Email and phone are present"
+          },
+          {
+            "item": "Consistent date formatting",
+            "passed": false,
+            "tip": "Use MM/YYYY formatting for dates"
+          },
+          {
+            "item": "Action verbs used in bullet points",
+            "passed": true,
+            "tip": "Strong action verbs improve readability"
+          },
+          {
+            "item": "Quantified achievements present",
+            "passed": false,
+            "tip": "Add numbers and metrics to bullets"
+          },
+          {
+            "item": "Appropriate resume length",
+            "passed": true,
+            "tip": "Length is suitable for experience level"
+          },
+          {
+            "item": "No spelling or grammar errors",
+            "passed": true,
+            "tip": "Text appears clean"
+          },
+          {
+            "item": "Skills section matches target role",
+            "passed": true,
+            "tip": "Skills align with software developer roles"
+          },
+          {
+            "item": "Professional summary/objective present",
+            "passed": true,
+            "tip": "Summary effectively introduces candidate"
+          }
+        ],
+        "readability": {
+          "score": 78,
+          "level": "Good",
+          "avgSentenceLength": 15,
+          "suggestions": [
+            "Break up long lists in the skills section for easier reading",
+            "Consider using bullet points in the summary for key highlights"
+          ]
+        },
+        "wordCount": 200,
+        "charCount": 1619,
+        "pageEstimate": 1,
+        "structuredData": {
+          "contact": {
+            "name": "Prasanna Tarle",
+            "email": "prasannatarle@gmail.com",
+            "phone": "+91 901283681",
+            "location": "Nashik, India",
+            "website": null,
+            "linkedin": null
+          },
+          "experience": [
+            {
+              "company": "CareerGPT",
+              "role": "Full-stack Developer",
+              "startDate": null,
+              "endDate": null,
+              "description": "Developed a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.",
+              "durationMonths": null
+            }
+          ],
+          "education": [
+            {
+              "school": "Sandip University, Nashik",
+              "degree": "B.Tech",
+              "fieldOfStudy": "Computer Science & Engineering",
+              "graduationDate": "2025",
+              "gpa": null
+            },
+            {
+              "school": "K.K. Wagh Polytechnic, Nashik",
+              "degree": "Diploma",
+              "fieldOfStudy": "Computer Technology",
+              "graduationDate": "2022",
+              "gpa": null
+            }
+          ],
+          "skills": [
+            "Python",
+            "JavaScript",
+            "C++",
+            "Java",
+            "FastAPI",
+            "HTML5",
+            "CSS3",
+            "React.js",
+            "Tailwind CSS",
+            "MongoDB",
+            "PostgreSQL",
+            "OpenAI GPT-4 API",
+            "Prompt Engineering",
+            "Resume Parsing",
+            "LangChain",
+            "Git",
+            "GitHub",
+            "Postman",
+            "Vercel",
+            "Render",
+            "VS Code",
+            "RESTful API",
+            "Axios",
+            "Communication",
+            "Problem Solving",
+            "Stress Management",
+            "Decision Making",
+            "Team Collaboration",
+            "Data Structures & Algorithms",
+            "DBMS",
+            "Operating System",
+            "Computer Networks",
+            "REST API Design",
+            "Go",
+            "React"
+          ],
+          "totalExperienceYears": 0,
+          "seniority": "entry",
+          "focusArea": "Full-Stack Engineer",
+          "certifications": [],
+          "metadata": {
+            "totalExperienceYears": 0,
+            "projectsCount": 1,
+            "languagesCount": 1,
+            "certificationCount": 0,
+            "pages": 1
+          }
+        }
+      },
+      "createdAt": "2026-02-28T07:30:35.895Z",
+      "structured": {
+        "contact": {
+          "name": "Prasanna Tarle",
+          "email": "prasannatarle@gmail.com",
+          "phone": "+91 901283681",
+          "location": "Nashik, India",
+          "website": null,
+          "linkedin": null
+        },
+        "summary": "Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset.",
+        "experience": [
+          {
+            "company": "CareerGPT",
+            "role": "Full-stack Developer",
+            "startDate": null,
+            "endDate": null,
+            "description": "Developed a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.",
+            "durationMonths": null
+          }
+        ],
+        "education": [
+          {
+            "school": "Sandip University, Nashik",
+            "degree": "B.Tech",
+            "fieldOfStudy": "Computer Science & Engineering",
+            "graduationDate": "2025",
+            "gpa": null
+          },
+          {
+            "school": "K.K. Wagh Polytechnic, Nashik",
+            "degree": "Diploma",
+            "fieldOfStudy": "Computer Technology",
+            "graduationDate": "2022",
+            "gpa": null
+          }
+        ],
+        "skills": [
+          "Python",
+          "JavaScript",
+          "C++",
+          "Java",
+          "FastAPI",
+          "HTML5",
+          "CSS3",
+          "React.js",
+          "Tailwind CSS",
+          "MongoDB",
+          "PostgreSQL",
+          "OpenAI GPT-4 API",
+          "Prompt Engineering",
+          "Resume Parsing",
+          "LangChain",
+          "Git",
+          "GitHub",
+          "Postman",
+          "Vercel",
+          "Render",
+          "VS Code",
+          "RESTful API",
+          "Axios",
+          "Communication",
+          "Problem Solving",
+          "Stress Management",
+          "Decision Making",
+          "Team Collaboration",
+          "Data Structures & Algorithms",
+          "DBMS",
+          "Operating System",
+          "Computer Networks",
+          "REST API Design"
+        ],
+        "certifications": [],
+        "metadata": {
+          "totalExperienceYears": 0,
+          "projectsCount": 1,
+          "languagesCount": 1,
+          "certificationCount": 0,
+          "pages": 1
+        }
+      },
+      "analyzedAt": "2026-02-28T07:30:55.875Z",
+      "targetRole": ""
+    },
+    {
+      "id": "e084ed46-ba21-4d36-9919-11b6f00a04c5",
+      "userId": "anonymous",
+      "fileName": "Resume (2).docx",
+      "fileSize": 27532,
+      "textContent": "Prasanna Tarle Software Developer +91 901283681 | prasannatarle@gmail.com | Nashik, India | Professional Summary Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset. Technical Skills Languages: Python, JavaScript, C++, JavaWeb Development: FastAPI, HTML5, CSS3, React.js, Tailwind CSSDatabase: MongoDB, PostgreSQLAI & ML: OpenAI GPT-4 API, Prompt Engineering, Resume Parsing (PyMuPDF, docx2txt), LangChainTools: Git, GitHub, Postman, Vercel, Render, VS CodeAPIs: RESTful API, Axios Soft Skills Communication, Problem Solving, Stress Management, Decision Making, Team Collaboration Core Competency Data Structures & Algorithms (DSA), DBMS, Operating System, Computer Networks, REST API Design Projects CareerGPT – AI-based Career Guidance PlatformDeveloped a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.Tech Stack: FastAPI, React.js, OpenAI GPT-4, MongoDB, Tailwind CSS, Python, JavaScript Education Sandip University, Nashik – B.Tech in Computer Science & Engineering (Expected 2025)K.K. Wagh Polytechnic, Nashik – Diploma in Computer Technology (Completed 2022)",
+      "analysis": {
+        "atsScore": 0,
+        "overallFeedback": "{\n  \"atsScore\": 77,\n  \"sections\": {\n    \"contact\": {\n      \"score\": 85,\n      \"feedback\": \"Contact information is present and includes phone, email, and location. Consider separating each detail on its own line for better ATS parsing.\",\n      \"present\": true\n    },\n    \"summary\": {\n      \"score\": 75,\n      \"feedback\": \"Professional summary highlights relevant skills and achievements. Could be improved by specifying years of experience and target role.\",\n      \"present\": true\n    },\n    \"experience\": {\n      \"score\": 55,\n      \"feedback\": \"Work experience section is missing. Projects are described, but actual employment history or internships would strengthen this section.\",\n      \"present\": false\n    },\n    \"education\": {\n      \"score\": 90,\n      \"feedback\": \"Education is clearly listed with institutions, degrees, and dates. Expected graduation is indicated.\",\n      \"present\": true\n    },\n    \"skills\": {\n      \"score\": 80,\n      \"feedback\": \"Technical and soft skills are well categorized. Consider grouping and prioritizing the most job-relevant skills.\",\n      \"present\": true\n    },\n    \"projects\": {\n      \"score\": 80,\n      \"feedback\": \"Project section is present and describes a relevant, technical achievement. More than one project would further strengthen this section.\",\n      \"present\": true\n    }\n  },\n  \"keywords\": {\n    \"found\": [\n      \"Python\",\n      \"React.js\",\n      \"FastAPI\",\n      \"OpenAI API\",\n      \"MongoDB\",\n      \"REST API\",\n      \"Resume Parsing\",\n      \"Career Guidance\",\n      \"Prompt Engineering\",\n      \"Git\",\n      \"VS Code\"\n    ],\n    \"missing\": [\n      \"Agile\",\n      \"Unit Testing\",\n      \"Deployment\",\n      \"CI/CD\",\n      \"Cloud\",\n      \"Docker\",\n      \"Microservices\"\n    ],\n    \"suggestions\": [\n      \"Add keywords like Agile, CI/CD, and Docker to match more software developer roles.\",\n      \"Include references to cloud platforms (AWS, Azure, GCP) if applicable.\",\n      \"Mention unit testing frameworks (e.g., PyTest, Jest) to demonstrate code quality skills.\"\n    ]\n  },\n  \"strengths\": [\n    \"Strong technical stack including modern frameworks\",\n    \"Hands-on AI integration experience\",\n    \"Clear project impact and deliverables\",\n    \"Well-organized skills section\"\n  ],\n  \"weaknesses\": [\n    \"No dedicated work experience section\",\n    \"Limited number of projects\",\n    \"Missing some in-demand industry keywords (e.g., cloud, Docker, CI/CD)\",\n    \"Summary lacks years of experience\"\n  },\n  \"rewrittenBullets\": [\n    {\n      \"original\": \"Developed a full-stack AI web application using Python (FastAPI) and React.js.\",\n      \"improved\": \"Designed and implemented a full-stack AI web application using Python (FastAPI) and React.js, delivering personalized career guidance to over 500 users.\",\n      \"reason\": \"Adds quantified impact and clarifies scope.\"\n    },\n    {\n      \"original\": \"Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions.\",\n      \"improved\": \"Integrated OpenAI’s GPT-4 API to automate personalized career path generation, resume evaluation, and job-role suggestions, enhancing user engagement.\",\n      \"reason\": \"Highlights automation and user impact.\"\n    },\n    {\n      \"original\": \"Implemented resume file parsing, job skill matching, and MongoDB for data storage.\",\n      \"improved\": \"Engineered robust resume parsing and job skill matching modules, leveraging MongoDB for scalable data storage and retrieval.\",\n      \"reason\": \"Uses stronger action verbs and addresses scalability.\"\n    }\n  ],\n  \"experienceLevel\": \"entry\",\n  \"matchingRoles\": [\n    \"Junior Software Developer\",\n    \"Full Stack Developer (Entry Level)\",\n    \"AI Developer (Entry Level)\"\n  ],\n  \"overallFeedback\": \"This resume demonstrates a strong technical foundation and hands-on project experience, particularly in AI-integrated web applications. The skills and project sections are robust and well-organized, with clear relevance to software development roles. However, the absence of a dedicated work experience or internship section is a significant gap. Adding more projects and including industry-standard keywords (cloud, CI/CD, Docker) would improve ATS matching. The summary can be refined by specifying experience duration and target roles. Quantifying project impact and clarifying technical contributions would further strengthen the resume.\",\n  \"atsChecklist\": [\n    {\n      \"item\": \"Uses standard section headings (Experience, Education, Skills)\",\n      \"passed\": false,\n      \"tip\": \"Add an 'Experience' section with details of internships or work history\"\n    },\n    {\n      \"item\": \"No tables or complex formatting detected\",\n      \"passed\": true,\n      \"tip\": \"Clean formatting helps ATS parsing\"\n    },\n    {\n      \"item\": \"Contact information is complete\",\n      \"passed\": true,\n      \"tip\": \"Email and phone are present\"\n    },\n    {\n      \"item\": \"Consistent date formatting\",\n      \"passed\": false,\n      \"tip\": \"Use MM/YYYY or YYYY consistently for all dates\"\n    },\n    {\n      \"item\": \"Action verbs used in bullet points\",\n      \"passed\": true,\n      \"tip\": \"Strong action verbs improve readability\"\n    },\n    {\n      \"item\": \"Quantified achievements present\",\n      \"passed\": false,\n      \"tip\": \"Add numbers and metrics to bullets\"\n    },\n    {\n      \"item\": \"Appropriate resume length\",\n      \"passed\": true,\n      \"tip\": \"Length is suitable for experience level\"\n    },\n    {\n      \"item\": \"No spelling or grammar errors\",\n      \"passed\": true,\n      \"tip\": \"Text appears clean\"\n    },\n    {\n      \"item\": \"Skills section matches target role\",\n      \"passed\": false,\n      \"tip\": \"Add more role-relevant skills\"\n    },\n    {\n      \"item\": \"Professional summary/objective present\",\n      \"passed\": true,\n      \"tip\": \"Summary effectively introduces candidate\"\n    }\n  ],\n  \"readability\": {\n    \"score\": 73,\n    \"level\": \"Good\",\n    \"avgSentenceLength\": 15,\n    \"suggestions\": [\n      \"Add more spacing between sections for easier scanning\",\n      \"Use more concise bullet points in project descriptions\",\n      \"Specify impact or results where possible\"\n    ]\n  }\n}",
+        "raw": true,
+        "wordCount": 200,
+        "charCount": 1619,
+        "pageEstimate": 1,
+        "structuredData": {
+          "contact": {
+            "name": "Prasanna Tarle",
+            "email": "prasannatarle@gmail.com",
+            "phone": "+91 901283681",
+            "location": "Nashik, India",
+            "website": null,
+            "linkedin": null
+          },
+          "experience": [
+            {
+              "company": "CareerGPT",
+              "role": "Full-stack Developer",
+              "startDate": null,
+              "endDate": null,
+              "description": "Developed a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.",
+              "durationMonths": null
+            }
+          ],
+          "education": [
+            {
+              "school": "Sandip University, Nashik",
+              "degree": "B.Tech",
+              "fieldOfStudy": "Computer Science & Engineering",
+              "graduationDate": "2025",
+              "gpa": null
+            },
+            {
+              "school": "K.K. Wagh Polytechnic, Nashik",
+              "degree": "Diploma",
+              "fieldOfStudy": "Computer Technology",
+              "graduationDate": "2022",
+              "gpa": null
+            }
+          ],
+          "skills": [
+            "Python",
+            "JavaScript",
+            "C++",
+            "Java",
+            "FastAPI",
+            "HTML5",
+            "CSS3",
+            "React.js",
+            "Tailwind CSS",
+            "MongoDB",
+            "PostgreSQL",
+            "OpenAI GPT-4 API",
+            "Prompt Engineering",
+            "Resume Parsing",
+            "LangChain",
+            "Git",
+            "GitHub",
+            "Postman",
+            "Vercel",
+            "Render",
+            "VS Code",
+            "RESTful API",
+            "Axios",
+            "Communication",
+            "Problem Solving",
+            "Stress Management",
+            "Decision Making",
+            "Team Collaboration",
+            "Data Structures & Algorithms",
+            "DBMS",
+            "Operating System",
+            "Computer Networks",
+            "REST API Design",
+            "Go",
+            "React"
+          ],
+          "totalExperienceYears": 0,
+          "seniority": "entry",
+          "focusArea": "Full-Stack Engineer",
+          "certifications": [],
+          "metadata": {
+            "totalExperienceYears": 0,
+            "projectsCount": 1,
+            "languagesCount": 1,
+            "certificationCount": 0,
+            "pages": 1
+          }
+        }
+      },
+      "createdAt": "2026-02-28T07:31:22.363Z",
+      "structured": {
+        "contact": {
+          "name": "Prasanna Tarle",
+          "email": "prasannatarle@gmail.com",
+          "phone": "+91 901283681",
+          "location": "Nashik, India",
+          "website": null,
+          "linkedin": null
+        },
+        "summary": "Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset.",
+        "experience": [
+          {
+            "company": "CareerGPT",
+            "role": "Full-stack Developer",
+            "startDate": null,
+            "endDate": null,
+            "description": "Developed a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.",
+            "durationMonths": null
+          }
+        ],
+        "education": [
+          {
+            "school": "Sandip University, Nashik",
+            "degree": "B.Tech",
+            "fieldOfStudy": "Computer Science & Engineering",
+            "graduationDate": "2025",
+            "gpa": null
+          },
+          {
+            "school": "K.K. Wagh Polytechnic, Nashik",
+            "degree": "Diploma",
+            "fieldOfStudy": "Computer Technology",
+            "graduationDate": "2022",
+            "gpa": null
+          }
+        ],
+        "skills": [
+          "Python",
+          "JavaScript",
+          "C++",
+          "Java",
+          "FastAPI",
+          "HTML5",
+          "CSS3",
+          "React.js",
+          "Tailwind CSS",
+          "MongoDB",
+          "PostgreSQL",
+          "OpenAI GPT-4 API",
+          "Prompt Engineering",
+          "Resume Parsing",
+          "LangChain",
+          "Git",
+          "GitHub",
+          "Postman",
+          "Vercel",
+          "Render",
+          "VS Code",
+          "RESTful API",
+          "Axios",
+          "Communication",
+          "Problem Solving",
+          "Stress Management",
+          "Decision Making",
+          "Team Collaboration",
+          "Data Structures & Algorithms",
+          "DBMS",
+          "Operating System",
+          "Computer Networks",
+          "REST API Design"
+        ],
+        "certifications": [],
+        "metadata": {
+          "totalExperienceYears": 0,
+          "projectsCount": 1,
+          "languagesCount": 1,
+          "certificationCount": 0,
+          "pages": 1
+        }
+      },
+      "analyzedAt": "2026-02-28T07:31:42.271Z",
+      "targetRole": ""
+    },
+    {
+      "id": "77c2a21e-d41f-4a4a-98e7-2ac5a7ca7be7",
+      "userId": "anonymous",
+      "fileName": "Resume (2).docx",
+      "fileSize": 27532,
+      "textContent": "Prasanna Tarle Software Developer +91 901283681 | prasannatarle@gmail.com | Nashik, India | Professional Summary Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset. Technical Skills Languages: Python, JavaScript, C++, JavaWeb Development: FastAPI, HTML5, CSS3, React.js, Tailwind CSSDatabase: MongoDB, PostgreSQLAI & ML: OpenAI GPT-4 API, Prompt Engineering, Resume Parsing (PyMuPDF, docx2txt), LangChainTools: Git, GitHub, Postman, Vercel, Render, VS CodeAPIs: RESTful API, Axios Soft Skills Communication, Problem Solving, Stress Management, Decision Making, Team Collaboration Core Competency Data Structures & Algorithms (DSA), DBMS, Operating System, Computer Networks, REST API Design Projects CareerGPT – AI-based Career Guidance PlatformDeveloped a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.Tech Stack: FastAPI, React.js, OpenAI GPT-4, MongoDB, Tailwind CSS, Python, JavaScript Education Sandip University, Nashik – B.Tech in Computer Science & Engineering (Expected 2025)K.K. Wagh Polytechnic, Nashik – Diploma in Computer Technology (Completed 2022)",
+      "analysis": {
+        "atsScore": 74,
+        "sections": {
+          "contact": {
+            "score": 90,
+            "feedback": "Contact information is complete, including phone, email, and location.",
+            "present": true
+          },
+          "summary": {
+            "score": 75,
+            "feedback": "Professional summary is concise and clearly highlights technical strengths and achievements.",
+            "present": true
+          },
+          "experience": {
+            "score": 60,
+            "feedback": "No dedicated experience section; project work is detailed but should be separated from professional experience for clarity.",
+            "present": false
+          },
+          "education": {
+            "score": 85,
+            "feedback": "Education details are clear and include expected graduation dates.",
+            "present": true
+          },
+          "skills": {
+            "score": 70,
+            "feedback": "Skills are well-organized and relevant, but could be better aligned to target job descriptions.",
+            "present": true
+          },
+          "projects": {
+            "score": 80,
+            "feedback": "Project section is present and well-described with relevant technologies and impact.",
+            "present": true
+          }
+        },
+        "keywords": {
+          "found": [
+            "Python",
+            "FastAPI",
+            "React.js",
+            "OpenAI",
+            "MongoDB",
+            "REST API",
+            "Career Guidance",
+            "Resume Parsing"
+          ],
+          "missing": [
+            "Agile",
+            "Unit Testing",
+            "CI/CD",
+            "Docker",
+            "Cloud"
+          ],
+          "suggestions": [
+            "Add Agile methodologies to showcase teamwork experience",
+            "Include CI/CD, Docker, or Cloud to reflect modern development practices"
+          ]
+        },
+        "strengths": [
+          "Strong technical stack with AI integration",
+          "Clear project impact and hands-on development",
+          "Good mix of soft and technical skills"
+        ],
+        "weaknesses": [
+          "No clear work experience section",
+          "Some skills could be better tailored to specific job descriptions",
+          "Lacks quantified achievements"
+        ],
+        "rewrittenBullets": [
+          {
+            "original": "Developed a full-stack AI web application using Python (FastAPI) and React.js.",
+            "improved": "Engineered a scalable AI-powered web application using FastAPI and React.js, enhancing user engagement by 30%.",
+            "reason": "Adds quantifiable impact and uses a stronger action verb."
+          },
+          {
+            "original": "Implemented resume file parsing, job skill matching, and MongoDB for data storage.",
+            "improved": "Designed and deployed resume file parsing and job skill matching features, optimizing data retrieval and storage efficiency in MongoDB.",
+            "reason": "Clarifies the candidate's role and the outcome."
+          }
+        ],
+        "experienceLevel": "entry",
+        "matchingRoles": [
+          "Junior Software Developer",
+          "Full Stack Developer",
+          "AI Application Developer"
+        ],
+        "overallFeedback": "This resume demonstrates strong technical skills and a passion for building AI-powered solutions, highlighted by the well-detailed CareerGPT project. However, the absence of a dedicated work experience section and lack of quantified achievements slightly diminish its impact. To improve ATS compatibility and appeal to recruiters, add a separate Experience section (even for internships or freelance work), include more metrics in project descriptions, and incorporate more keywords such as Agile, CI/CD, and cloud technologies.",
+        "atsChecklist": [
+          {
+            "item": "Uses standard section headings (Experience, Education, Skills)",
+            "passed": false,
+            "tip": "Add a dedicated 'Experience' section for clarity"
+          },
+          {
+            "item": "No tables or complex formatting detected",
+            "passed": true,
+            "tip": "Clean formatting helps ATS parsing"
+          },
+          {
+            "item": "Contact information is complete",
+            "passed": true,
+            "tip": "Email and phone are present"
+          },
+          {
+            "item": "Consistent date formatting",
+            "passed": false,
+            "tip": "Use MM/YYYY or similar format for all dates"
+          },
+          {
+            "item": "Action verbs used in bullet points",
+            "passed": true,
+            "tip": "Strong action verbs improve readability"
+          },
+          {
+            "item": "Quantified achievements present",
+            "passed": false,
+            "tip": "Add numbers and metrics to bullets"
+          },
+          {
+            "item": "Appropriate resume length",
+            "passed": true,
+            "tip": "Length is suitable for experience level"
+          },
+          {
+            "item": "No spelling or grammar errors",
+            "passed": true,
+            "tip": "Text appears clean"
+          },
+          {
+            "item": "Skills section matches target role",
+            "passed": false,
+            "tip": "Add more role-relevant skills"
+          },
+          {
+            "item": "Professional summary/objective present",
+            "passed": true,
+            "tip": "Summary effectively introduces candidate"
+          }
+        ],
+        "readability": {
+          "score": 77,
+          "level": "Good",
+          "avgSentenceLength": 15,
+          "suggestions": [
+            "Shorten some technical skill listings",
+            "Add more spacing between sections for better visual clarity"
+          ]
+        },
+        "wordCount": 200,
+        "charCount": 1619,
+        "pageEstimate": 1,
+        "structuredData": {
+          "contact": {
+            "name": "Prasanna Tarle",
+            "email": "prasannatarle@gmail.com",
+            "phone": "+91 901283681",
+            "location": "Nashik, India",
+            "website": null,
+            "linkedin": null
+          },
+          "experience": [],
+          "education": [
+            {
+              "school": "Sandip University, Nashik",
+              "degree": "B.Tech",
+              "fieldOfStudy": "Computer Science & Engineering",
+              "graduationDate": "2025",
+              "gpa": null
+            },
+            {
+              "school": "K.K. Wagh Polytechnic, Nashik",
+              "degree": "Diploma",
+              "fieldOfStudy": "Computer Technology",
+              "graduationDate": "2022",
+              "gpa": null
+            }
+          ],
+          "skills": [
+            "Python",
+            "JavaScript",
+            "C++",
+            "Java",
+            "FastAPI",
+            "HTML5",
+            "CSS3",
+            "React.js",
+            "Tailwind CSS",
+            "MongoDB",
+            "PostgreSQL",
+            "OpenAI GPT-4 API",
+            "Prompt Engineering",
+            "Resume Parsing",
+            "LangChain",
+            "Git",
+            "GitHub",
+            "Postman",
+            "Vercel",
+            "Render",
+            "VS Code",
+            "RESTful API",
+            "Axios",
+            "Communication",
+            "Problem Solving",
+            "Stress Management",
+            "Decision Making",
+            "Team Collaboration",
+            "Data Structures & Algorithms (DSA)",
+            "DBMS",
+            "Operating System",
+            "Computer Networks",
+            "REST API Design"
+          ],
+          "totalExperienceYears": 0,
+          "seniority": "entry",
+          "focusArea": "Full-Stack Engineer",
+          "certifications": [],
+          "metadata": {
+            "totalExperienceYears": 0,
+            "projectsCount": 1,
+            "languagesCount": 1,
+            "certificationCount": 0,
+            "pages": 1
+          }
+        }
+      },
+      "createdAt": "2026-02-28T07:35:24.339Z",
+      "structured": {
+        "contact": {
+          "name": "Prasanna Tarle",
+          "email": "prasannatarle@gmail.com",
+          "phone": "+91 901283681",
+          "location": "Nashik, India",
+          "website": null,
+          "linkedin": null
+        },
+        "summary": "Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset.",
+        "experience": [],
+        "education": [
+          {
+            "school": "Sandip University, Nashik",
+            "degree": "B.Tech",
+            "fieldOfStudy": "Computer Science & Engineering",
+            "graduationDate": "2025",
+            "gpa": null
+          },
+          {
+            "school": "K.K. Wagh Polytechnic, Nashik",
+            "degree": "Diploma",
+            "fieldOfStudy": "Computer Technology",
+            "graduationDate": "2022",
+            "gpa": null
+          }
+        ],
+        "skills": [
+          "Python",
+          "JavaScript",
+          "C++",
+          "Java",
+          "FastAPI",
+          "HTML5",
+          "CSS3",
+          "React.js",
+          "Tailwind CSS",
+          "MongoDB",
+          "PostgreSQL",
+          "OpenAI GPT-4 API",
+          "Prompt Engineering",
+          "Resume Parsing",
+          "LangChain",
+          "Git",
+          "GitHub",
+          "Postman",
+          "Vercel",
+          "Render",
+          "VS Code",
+          "RESTful API",
+          "Axios",
+          "Communication",
+          "Problem Solving",
+          "Stress Management",
+          "Decision Making",
+          "Team Collaboration",
+          "Data Structures & Algorithms (DSA)",
+          "DBMS",
+          "Operating System",
+          "Computer Networks",
+          "REST API Design"
+        ],
+        "certifications": [],
+        "metadata": {
+          "totalExperienceYears": 0,
+          "projectsCount": 1,
+          "languagesCount": 1,
+          "certificationCount": 0,
+          "pages": 1
+        }
+      },
+      "analyzedAt": "2026-02-28T07:35:38.544Z",
+      "targetRole": ""
+    },
+    {
+      "id": "0b414831-30a6-41b5-a001-d21e84b49280",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "fileName": "Resume (2).docx",
+      "fileSize": 27532,
+      "textContent": "Prasanna Tarle Software Developer +91 901283681 | prasannatarle@gmail.com | Nashik, India | Professional Summary Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset. Technical Skills Languages: Python, JavaScript, C++, JavaWeb Development: FastAPI, HTML5, CSS3, React.js, Tailwind CSSDatabase: MongoDB, PostgreSQLAI & ML: OpenAI GPT-4 API, Prompt Engineering, Resume Parsing (PyMuPDF, docx2txt), LangChainTools: Git, GitHub, Postman, Vercel, Render, VS CodeAPIs: RESTful API, Axios Soft Skills Communication, Problem Solving, Stress Management, Decision Making, Team Collaboration Core Competency Data Structures & Algorithms (DSA), DBMS, Operating System, Computer Networks, REST API Design Projects CareerGPT – AI-based Career Guidance PlatformDeveloped a full-stack AI web application using Python (FastAPI) and React.js. Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions. Implemented resume file parsing, job skill matching, and MongoDB for data storage.Tech Stack: FastAPI, React.js, OpenAI GPT-4, MongoDB, Tailwind CSS, Python, JavaScript Education Sandip University, Nashik – B.Tech in Computer Science & Engineering (Expected 2025)K.K. Wagh Polytechnic, Nashik – Diploma in Computer Technology (Completed 2022)",
+      "analysis": {
+        "atsScore": 72,
+        "sections": {
+          "contact": {
+            "score": 90,
+            "feedback": "Contact information is complete and easy to find, including phone, email, and location.",
+            "present": true
+          },
+          "summary": {
+            "score": 75,
+            "feedback": "Professional summary is concise, relevant, and highlights key technologies and achievements. Could mention years of experience for more impact.",
+            "present": true
+          },
+          "experience": {
+            "score": 60,
+            "feedback": "No dedicated work experience section; project section substitutes for experience but doesn’t show employment history or roles at companies.",
+            "present": false
+          },
+          "education": {
+            "score": 85,
+            "feedback": "Education section lists relevant degrees, institutions, and expected/completed dates. Formatting could be clearer with MM/YYYY.",
+            "present": true
+          },
+          "skills": {
+            "score": 70,
+            "feedback": "Technical and soft skills are well listed, but could be better formatted and grouped. Missing some role-relevant keywords.",
+            "present": true
+          },
+          "projects": {
+            "score": 80,
+            "feedback": "Project section is present and detailed, highlighting a significant AI-driven product with technology stack. Only one project shown; consider adding more.",
+            "present": true
+          }
+        },
+        "keywords": {
+          "found": [
+            "Python",
+            "FastAPI",
+            "React.js",
+            "OpenAI",
+            "MongoDB",
+            "JavaScript",
+            "REST API",
+            "Prompt Engineering"
+          ],
+          "missing": [
+            "Agile",
+            "Unit Testing",
+            "CI/CD",
+            "Docker",
+            "Cloud",
+            "Scrum"
+          ],
+          "suggestions": [
+            "Add Agile or Scrum to demonstrate development methodology familiarity",
+            "Mention CI/CD or Docker if experienced to boost DevOps profile",
+            "Include unit testing frameworks like PyTest or Jest"
+          ]
+        },
+        "strengths": [
+          "Strong technical foundation in AI and modern web frameworks",
+          "Demonstrated ability to build and deploy full-stack projects"
+        ],
+        "weaknesses": [
+          "No formal work experience section or employment history",
+          "Lacks metrics/quantification in project achievements"
+        ],
+        "rewrittenBullets": [
+          {
+            "original": "Developed a full-stack AI web application using Python (FastAPI) and React.js.",
+            "improved": "Designed and deployed a full-stack AI web application using Python (FastAPI) and React.js, serving over 100 users in its first month.",
+            "reason": "Adds quantifiable achievement and demonstrates impact."
+          },
+          {
+            "original": "Integrated OpenAI’s GPT-4 API for generating personalized career paths, resume evaluations, and job-role suggestions.",
+            "improved": "Integrated OpenAI’s GPT-4 API to automate career path recommendations, resume analysis, and job-role suggestions, enhancing user engagement by 30%.",
+            "reason": "Specifies benefits and quantifies results."
+          }
+        ],
+        "experienceLevel": "entry",
+        "matchingRoles": [
+          "Junior Software Developer",
+          "Full Stack Developer (Entry Level)",
+          "AI/ML Developer (Entry Level)"
+        ],
+        "overallFeedback": "This resume showcases strong technical skills, relevant academic background, and a standout project in AI-driven web development. However, it lacks a dedicated professional experience section and quantified achievements. Adding more projects, formal work experience, and missing keywords will improve ATS match rates. Formatting can be further optimized for clarity and consistency. Overall, an impressive entry-level profile with high potential.",
+        "atsChecklist": [
+          {
+            "item": "Uses standard section headings (Experience, Education, Skills)",
+            "passed": false,
+            "tip": "Add a dedicated Experience section, even if only to list internships or major projects"
+          },
+          {
+            "item": "No tables or complex formatting detected",
+            "passed": true,
+            "tip": "Clean formatting helps ATS parsing"
+          },
+          {
+            "item": "Contact information is complete",
+            "passed": true,
+            "tip": "Email and phone are present"
+          },
+          {
+            "item": "Consistent date formatting",
+            "passed": false,
+            "tip": "Use MM/YYYY format consistently for education and experience"
+          },
+          {
+            "item": "Action verbs used in bullet points",
+            "passed": true,
+            "tip": "Strong action verbs improve readability"
+          },
+          {
+            "item": "Quantified achievements present",
+            "passed": false,
+            "tip": "Add numbers and metrics to bullets"
+          },
+          {
+            "item": "Appropriate resume length",
+            "passed": true,
+            "tip": "Length is suitable for experience level"
+          },
+          {
+            "item": "No spelling or grammar errors",
+            "passed": true,
+            "tip": "Text appears clean"
+          },
+          {
+            "item": "Skills section matches target role",
+            "passed": false,
+            "tip": "Add more role-relevant skills"
+          },
+          {
+            "item": "Professional summary/objective present",
+            "passed": true,
+            "tip": "Summary effectively introduces candidate"
+          }
+        ],
+        "readability": {
+          "score": 75,
+          "level": "Good",
+          "avgSentenceLength": 16,
+          "suggestions": [
+            "Shorten some bullet points for clarity",
+            "Use simpler language in summary for broader accessibility",
+            "Format sections clearly with headings and spacing"
+          ]
+        },
+        "wordCount": 200,
+        "charCount": 1619,
+        "pageEstimate": 1,
+        "structuredData": {
+          "contact": {
+            "name": "Prasanna Tarle",
+            "email": "prasannatarle@gmail.com",
+            "phone": "+91 901283681",
+            "location": "Nashik, India",
+            "website": null,
+            "linkedin": null
+          },
+          "experience": [],
+          "education": [
+            {
+              "school": "Sandip University, Nashik",
+              "degree": "B.Tech",
+              "fieldOfStudy": "Computer Science & Engineering",
+              "graduationDate": "2025",
+              "gpa": null
+            },
+            {
+              "school": "K.K. Wagh Polytechnic, Nashik",
+              "degree": "Diploma",
+              "fieldOfStudy": "Computer Technology",
+              "graduationDate": "2022",
+              "gpa": null
+            }
+          ],
+          "skills": [
+            "Python",
+            "JavaScript",
+            "C++",
+            "Java",
+            "FastAPI",
+            "HTML5",
+            "CSS3",
+            "React.js",
+            "Tailwind CSS",
+            "MongoDB",
+            "PostgreSQL",
+            "OpenAI GPT-4 API",
+            "Prompt Engineering",
+            "Resume Parsing",
+            "LangChain",
+            "Git",
+            "GitHub",
+            "Postman",
+            "Vercel",
+            "Render",
+            "VS Code",
+            "RESTful API",
+            "Axios",
+            "Communication",
+            "Problem Solving",
+            "Stress Management",
+            "Decision Making",
+            "Team Collaboration",
+            "Data Structures & Algorithms (DSA)",
+            "DBMS",
+            "Operating System",
+            "Computer Networks",
+            "REST API Design"
+          ],
+          "totalExperienceYears": 0,
+          "seniority": "entry",
+          "focusArea": "Full-Stack Engineer",
+          "certifications": [],
+          "metadata": {
+            "totalExperienceYears": 0,
+            "projectsCount": 1,
+            "languagesCount": 1,
+            "certificationCount": 0,
+            "pages": 1
+          }
+        }
+      },
+      "createdAt": "2026-02-28T07:39:03.340Z",
+      "structured": {
+        "contact": {
+          "name": "Prasanna Tarle",
+          "email": "prasannatarle@gmail.com",
+          "phone": "+91 901283681",
+          "location": "Nashik, India",
+          "website": null,
+          "linkedin": null
+        },
+        "summary": "Detail-oriented and passionate full-stack developer with hands-on experience in developing AI-integrated web applications. Proficient in Python, FastAPI, React.js, and OpenAI APIs. Successfully built an AI-powered career guidance platform (CareerGPT) with features like resume analysis, career path generation, and job-role matching. Strong collaborator with a solution-focused mindset.",
+        "experience": [],
+        "education": [
+          {
+            "school": "Sandip University, Nashik",
+            "degree": "B.Tech",
+            "fieldOfStudy": "Computer Science & Engineering",
+            "graduationDate": "2025",
+            "gpa": null
+          },
+          {
+            "school": "K.K. Wagh Polytechnic, Nashik",
+            "degree": "Diploma",
+            "fieldOfStudy": "Computer Technology",
+            "graduationDate": "2022",
+            "gpa": null
+          }
+        ],
+        "skills": [
+          "Python",
+          "JavaScript",
+          "C++",
+          "Java",
+          "FastAPI",
+          "HTML5",
+          "CSS3",
+          "React.js",
+          "Tailwind CSS",
+          "MongoDB",
+          "PostgreSQL",
+          "OpenAI GPT-4 API",
+          "Prompt Engineering",
+          "Resume Parsing",
+          "LangChain",
+          "Git",
+          "GitHub",
+          "Postman",
+          "Vercel",
+          "Render",
+          "VS Code",
+          "RESTful API",
+          "Axios",
+          "Communication",
+          "Problem Solving",
+          "Stress Management",
+          "Decision Making",
+          "Team Collaboration",
+          "Data Structures & Algorithms (DSA)",
+          "DBMS",
+          "Operating System",
+          "Computer Networks",
+          "REST API Design"
+        ],
+        "certifications": [],
+        "metadata": {
+          "totalExperienceYears": 0,
+          "projectsCount": 1,
+          "languagesCount": 1,
+          "certificationCount": 0,
+          "pages": 1
+        }
+      },
+      "analyzedAt": "2026-02-28T07:39:27.307Z",
+      "targetRole": ""
+    }
+  ],
+  "analytics": [
+    {
+      "id": "3c117c27-2dad-4734-a115-00c4e09e9425",
+      "type": "resume_analyzed",
+      "data": {
+        "resumeId": "d66fe938-d2a9-4850-af23-901fe3450f06",
+        "atsScore": 76
+      },
+      "createdAt": "2026-02-28T05:25:43.283Z"
+    },
+    {
+      "id": "bd13fcd5-8621-4970-bd36-51450c172a80",
+      "type": "resume_analyzed",
+      "data": {
+        "resumeId": "98848255-7c6c-414e-b118-e2d8d287be19",
+        "atsScore": 63
+      },
+      "createdAt": "2026-02-28T05:27:14.642Z"
+    },
+    {
+      "id": "34730613-768c-4727-9557-743ee328d661",
+      "type": "chat_message",
+      "data": {
+        "userId": "anonymous",
+        "models": [
+          "GPT-4.1"
+        ]
+      },
+      "createdAt": "2026-02-28T05:28:23.641Z"
+    },
+    {
+      "id": "2e1b4095-08ea-48fb-84f4-26feae08c5ea",
+      "type": "interview_started",
+      "data": {
+        "role": "Software Engineer",
+        "level": "mid-level",
+        "type": "behavioral"
+      },
+      "createdAt": "2026-02-28T05:28:48.676Z"
+    },
+    {
+      "id": "bc606b99-1c28-435e-8033-795ca0f7c9ec",
+      "type": "career_path_generated",
+      "data": {},
+      "createdAt": "2026-02-28T05:31:05.959Z"
+    },
+    {
+      "id": "2eed114d-4f12-48bf-928c-ebcda187aa24",
+      "type": "user_register",
+      "data": {
+        "userId": "1b8432a4-9d05-4599-8a50-d022ad304cd8",
+        "autoVerified": true
+      },
+      "createdAt": "2026-02-28T05:51:13.301Z"
+    },
+    {
+      "id": "052c0a1e-2cf6-4d2a-bad1-1fda25ed2de6",
+      "type": "resume_analyzed",
+      "data": {
+        "resumeId": "a0d41502-8935-423a-915a-3a2d5ea55cb8",
+        "atsScore": 76
+      },
+      "createdAt": "2026-02-28T07:30:55.877Z"
+    },
+    {
+      "id": "6c7e34ed-1240-4fc9-9d8c-eb3d6b0846c5",
+      "type": "resume_analyzed",
+      "data": {
+        "resumeId": "e084ed46-ba21-4d36-9919-11b6f00a04c5",
+        "atsScore": 0
+      },
+      "createdAt": "2026-02-28T07:31:42.272Z"
+    },
+    {
+      "id": "9ab0fe6b-b436-4fbd-b156-863833acc31d",
+      "type": "resume_analyzed",
+      "data": {
+        "resumeId": "77c2a21e-d41f-4a4a-98e7-2ac5a7ca7be7",
+        "atsScore": 74
+      },
+      "createdAt": "2026-02-28T07:35:38.545Z"
+    },
+    {
+      "id": "470e975c-bfb3-4969-897a-b7177b506724",
+      "type": "user_register",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+        "autoVerified": true
+      },
+      "createdAt": "2026-02-28T07:38:41.927Z"
+    },
+    {
+      "id": "ed838864-11c8-47ed-a18c-e4a706804723",
+      "type": "resume_analyzed",
+      "data": {
+        "resumeId": "0b414831-30a6-41b5-a001-d21e84b49280",
+        "atsScore": 72
+      },
+      "createdAt": "2026-02-28T07:39:27.308Z"
+    },
+    {
+      "id": "17bf892f-6f27-4a85-becb-3bf74a7cf72b",
+      "type": "learning_path_generated",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+        "targetRole": "full stack developer"
+      },
+      "createdAt": "2026-02-28T07:39:56.578Z"
+    },
+    {
+      "id": "c1b7fb99-b95a-434f-a96b-4e0fff24fdaf",
+      "type": "learning_path_generated",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+        "targetRole": "full stack developer"
+      },
+      "createdAt": "2026-02-28T07:40:56.241Z"
+    },
+    {
+      "id": "7f929900-058b-4f03-a711-3404d7681c0e",
+      "type": "chat_message",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+        "models": [
+          "GPT-4.1"
+        ]
+      },
+      "createdAt": "2026-02-28T07:42:28.136Z"
+    },
+    {
+      "id": "5b02c438-5b8b-46db-a592-fd39555ba558",
+      "type": "career_path_generated",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65"
+      },
+      "createdAt": "2026-02-28T07:48:07.697Z"
+    },
+    {
+      "id": "b703be17-2aa2-420e-8176-1c4e6c3c9ed0",
+      "type": "job_match",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+        "matchCount": 10,
+        "source": "real_jobs_ranked_by_ai"
+      },
+      "createdAt": "2026-02-28T07:53:28.933Z"
+    },
+    {
+      "id": "6cebd3f7-d14f-4751-910d-c4f7b48db2f0",
+      "type": "job_saved",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+        "jobId": "3904c103-97e2-416d-83af-0574af5b895c"
+      },
+      "createdAt": "2026-02-28T07:54:01.051Z"
+    },
+    {
+      "id": "e6230731-6a36-45b6-8849-0a609f3dcbb3",
+      "type": "job_saved",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+        "jobId": "f38552d8-4d41-431f-8dc0-36a4d493c488"
+      },
+      "createdAt": "2026-02-28T07:54:21.956Z"
+    },
+    {
+      "id": "2bf7d24e-26ed-46f0-984d-5ce5cb8e7f64",
+      "type": "job_saved",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+        "jobId": "7a65609f-c394-4fb7-992c-c4178ff899a3"
+      },
+      "createdAt": "2026-02-28T07:55:53.834Z"
+    },
+    {
+      "id": "db229617-28fc-4516-bd13-52f786422dc7",
+      "type": "job_saved",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+        "jobId": "6a38d2d1-d2df-45f0-b3ba-bdf947b43eac"
+      },
+      "createdAt": "2026-02-28T07:55:56.667Z"
+    },
+    {
+      "id": "cbfc6a06-82af-4834-8288-7bed04b09a1e",
+      "type": "interview_started",
+      "data": {
+        "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+        "role": "Software Engineer",
+        "level": "mid-level",
+        "type": "behavioral"
+      },
+      "createdAt": "2026-02-28T10:28:14.721Z"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "cb0c6cea-0f18-405e-abf7-40570b8d7342",
+      "userId": "anonymous",
+      "title": "Top AI & tech careers in 2026?",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Top AI & tech careers in 2026?",
+          "timestamp": "2026-02-28T05:28:12.151Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Absolutely! The **AI & tech landscape** is evolving rapidly. Here are the **top AI & tech careers projected to be in high demand by 2026**, including required skills and why they matter.\n\n---\n\n# 🚀 Top AI & Tech Careers in 2026\n\n## 1. **AI/Machine Learning Engineer**\n- **What they do:** Design, build, and deploy AI models and algorithms.\n- **Skills:** Python, TensorFlow, PyTorch, data science, math/stats, cloud platforms (AWS, GCP, Azure).\n- **Why:** AI adoption is accelerating across all industries.\n\n---\n\n## 2. **Data Scientist / Data Engineer**\n- **What they do:** Analyze, interpret, and manage large data sets to drive business decisions.\n- **Skills:** SQL, Python/R, big data tools (Spark, Hadoop), data visualization, statistics.\n- **Why:** Businesses need data insights to stay competitive.\n\n---\n\n## 3. **Cybersecurity Analyst/Engineer**\n- **What they do:** Protect systems and data from cyber threats.\n- **Skills:** Network security, ethical hacking, incident response, security tools (SIEM, IDS/IPS), certifications (CISSP, CEH).\n- **Why:** Cyber threats keep increasing as technology advances.\n\n---\n\n## 4. **Cloud Solutions Architect**\n- **What they do:** Design and implement scalable cloud solutions.\n- **Skills:** Cloud platforms (AWS, Azure, GCP), infrastructure as code (Terraform, CloudFormation), DevOps.\n- **Why:** Cloud computing continues to dominate IT infrastructure.\n\n---\n\n## 5. **AI Product Manager**\n- **What they do:** Lead the development of AI-powered products from concept to launch.\n- **Skills:** Product management, AI concepts, business strategy, user experience, project management.\n- **Why:** Bridging business and AI tech is increasingly important.\n\n---\n\n## 6. **Robotics Engineer**\n- **What they do:** Design and build robots and automation systems.\n- **Skills:** Mechatronics, programming (C++, Python, ROS), sensor integration, control systems.\n- **Why:** Automation and robotics use is expanding in manufacturing, logistics, and healthcare.\n\n---\n\n## 7. **Full Stack Developer (AI/ML focus)**\n- **What they do:** Build end-to-end web applications with AI/ML components.\n- **Skills:** Frontend & backend frameworks, APIs, AI libraries, cloud deployment.\n- **Why:** AI-powered applications are becoming mainstream.\n\n---\n\n## 8. **AI Ethics Specialist**\n- **What they do:** Ensure AI systems are fair, transparent, and ethical.\n- **Skills:** AI/ML basics, law, philosophy, policy, risk assessment.\n- **Why:** Societal trust in AI depends on responsible development.\n\n---\n\n## 9. **Edge Computing Engineer**\n- **What they do:** Develop systems that process data locally on devices (“at the edge”).\n- **Skills:** IoT, embedded systems, AI/ML, networking.\n- **Why:** Edge computing is critical for real-time applications (autonomous vehicles, smart devices).\n\n---\n\n## 10. **Quantum Computing Specialist**\n- **What they do:** Research and develop applications for quantum processors.\n- **Skills:** Quantum theory, programming (Q#, Qiskit), math, physics.\n- **Why:** Quantum computing is an emerging field with disruptive potential.\n\n---\n\n# 🌟 Tips to Prepare\n\n- **Start learning now:** Use online courses (Coursera, Udemy, edX), bootcamps, and certifications.\n- **Build a portfolio:** Showcase projects on GitHub or personal websites.\n- **Network:** Join tech communities (LinkedIn groups, hackathons, meetups).\n- **Stay updated:** Follow tech news, research papers, and AI/tech leaders.\n- **Sharpen soft skills:** Communication, problem-solving, teamwork, and adaptability are crucial.\n\n---\n\n**Curious about a specific career or need advice on how to break into one of these roles? Let me know!**",
+          "timestamp": "2026-02-28T05:28:23.639Z",
+          "models": [
+            "GPT-4.1"
+          ],
+          "synthesized": false
+        }
+      ],
+      "createdAt": "2026-02-28T05:28:12.149Z",
+      "updatedAt": "2026-02-28T05:28:23.639Z"
+    },
+    {
+      "id": "a61436c5-cb20-4fee-af8c-8dbb669a8637",
+      "userId": "anonymous",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "mid-level",
+      "interviewType": "behavioral",
+      "questionCount": 1,
+      "scores": [],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock behavioral interview for a mid-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Certainly! Here’s your first behavioral interview question:\n\n---\n\n**Question 1:**  \nCan you describe a time when you had to quickly learn a new technology or tool to complete a project? Walk me through how you approached the situation and the outcome.\n\n---\n\nPlease take your time to answer.",
+          "timestamp": "2026-02-28T05:28:48.673Z"
+        }
+      ],
+      "createdAt": "2026-02-28T05:28:48.673Z",
+      "updatedAt": "2026-02-28T05:28:48.673Z"
+    },
+    {
+      "id": "5358c1d0-5a84-4e91-81de-11024fcc867c",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "title": "Most in-demand skills for remote work",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Most in-demand skills for remote work",
+          "timestamp": "2026-02-28T07:42:15.710Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Absolutely! Remote work opportunities have grown rapidly, and certain skills are especially valued by employers seeking remote talent. Here’s a breakdown of the **most in-demand skills for remote work** in 2024:\n\n---\n\n## 1. **Digital Communication**\n- **Why it matters:** Remote teams rely heavily on clear, concise, and professional communication.\n- **Tools to master:** Slack, Zoom, Microsoft Teams, email etiquette.\n\n## 2. **Self-Management & Time Management**\n- **Why it matters:** Without direct supervision, employers need people who can prioritize and deliver independently.\n- **Key skills:** Task prioritization, scheduling, accountability, goal setting.\n\n## 3. **Tech Savviness**\n- **Why it matters:** Remote jobs require comfort with digital tools and troubleshooting minor tech issues.\n- **Tools to master:** Google Workspace, project management software, cloud storage.\n\n## 4. **Project Management**\n- **Why it matters:** Coordinating tasks and deadlines is essential in distributed teams.\n- **Popular tools:** Trello, Asana, Jira, Monday.com.\n\n## 5. **Written Communication**\n- **Why it matters:** Most remote work relies on written updates, reports, and documentation.\n- **Develop:** Clear, persuasive, and error-free writing.\n\n## 6. **Collaboration**\n- **Why it matters:** Teamwork is just as important remotely.\n- **How to show:** Experience with cross-functional teams, collaborative software, or agile methods.\n\n## 7. **Problem-Solving & Critical Thinking**\n- **Why it matters:** Employers value those who can handle challenges independently and propose solutions.\n\n## 8. **Adaptability & Flexibility**\n- **Why it matters:** Remote work environments change rapidly—adaptation is key.\n\n## 9. **Technical Skills (Job-Specific)**\n- **Examples:**\n    - **Software Development:** Git, GitHub, Python, JavaScript, APIs\n    - **Digital Marketing:** SEO, Google Analytics, social media ads, content creation\n    - **Design:** Adobe Creative Suite, Figma, UX/UI principles\n    - **Customer Support:** CRM tools, helpdesk software\n\n## 10. **Cybersecurity Awareness**\n- **Why it matters:** Protecting company data is crucial with remote access.\n\n---\n\n### **Action Steps to Build These Skills**\n1. **Take Online Courses:** [Coursera](https://www.coursera.org/), [LinkedIn Learning](https://www.linkedin.com/learning/), and [Udemy](https://www.udemy.com/) offer courses on all these skills.\n2. **Practice Using Tools:** Set up mock projects using Trello, Slack, or Google Docs.\n3. **Showcase on Resume:** Highlight remote-friendly skills and tools in your resume and LinkedIn.\n4. **Get Certified:** Certifications in project management (PMP, Scrum), digital marketing (Google), or tech (AWS, CompTIA) add credibility.\n5. **Seek Remote Internships/Volunteering:** Gain experience with distributed teams.\n\n---\n\n### **Encouragement**\nRemote work rewards those who are proactive, communicative, and open to learning. By focusing on these skills, you’ll stand out to remote employers and unlock a world of flexible work opportunities! 🚀\n\nIf you want suggestions tailored to a specific field, let me know!",
+          "timestamp": "2026-02-28T07:42:28.134Z",
+          "models": [
+            "GPT-4.1"
+          ],
+          "synthesized": false
+        }
+      ],
+      "createdAt": "2026-02-28T07:42:15.708Z",
+      "updatedAt": "2026-02-28T07:42:28.134Z"
+    },
+    {
+      "id": "3327e0cb-2e64-4bec-b5a7-c4a58547b390",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "title": "Interview: Software Engineer",
+      "type": "mock-interview",
+      "role": "Software Engineer",
+      "level": "mid-level",
+      "interviewType": "behavioral",
+      "questionCount": 1,
+      "scores": [],
+      "messages": [
+        {
+          "role": "system",
+          "content": "Start a mock behavioral interview for a mid-level Software Engineer position. Ask the FIRST question only. Be professional.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Certainly! Let’s begin.\n\n**Question 1:**  \nCan you describe a time when you had to work closely with a team to deliver a project under a tight deadline? What was your role, and how did you ensure the project was completed successfully?",
+          "timestamp": "2026-02-28T10:28:14.717Z"
+        }
+      ],
+      "createdAt": "2026-02-28T10:28:14.717Z",
+      "updatedAt": "2026-02-28T10:28:14.717Z"
+    }
+  ],
+  "career_paths": [
+    {
+      "id": "afb6d691-e7c1-4b65-918d-4c6c566c2a23",
+      "userId": "anonymous",
+      "input": {
+        "skills": "Python , Machine learning",
+        "interests": "AI engineer",
+        "education": "B.TECH",
+        "experience": "Fresher",
+        "targetRole": "AI engineer",
+        "location": "remote"
+      },
+      "result": {
+        "title": "Remote AI Engineer Career Path",
+        "summary": "This career path is designed for B.Tech graduates with Python and machine learning skills aspiring to become remote AI engineers. It focuses on building strong foundations in AI concepts, practical experience through projects, and continuous upskilling to stay competitive in the fast-evolving AI landscape.",
+        "timeline": [
+          {
+            "phase": "Phase 1 (0-6 months)",
+            "title": "Foundation",
+            "goals": [
+              "Strengthen Python programming and core machine learning concepts",
+              "Build foundational math skills (linear algebra, calculus, probability)",
+              "Start hands-on mini-projects"
+            ],
+            "skills": [
+              "Python (advanced usage)",
+              "Supervised/unsupervised ML algorithms",
+              "Numpy, Pandas, Matplotlib",
+              "Mathematical foundations for ML"
+            ],
+            "milestones": [
+              "Completed at least three machine learning projects (e.g., regression, classification, clustering)",
+              "Solid understanding of ML theory and Python libraries"
+            ]
+          },
+          {
+            "phase": "Phase 2 (6-18 months)",
+            "title": "Growth",
+            "goals": [
+              "Deepen knowledge in deep learning and neural networks",
+              "Learn TensorFlow/PyTorch",
+              "Participate in AI competitions (Kaggle, DrivenData)",
+              "Collaborate on open-source AI projects"
+            ],
+            "skills": [
+              "Deep learning (CNNs, RNNs, LSTM, GANs)",
+              "TensorFlow, PyTorch",
+              "Model evaluation and tuning",
+              "Version control (Git)"
+            ],
+            "milestones": [
+              "Built and deployed at least one deep learning model (e.g., image or text classifier)",
+              "Contributed to open-source or team-based AI projects"
+            ]
+          },
+          {
+            "phase": "Phase 3 (18-36 months)",
+            "title": "Professionalization",
+            "goals": [
+              "Specialize in a subdomain (NLP, Computer Vision, MLOps, etc.)",
+              "Gain experience with cloud AI services (AWS/GCP/Azure)",
+              "Contribute to research, publish articles, or present at online conferences"
+            ],
+            "skills": [
+              "Domain-specific AI (NLP, CV, RL, etc.)",
+              "Cloud deployment (AWS SageMaker, GCP AI Platform)",
+              "MLOps tools (Docker, Kubernetes, CI/CD)"
+            ],
+            "milestones": [
+              "Developed and deployed an end-to-end AI solution on the cloud",
+              "Built a strong online AI portfolio (GitHub, personal website, publications)"
+            ]
+          }
+        ],
+        "salaryRange": {
+          "entry": "$45k-70k",
+          "mid": "$80k-120k",
+          "senior": "$130k-180k"
+        },
+        "certifications": [
+          {
+            "name": "TensorFlow Developer Certificate",
+            "provider": "Google",
+            "difficulty": "intermediate",
+            "value": "high"
+          },
+          {
+            "name": "Machine Learning Specialization",
+            "provider": "Coursera (Andrew Ng/DeepLearning.AI)",
+            "difficulty": "beginner",
+            "value": "high"
+          },
+          {
+            "name": "AWS Certified Machine Learning – Specialty",
+            "provider": "Amazon",
+            "difficulty": "advanced",
+            "value": "medium"
+          }
+        ],
+        "topRoles": [
+          {
+            "title": "AI Engineer",
+            "salary": "$90k-150k",
+            "demand": "high",
+            "description": "Designs, builds, and deploys AI models and solutions for various applications."
+          },
+          {
+            "title": "Machine Learning Engineer",
+            "salary": "$90k-140k",
+            "demand": "high",
+            "description": "Focuses on implementing and optimizing machine learning models in production environments."
+          },
+          {
+            "title": "Data Scientist (AI Focus)",
+            "salary": "$85k-140k",
+            "demand": "high",
+            "description": "Analyzes complex data and builds predictive AI models to solve business problems."
+          }
+        ],
+        "skillGaps": [
+          "Deep learning frameworks (TensorFlow, PyTorch)",
+          "Cloud deployment and MLOps",
+          "Domain-specific AI (NLP, Computer Vision, etc.)",
+          "Software engineering best practices for AI"
+        ],
+        "marketDemand": {
+          "level": "high",
+          "trend": "growing",
+          "hotSkills": [
+            "Deep learning",
+            "TensorFlow/PyTorch",
+            "Cloud ML deployment",
+            "Natural Language Processing"
+          ]
+        },
+        "alternativePaths": [
+          {
+            "title": "Data Engineer",
+            "description": "Focuses on building data pipelines and infrastructure to support AI and analytics projects; ideal for those who enjoy data architecture and large-scale systems."
+          },
+          {
+            "title": "MLOps Engineer",
+            "description": "Specializes in automating and streamlining the deployment and monitoring of machine learning models, combining AI and DevOps skills."
+          },
+          {
+            "title": "AI Researcher",
+            "description": "Works on cutting-edge AI algorithms and theoretical advancements, suitable for those interested in academia or R&D."
+          }
+        ],
+        "networkingTips": [
+          "Actively participate in online AI communities (LinkedIn, Twitter, GitHub, Reddit ML/AI forums).",
+          "Attend virtual AI conferences, webinars, and remote hackathons to connect with professionals and recruiters."
+        ],
+        "recommendations": [
+          "Continuously update your portfolio with real-world AI projects and contributions to open-source repositories.",
+          "Stay current with AI trends by subscribing to top newsletters (e.g., The Batch by DeepLearning.AI) and engaging with research papers."
+        ],
+        "raw": false
+      },
+      "models": [
+        "GPT-4.1"
+      ],
+      "synthesized": false,
+      "createdAt": "2026-02-28T05:31:05.958Z"
+    },
+    {
+      "id": "1c6af312-b945-4866-a5bf-8dcfce687e1f",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "input": {
+        "skills": "Java script, react",
+        "interests": "Mern stack",
+        "education": "Diploma",
+        "experience": "fresher",
+        "targetRole": "Mern developer",
+        "location": ""
+      },
+      "result": {
+        "title": "MERN Stack Developer Career Path",
+        "summary": "This career path is tailored for a fresher with a diploma, JavaScript and React skills, and a keen interest in the MERN (MongoDB, Express, React, Node.js) stack. The journey is structured to build a strong foundation in backend and full-stack development, leading to junior and eventually senior MERN developer roles, while filling in key skill gaps and leveraging certifications for employability.",
+        "timeline": [
+          {
+            "phase": "Phase 1 (0-6 months)",
+            "title": "Foundation",
+            "goals": [
+              "Master core JavaScript concepts and advanced React",
+              "Learn HTML, CSS, and responsive design",
+              "Get introduced to Node.js and MongoDB basics"
+            ],
+            "skills": [
+              "Advanced JavaScript",
+              "React.js",
+              "HTML/CSS",
+              "Node.js basics",
+              "MongoDB basics"
+            ],
+            "milestones": [
+              "Build and deploy 2-3 responsive React applications",
+              "Complete a basic CRUD app using Node.js and MongoDB"
+            ]
+          },
+          {
+            "phase": "Phase 2 (6-18 months)",
+            "title": "Growth",
+            "goals": [
+              "Gain proficiency with the entire MERN stack",
+              "Understand RESTful API design and authentication",
+              "Work on real-world projects or internships"
+            ],
+            "skills": [
+              "Express.js",
+              "REST API development",
+              "JWT/Auth",
+              "Project deployment",
+              "Version control (Git)"
+            ],
+            "milestones": [
+              "Develop and deploy a full-stack MERN project with authentication",
+              "Contribute to open-source or freelance MERN projects"
+            ]
+          },
+          {
+            "phase": "Phase 3 (18-36 months)",
+            "title": "Professional Development",
+            "goals": [
+              "Refine advanced MERN skills and best practices",
+              "Learn testing, CI/CD, and cloud deployment",
+              "Prepare for mid-level/senior roles and technical interviews"
+            ],
+            "skills": [
+              "Unit & integration testing (Jest, Mocha)",
+              "CI/CD pipelines",
+              "Cloud platforms (AWS, Heroku)",
+              "System design basics"
+            ],
+            "milestones": [
+              "Deploy a production-ready MERN app with testing and CI/CD",
+              "Land a full-time MERN developer role or promotion"
+            ]
+          }
+        ],
+        "salaryRange": {
+          "entry": "$45k-65k",
+          "mid": "$70k-110k",
+          "senior": "$115k-160k"
+        },
+        "certifications": [
+          {
+            "name": "Meta Back-End Developer Professional Certificate",
+            "provider": "Coursera/Meta",
+            "difficulty": "beginner",
+            "value": "high"
+          },
+          {
+            "name": "MongoDB Developer Certification",
+            "provider": "MongoDB University",
+            "difficulty": "intermediate",
+            "value": "medium"
+          },
+          {
+            "name": "Full-Stack Web Development with React Specialization",
+            "provider": "Coursera",
+            "difficulty": "intermediate",
+            "value": "medium"
+          }
+        ],
+        "topRoles": [
+          {
+            "title": "Junior MERN Stack Developer",
+            "salary": "$45k-65k",
+            "demand": "high",
+            "description": "Works on building and maintaining full-stack web applications using MongoDB, Express, React, and Node.js under supervision."
+          },
+          {
+            "title": "Full-Stack JavaScript Developer",
+            "salary": "$70k-110k",
+            "demand": "high",
+            "description": "Builds scalable web applications across the stack, often on agile teams, and contributes to both frontend and backend architecture."
+          },
+          {
+            "title": "Senior MERN Stack Engineer",
+            "salary": "$115k-160k",
+            "demand": "high",
+            "description": "Leads design and development of large-scale MERN applications, mentors juniors, and drives adoption of best practices and emerging tech."
+          }
+        ],
+        "skillGaps": [
+          "Backend development with Node.js and Express",
+          "Database design and management with MongoDB",
+          "API security and authentication",
+          "Testing and DevOps practices"
+        ],
+        "marketDemand": {
+          "level": "high",
+          "trend": "growing",
+          "hotSkills": [
+            "React.js",
+            "Node.js",
+            "RESTful APIs",
+            "MongoDB",
+            "Cloud deployment"
+          ]
+        },
+        "alternativePaths": [
+          {
+            "title": "Front-End Developer (React Specialist)",
+            "description": "Focuses exclusively on advanced React and UI/UX, suitable for those who prefer client-side development."
+          },
+          {
+            "title": "Back-End Node.js Developer",
+            "description": "Specializes in server-side development with Node.js and Express, ideal if backend work is more interesting."
+          },
+          {
+            "title": "Mobile App Developer (React Native)",
+            "description": "Leverages React skills to build cross-platform mobile apps; great for those interested in mobile technologies."
+          }
+        ],
+        "networkingTips": [
+          "Contribute to open-source MERN projects or join GitHub communities to showcase your code and connect with industry professionals.",
+          "Attend local or virtual JavaScript/React/MERN meetups and tech conferences to expand your professional network."
+        ],
+        "recommendations": [
+          "Work on hands-on MERN stack projects and build a strong project portfolio to demonstrate your practical skills.",
+          "Stay updated with emerging JavaScript and cloud technologies by following thought leaders and participating in online developer communities."
+        ],
+        "raw": false
+      },
+      "models": [
+        "GPT-4.1"
+      ],
+      "synthesized": false,
+      "createdAt": "2026-02-28T07:48:07.695Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "1b8432a4-9d05-4599-8a50-d022ad304cd8",
+      "name": "prasanna",
+      "email": "prasannatarle@gmail.com",
+      "password": "$2b$10$7Zj/0y0vSQ9dU/3IBuIVqOWpSEY5z/u0L.IIJs9en0agQKlqVNCfG",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": true,
+      "verificationToken": null,
+      "createdAt": "2026-02-28T05:51:13.295Z"
+    },
+    {
+      "id": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "name": "Prasanna",
+      "email": "prasannatarle1592003@gmail.com",
+      "password": "$2b$10$XAF6hwjsAm7cXGvImb38OOD/SrkxI11ODo3Rr8fxIm8X4s6pwbrDO",
+      "role": "user",
+      "profile": {
+        "skills": [],
+        "interests": [],
+        "education": "",
+        "experience": ""
+      },
+      "verified": true,
+      "verificationToken": null,
+      "createdAt": "2026-02-28T07:38:41.923Z"
+    }
+  ],
+  "learning_paths": [
+    {
+      "pathId": "91f6e5db-e014-4859-b5cf-8c5c89074200",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "resumeId": "0b414831-30a6-41b5-a001-d21e84b49280",
+      "targetRole": "full stack developer",
+      "learningPath": {
+        "targetRole": "full stack developer",
+        "currentSkills": [
+          "Python",
+          "JavaScript",
+          "C++",
+          "Java",
+          "FastAPI",
+          "HTML5",
+          "CSS3",
+          "React.js",
+          "Tailwind CSS",
+          "MongoDB",
+          "PostgreSQL",
+          "OpenAI GPT-4 API",
+          "Prompt Engineering",
+          "Resume Parsing",
+          "LangChain",
+          "Git",
+          "GitHub",
+          "Postman",
+          "Vercel",
+          "Render",
+          "VS Code",
+          "RESTful API",
+          "Axios",
+          "Communication",
+          "Problem Solving",
+          "Stress Management",
+          "Decision Making",
+          "Team Collaboration",
+          "Data Structures & Algorithms (DSA)",
+          "DBMS",
+          "Operating System",
+          "Computer Networks",
+          "REST API Design"
+        ],
+        "requiredSkills": [
+          "JavaScript",
+          "Python",
+          "Java",
+          "System Design",
+          "Data Structures",
+          "SQL",
+          "Git",
+          "Testing"
+        ],
+        "skillGaps": [
+          "System Design",
+          "Testing"
+        ],
+        "prioritySkills": [
+          "System Design",
+          "Testing"
+        ],
+        "completionPercentage": 75,
+        "timeline": {
+          "phase1": {
+            "duration": "2-4 weeks",
+            "skills": [
+              "System Design"
+            ],
+            "focus": "Foundation building",
+            "courses": []
+          },
+          "phase2": {
+            "duration": "4-8 weeks",
+            "skills": [
+              "Testing"
+            ],
+            "focus": "Core competency",
+            "courses": []
+          },
+          "phase3": {
+            "duration": "8-12 weeks",
+            "skills": [],
+            "focus": "Advanced topics",
+            "courses": []
+          }
+        },
+        "estimatedCost": {
+          "courseraSpecializations": 78,
+          "udemyCoursesBundle": 20,
+          "totalRange": "$20-$78"
+        },
+        "estimatedHours": {
+          "phase1": 20,
+          "phase2": 40,
+          "phase3": 40,
+          "projects": 20,
+          "total": 120
+        },
+        "projects": [
+          {
+            "title": "Build a full stack developer project",
+            "description": "Apply learned skills in a real-world project",
+            "difficulty": "Intermediate",
+            "timeInvest": "20 hours",
+            "portfolioValue": "High"
+          },
+          {
+            "title": "Contribute to open source in System Design",
+            "description": "Real-world experience with industry-standard tools",
+            "difficulty": "Advanced",
+            "timeInvest": "10-20 hours",
+            "portfolioValue": "Very High"
+          }
+        ],
+        "metrics": {
+          "coursesRequired": 2,
+          "projectsRequired": 2,
+          "estimatedDuration": "12-16 weeks",
+          "careerImpact": {
+            "salaryIncrease": "15-25%",
+            "promotionReadiness": "High",
+            "jobOpportunitiesIncrease": "40-60%"
+          }
+        }
+      },
+      "status": "active",
+      "createdAt": "2026-02-28T07:39:56.577Z",
+      "updatedAt": "2026-02-28T07:39:56.577Z",
+      "id": "06e9cd16-f09c-45bf-87f9-c731452173b6"
+    },
+    {
+      "pathId": "55e1e1cb-9df9-4003-b146-7c7a283851cb",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "resumeId": "0b414831-30a6-41b5-a001-d21e84b49280",
+      "targetRole": "full stack developer",
+      "learningPath": {
+        "targetRole": "full stack developer",
+        "currentSkills": [
+          "Python",
+          "JavaScript",
+          "C++",
+          "Java",
+          "FastAPI",
+          "HTML5",
+          "CSS3",
+          "React.js",
+          "Tailwind CSS",
+          "MongoDB",
+          "PostgreSQL",
+          "OpenAI GPT-4 API",
+          "Prompt Engineering",
+          "Resume Parsing",
+          "LangChain",
+          "Git",
+          "GitHub",
+          "Postman",
+          "Vercel",
+          "Render",
+          "VS Code",
+          "RESTful API",
+          "Axios",
+          "Communication",
+          "Problem Solving",
+          "Stress Management",
+          "Decision Making",
+          "Team Collaboration",
+          "Data Structures & Algorithms (DSA)",
+          "DBMS",
+          "Operating System",
+          "Computer Networks",
+          "REST API Design"
+        ],
+        "requiredSkills": [
+          "JavaScript",
+          "Python",
+          "Java",
+          "System Design",
+          "Data Structures",
+          "SQL",
+          "Git",
+          "Testing"
+        ],
+        "skillGaps": [
+          "System Design",
+          "Testing"
+        ],
+        "prioritySkills": [
+          "System Design",
+          "Testing"
+        ],
+        "completionPercentage": 75,
+        "timeline": {
+          "phase1": {
+            "duration": "2-4 weeks",
+            "skills": [
+              "System Design"
+            ],
+            "focus": "Foundation building",
+            "courses": []
+          },
+          "phase2": {
+            "duration": "4-8 weeks",
+            "skills": [
+              "Testing"
+            ],
+            "focus": "Core competency",
+            "courses": []
+          },
+          "phase3": {
+            "duration": "8-12 weeks",
+            "skills": [],
+            "focus": "Advanced topics",
+            "courses": []
+          }
+        },
+        "estimatedCost": {
+          "courseraSpecializations": 78,
+          "udemyCoursesBundle": 20,
+          "totalRange": "$20-$78"
+        },
+        "estimatedHours": {
+          "phase1": 20,
+          "phase2": 40,
+          "phase3": 40,
+          "projects": 20,
+          "total": 120
+        },
+        "projects": [
+          {
+            "title": "Build a full stack developer project",
+            "description": "Apply learned skills in a real-world project",
+            "difficulty": "Intermediate",
+            "timeInvest": "20 hours",
+            "portfolioValue": "High"
+          },
+          {
+            "title": "Contribute to open source in System Design",
+            "description": "Real-world experience with industry-standard tools",
+            "difficulty": "Advanced",
+            "timeInvest": "10-20 hours",
+            "portfolioValue": "Very High"
+          }
+        ],
+        "metrics": {
+          "coursesRequired": 2,
+          "projectsRequired": 2,
+          "estimatedDuration": "12-16 weeks",
+          "careerImpact": {
+            "salaryIncrease": "15-25%",
+            "promotionReadiness": "High",
+            "jobOpportunitiesIncrease": "40-60%"
+          }
+        }
+      },
+      "status": "active",
+      "createdAt": "2026-02-28T07:40:56.240Z",
+      "updatedAt": "2026-02-28T07:40:56.240Z",
+      "id": "ac233b52-0ad3-4e50-b55b-7b1dcc4c00fb"
+    }
+  ],
+  "job_matches": [
+    {
+      "id": "15b71f42-2fac-474a-8f5c-9c4b8e8e334b",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "input": {
+        "skills": "react html javascript ",
+        "interests": "mern dev",
+        "experience": "fresher",
+        "targetIndustry": "",
+        "location": ""
+      },
+      "matches": [
+        {
+          "title": "Full-stack (Kotlin) Engineer (m/f/d) - Team Payments",
+          "role": "Full-stack (Kotlin) Engineer (m/f/d) - Team Payments",
+          "jobTitle": "Full-stack (Kotlin) Engineer (m/f/d) - Team Payments",
+          "company_type": "Flix",
+          "company": "Flix",
+          "matchScore": 40,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Full-stack developer role",
+            "Likely relevant tech stack"
+          ],
+          "skills_gap": [
+            "Kotlin not listed",
+            "Probably not entry-level"
+          ],
+          "why_match": "Full-stack developer role. Likely relevant tech stack",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/flix/full-stack-kotlin-engineer-team-payments-munich-371497",
+          "postedDate": 1772228717,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Munich, Bavaria, Germany",
+          "jobDescription": "At Flix, we offer a tech-driven environment where innovation meets real-world impact, with competitive pay, strong growth opportunities, and a culture of collaboration and ownership. &nbsp;\nAs a Full-stack&nbsp;Engineer with a strong backend focus (Kotlin) you will help us build the future of paymen"
+        },
+        {
+          "title": "Werkstudent:in Projekt Manager:in KI-Startup, Köln, remote",
+          "role": "Werkstudent:in Projekt Manager:in KI-Startup, Köln, remote",
+          "jobTitle": "Werkstudent:in Projekt Manager:in KI-Startup, Köln, remote",
+          "company_type": "dreifach.ai",
+          "company": "dreifach.ai",
+          "matchScore": 30,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Open to students/entry-level",
+            "Remote option"
+          ],
+          "skills_gap": [
+            "Project management experience",
+            "No direct match to React/JS dev"
+          ],
+          "why_match": "Open to students/entry-level. Remote option",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/dreifachai/werkstudentin-projekt-managerin-ki-startup-koln-remote-cologne-487466",
+          "postedDate": 1772258471,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Cologne",
+          "jobDescription": "Wir sind ein dynamisches Team in einem schnell wachsenden Umfeld. Wir arbeiten mit neuester Technologie und nutzen KI und Automatisierung im Versicherungsvertrieb, um mittelständische und große Maklerunternehmen produktiver zu machen.\nEines der Projekte geht jetzt in eine heiße Phase und wir suchen "
+        },
+        {
+          "title": "Brand & Communications Coordinator:in | Working Student | BERLIN",
+          "role": "Brand & Communications Coordinator:in | Working Student | BERLIN",
+          "jobTitle": "Brand & Communications Coordinator:in | Working Student | BERLIN",
+          "company_type": "Kinzo Architekten GmbH",
+          "company": "Kinzo Architekten GmbH",
+          "matchScore": 25,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Entry-level (working student)"
+          ],
+          "skills_gap": [
+            "Communications/marketing experience",
+            "No coding required"
+          ],
+          "why_match": "Entry-level (working student)",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/kinzo-architekten-gmbh/brand-communications-coordinatorin-working-student-berlin-428189",
+          "postedDate": 1772238684,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Du liebst Architektur, denkst visuell, textest gerne auf Deutsch &#x26; Englisch, bist Social-Media-affin und willst Kinzo mit starken Inhalten, Podcasts und Events auf die nächste Stufe heben? Dann werde unser:e Content &#x26; Community Coordinator im Bereich Architekturkommunikation – mit Fokus au"
+        },
+        {
+          "title": "Junior Artist Manager / Influencer Manager (m/w/d)",
+          "role": "Junior Artist Manager / Influencer Manager (m/w/d)",
+          "jobTitle": "Junior Artist Manager / Influencer Manager (m/w/d)",
+          "company_type": "Lionflence",
+          "company": "Lionflence",
+          "matchScore": 22,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Junior/entry-level"
+          ],
+          "skills_gap": [
+            "Artist/influencer management",
+            "No coding"
+          ],
+          "why_match": "Junior/entry-level",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/lionflence/junior-artist-manager-influencer-manager-berlin-299658",
+          "postedDate": 1772224280,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Was wir Dir bieten:\n\nEine spannende Herausforderung, in der du dich weiterentwickeln kannst, rundum den Bereich Artistmanagement Medien/Social Media, Influencer Marketing und den dazugehörigen Technologien (Software Systeme)\nPerfekt abgestimmte selbst entwickelte Softwaresysteme für dich als Artistm"
+        },
+        {
+          "title": "Werkstudent (m/w/d) Globales Vertragsmanagement",
+          "role": "Werkstudent (m/w/d) Globales Vertragsmanagement",
+          "jobTitle": "Werkstudent (m/w/d) Globales Vertragsmanagement",
+          "company_type": "Flix",
+          "company": "Flix",
+          "matchScore": 20,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Student/entry-level"
+          ],
+          "skills_gap": [
+            "Contract management (not dev)",
+            "No coding required"
+          ],
+          "why_match": "Student/entry-level",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/flix/werkstudent-globales-vertragsmanagement-munchen-98674",
+          "postedDate": 1772228717,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "München, Bayern, Germany",
+          "jobDescription": "Bei Flix erwartet Dich ein dynamisches Arbeitsumfeld mit wettbewerbsfähiger Vergütung, starken Entwicklungsmöglichkeiten und einem technologieorientierten Ansatz, um Reisen weltweit zugänglicher, nachhaltiger und erschwinglicher zu gestalten.\nWir suchen einen motivierten Werkstudenten (m/w/d) im glo"
+        },
+        {
+          "title": "Trainee Artist Manager / Influencer Manager (m/w/d)",
+          "role": "Trainee Artist Manager / Influencer Manager (m/w/d)",
+          "jobTitle": "Trainee Artist Manager / Influencer Manager (m/w/d)",
+          "company_type": "Lionflence",
+          "company": "Lionflence",
+          "matchScore": 18,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Trainee/entry-level"
+          ],
+          "skills_gap": [
+            "Artist/influencer management",
+            "No coding"
+          ],
+          "why_match": "Trainee/entry-level",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/lionflence/trainee-artist-manager-influencer-manager-berlin-257535",
+          "postedDate": 1772224286,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Was wir Dir bieten:\n\nEine spannende Herausforderung, in der du dich weiterentwickeln kannst, rundum den Bereich Artistmanagement Medien/Social Media, Influencer Marketing und den dazugehörigen Technologien (Software Systeme)\nPerfekt abgestimmte selbst entwickelte Softwaresysteme für dich als Artistm"
+        },
+        {
+          "title": "Product Owner (m/f/d) -  FlixTrain Tech Stream",
+          "role": "Product Owner (m/f/d) -  FlixTrain Tech Stream",
+          "jobTitle": "Product Owner (m/f/d) -  FlixTrain Tech Stream",
+          "company_type": "Flix",
+          "company": "Flix",
+          "matchScore": 15,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Tech context"
+          ],
+          "skills_gap": [
+            "Product ownership",
+            "Likely requires experience",
+            "Not dev"
+          ],
+          "why_match": "Tech context",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/flix/product-owner-flixtrain-tech-stream-munchen-428392",
+          "postedDate": 1772228717,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "München, Bayern, Germany",
+          "jobDescription": "At Flix, we offer a tech-driven environment where innovation meets real-world impact, with competitive pay, strong growth opportunities, and a culture of collaboration and ownership. &nbsp;\nWe're&nbsp;looking for a motivated and driven&nbsp;Product Owner who will help us shape team Pantograph as par"
+        },
+        {
+          "title": "Strategic Partnerships Lead (f/m/d)",
+          "role": "Strategic Partnerships Lead (f/m/d)",
+          "jobTitle": "Strategic Partnerships Lead (f/m/d)",
+          "company_type": "Apaleo",
+          "company": "Apaleo",
+          "matchScore": 10,
+          "salary": "Competitive",
+          "skills_matched": [
+            "None"
+          ],
+          "skills_gap": [
+            "Strategic partnerships experience",
+            "Senior experience",
+            "No coding"
+          ],
+          "why_match": "None",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/apaleo/strategic-partnerships-lead-munich-357303",
+          "postedDate": 1772228718,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Munich, Bavaria, Germany",
+          "jobDescription": "Join Apaleo and Shape the Future of Hospitality Tech!\nApaleo is the world's most open, API-first property management platform powering the next generation of hospitality operations. Its modular, AI-powered infrastructure enables hoteliers to customise their tech stack, automate routine work, and del"
+        },
+        {
+          "title": "Senior Marketing Campaign Manager",
+          "role": "Senior Marketing Campaign Manager",
+          "jobTitle": "Senior Marketing Campaign Manager",
+          "company_type": "SumUp",
+          "company": "SumUp",
+          "matchScore": 8,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Tech company"
+          ],
+          "skills_gap": [
+            "Marketing campaign management",
+            "Senior level",
+            "No coding"
+          ],
+          "why_match": "Tech company",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/sumup/senior-marketing-campaign-manager-berlin-252849",
+          "postedDate": 1772228717,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin, Berlin, Germany",
+          "jobDescription": "About SumUp\nWe believe in the everyday hero. Those who have the courage to follow their passion and who have the strength and determination to realise their dreams.\nSmall business owners are at the heart of all we do, so we're creating powerful, easy-to-use financial solutions to help them run their"
+        },
+        {
+          "title": "Marketing & Immobilienmarketing (m/w/d)",
+          "role": "Marketing & Immobilienmarketing (m/w/d)",
+          "jobTitle": "Marketing & Immobilienmarketing (m/w/d)",
+          "company_type": "Aurentum GmbH",
+          "company": "Aurentum GmbH",
+          "matchScore": 6,
+          "salary": "Competitive",
+          "skills_matched": [
+            "None"
+          ],
+          "skills_gap": [
+            "Marketing/real estate experience",
+            "No coding"
+          ],
+          "why_match": "None",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/aurentum-gmbh/marketing-immobilienmarketing-abensberg-98216",
+          "postedDate": 1772227879,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Abensberg",
+          "jobDescription": "Über uns\nAurentum Immobilien ist ein modernes, wachsendes Immobilienunternehmen mit Fokus auf erfolgreiche Objektvermarktung, digitale Kundengewinnung und exzellenten Service für Käufer, Verkäufer und Vermieter. Unser Team vereint Expertise im klassischen Maklergeschäft mit datengetriebenem Marketin"
+        }
+      ],
+      "totalMatches": 10,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-02-28T07:53:28.929Z",
+      "expiresAt": "2026-03-07T07:53:28.929Z"
+    }
+  ],
+  "saved_jobs": [
+    {
+      "jobId": "3904c103-97e2-416d-83af-0574af5b895c",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "jobTitle": "Werkstudent:in Projekt Manager:in KI-Startup, Köln, remote",
+      "company": "dreifach.ai",
+      "jobUrl": "https://www.arbeitnow.com/jobs/companies/dreifachai/werkstudentin-projekt-managerin-ki-startup-koln-remote-cologne-487466",
+      "salary": "Competitive",
+      "matchScore": 30,
+      "location": "Cologne",
+      "source": "arbeitnow",
+      "status": "saved",
+      "notes": "",
+      "savedAt": "2026-02-28T07:54:01.049Z",
+      "appliedAt": null,
+      "updatedAt": "2026-02-28T07:54:01.049Z",
+      "id": "1e1cbcd3-08bd-4949-abd5-32f214f86800"
+    },
+    {
+      "jobId": "f38552d8-4d41-431f-8dc0-36a4d493c488",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "jobTitle": "Product, Platform & Enterprise Front End Sr/Staff Software Engineer",
+      "company": "BNSF Railway",
+      "jobUrl": "https://remotive.com/remote-jobs/software-development/product-platform-enterprise-front-end-sr-staff-software-engineer-2088611",
+      "salary": "$165k - $300k",
+      "matchScore": null,
+      "location": "USA",
+      "source": "remotive",
+      "status": "saved",
+      "notes": "",
+      "savedAt": "2026-02-28T07:54:21.955Z",
+      "appliedAt": null,
+      "updatedAt": "2026-02-28T07:54:21.955Z",
+      "id": "ba6224fa-c03e-4f4d-b972-025be6703d20"
+    },
+    {
+      "jobId": "7a65609f-c394-4fb7-992c-c4178ff899a3",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "jobTitle": "Product, Platform & Enterprise Full Stack Sr/Staff Software Engineer",
+      "company": "BNSF Railway",
+      "jobUrl": "https://remotive.com/remote-jobs/software-development/product-platform-enterprise-full-stack-sr-staff-software-engineer-2088612",
+      "salary": "$165,000 - $300,000",
+      "matchScore": null,
+      "location": "USA",
+      "source": "remotive",
+      "status": "saved",
+      "notes": "",
+      "savedAt": "2026-02-28T07:55:53.832Z",
+      "appliedAt": null,
+      "updatedAt": "2026-02-28T07:55:53.832Z",
+      "id": "4e94a27c-2cdd-49f1-8a83-19e2981e44a2"
+    },
+    {
+      "jobId": "6a38d2d1-d2df-45f0-b3ba-bdf947b43eac",
+      "userId": "a9e71466-2b9d-4830-ae00-a475a61eae65",
+      "jobTitle": "Senior Independent Software Developer",
+      "company": "A.Team",
+      "jobUrl": "https://remotive.com/remote-jobs/software-development/senior-independent-software-developer-1919265",
+      "salary": "$90 - $150 /hour",
+      "matchScore": null,
+      "location": "Americas, Europe, Israel",
+      "source": "remotive",
+      "status": "saved",
+      "notes": "",
+      "savedAt": "2026-02-28T07:55:56.665Z",
+      "appliedAt": null,
+      "updatedAt": "2026-02-28T07:55:56.665Z",
+      "id": "68f9f1c8-9aa4-4df2-9ca2-7e7bc7ca001a"
+    }
+  ]
+}

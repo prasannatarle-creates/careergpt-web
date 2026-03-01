@@ -2048,6 +2048,7 @@ function MockInterview() {
   const [sessionId, setSessionId] = useState(null);
   const [currentContent, setCurrentContent] = useState('');
   const [questionNum, setQuestionNum] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(5);
   const [answer, setAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -2055,6 +2056,8 @@ function MockInterview() {
   const [role, setRole] = useState('Software Engineer');
   const [level, setLevel] = useState('mid-level');
   const [type, setType] = useState('behavioral');
+  const [questionCount, setQuestionCount] = useState(5);
+  const [focusAreas, setFocusAreas] = useState('');
   const [allFeedback, setAllFeedback] = useState([]);
   const [allQuestions, setAllQuestions] = useState([]);
   const [allAnswers, setAllAnswers] = useState([]);
@@ -2063,6 +2066,7 @@ function MockInterview() {
   const [timerActive, setTimerActive] = useState(false);
   const timerRef = useRef(null);
   const [showTips, setShowTips] = useState(false);
+  const [expandedQ, setExpandedQ] = useState(null);
 
   // Voice recording state
   const [isRecording, setIsRecording] = useState(false);
@@ -2161,9 +2165,10 @@ function MockInterview() {
   const startInterview = async () => {
     setLoading(true); setError('');
     try {
-      const d = await api.post('/mock-interview/start', { role, level, type });
+      const d = await api.post('/mock-interview/start', { role, level, type, questionCount, focusAreas: focusAreas.trim() || undefined });
       if (d.error) throw new Error(d.error);
       setSessionId(d.sessionId); setCurrentContent(d.question); setQuestionNum(1); setStarted(true);
+      setTotalQuestions(d.totalQuestions || questionCount);
       setAllQuestions([d.question]);
       setTimer(0); setTimerActive(true);
     } catch (e) { setError(e.message); } finally { setLoading(false); }
@@ -2180,6 +2185,7 @@ function MockInterview() {
       setAllFeedback(prev => [...prev, fb]);
       setAllAnswers(prev => [...prev, answer]);
       setQuestionNum(d.questionNumber);
+      if (d.totalQuestions) setTotalQuestions(d.totalQuestions);
       setIsComplete(d.isComplete);
       setAnswer('');
       if (!d.isComplete && fb.nextQuestion) {
@@ -2196,45 +2202,163 @@ function MockInterview() {
     const { default: jsPDF } = await import('jspdf');
     const doc = new jsPDF();
     let y = 20;
-    doc.setFontSize(18); doc.setTextColor(0, 120, 200);
+    const pageH = 280;
+    const checkPage = (need = 20) => { if (y + need > pageH) { doc.addPage(); y = 20; } };
+
+    // Title
+    doc.setFontSize(20); doc.setTextColor(0, 100, 200);
     doc.text('CareerGPT Mock Interview Report', 20, y); y += 10;
-    doc.setFontSize(12); doc.setTextColor(0, 0, 0);
-    doc.text(`Role: ${role} | Level: ${level} | Type: ${type}`, 20, y); y += 8;
+    doc.setDrawColor(0, 100, 200); doc.setLineWidth(0.5);
+    doc.line(20, y, 190, y); y += 8;
 
+    // Session info
+    doc.setFontSize(11); doc.setTextColor(60, 60, 60);
+    doc.text(`Role: ${role}`, 20, y);
+    doc.text(`Level: ${level}`, 100, y); y += 6;
+    doc.text(`Type: ${type}`, 20, y);
+    doc.text(`Questions: ${totalQuestions}`, 100, y); y += 6;
+    if (focusAreas) { doc.text(`Focus: ${focusAreas}`, 20, y); y += 6; }
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, y); y += 10;
+
+    // Overall score + grade
     const avgScore = allFeedback.length > 0 ? (allFeedback.reduce((a, b) => a + (b.score || 0), 0) / allFeedback.length).toFixed(1) : 'N/A';
-    doc.text(`Average Score: ${avgScore}/10`, 20, y); y += 10;
+    const lastFb = allFeedback[allFeedback.length - 1];
+    const grade = lastFb?.overallGrade || (avgScore >= 9 ? 'A+' : avgScore >= 8 ? 'A' : avgScore >= 7 ? 'B+' : avgScore >= 6 ? 'B' : avgScore >= 5 ? 'C' : 'D');
 
+    doc.setFillColor(240, 245, 255); doc.roundedRect(20, y, 170, 18, 3, 3, 'F');
+    doc.setFontSize(14); doc.setTextColor(0, 80, 160);
+    doc.text(`Overall Grade: ${grade}`, 28, y + 8);
+    doc.text(`Average Score: ${avgScore}/10`, 110, y + 8);
+    y += 14;
+    if (lastFb?.hireRecommendation) {
+      doc.setFontSize(10); doc.setTextColor(0, 120, 80);
+      doc.text(`Hire Recommendation: ${lastFb.hireRecommendation}`, 28, y + 2);
+      y += 6;
+    }
+    y += 8;
+
+    // Final assessment
+    if (lastFb?.finalAssessment) {
+      checkPage(20);
+      doc.setFontSize(12); doc.setTextColor(0, 80, 150);
+      doc.text('Final Assessment', 20, y); y += 6;
+      doc.setFontSize(9); doc.setTextColor(50, 50, 50);
+      const faLines = doc.splitTextToSize(lastFb.finalAssessment, 165);
+      doc.text(faLines, 25, y); y += faLines.length * 4 + 6;
+    }
+
+    // Category scores
+    const catKeys = ['technicalAccuracy', 'communicationScore', 'structureScore', 'confidenceScore'];
+    const catData = catKeys.map(key => {
+      const vals = allFeedback.filter(fb => fb[key] != null).map(fb => fb[key]);
+      return vals.length ? { label: key.replace(/([A-Z])/g, ' $1').replace('Score', '').trim(), avg: (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) } : null;
+    }).filter(Boolean);
+    if (catData.length) {
+      checkPage(16);
+      doc.setFontSize(12); doc.setTextColor(0, 80, 150);
+      doc.text('Category Scores', 20, y); y += 6;
+      doc.setFontSize(10); doc.setTextColor(50, 50, 50);
+      catData.forEach(c => { doc.text(`${c.label}: ${c.avg}/10`, 25, y); y += 5; });
+      y += 4;
+    }
+
+    // Top strengths
+    if (lastFb?.topStrengths?.length) {
+      checkPage(16);
+      doc.setFontSize(12); doc.setTextColor(0, 130, 60);
+      doc.text('Top Strengths', 20, y); y += 6;
+      doc.setFontSize(9); doc.setTextColor(50, 50, 50);
+      lastFb.topStrengths.forEach(s => {
+        checkPage(8);
+        const sLines = doc.splitTextToSize(`✓ ${s}`, 160);
+        doc.text(sLines, 25, y); y += sLines.length * 4 + 2;
+      });
+      y += 4;
+    }
+
+    // Key improvements
+    if (lastFb?.topImprovements?.length) {
+      checkPage(16);
+      doc.setFontSize(12); doc.setTextColor(200, 120, 0);
+      doc.text('Key Improvements', 20, y); y += 6;
+      doc.setFontSize(9); doc.setTextColor(50, 50, 50);
+      lastFb.topImprovements.forEach(s => {
+        checkPage(8);
+        const sLines = doc.splitTextToSize(`• ${s}`, 160);
+        doc.text(sLines, 25, y); y += sLines.length * 4 + 2;
+      });
+      y += 4;
+    }
+
+    // Improvement roadmap
+    if (lastFb?.improvementRoadmap?.length) {
+      checkPage(16);
+      doc.setFontSize(12); doc.setTextColor(80, 60, 160);
+      doc.text('Improvement Roadmap', 20, y); y += 6;
+      doc.setFontSize(9); doc.setTextColor(50, 50, 50);
+      lastFb.improvementRoadmap.forEach((step, i) => {
+        checkPage(8);
+        const sLines = doc.splitTextToSize(`${i + 1}. ${step}`, 160);
+        doc.text(sLines, 25, y); y += sLines.length * 4 + 2;
+      });
+      y += 4;
+    }
+
+    // Question-by-question details
     allFeedback.forEach((fb, i) => {
-      if (y > 250) { doc.addPage(); y = 20; }
-      doc.setFontSize(11); doc.setTextColor(0, 80, 150);
-      doc.text(`Question ${i + 1} (Score: ${fb.score || '?'}/10)`, 20, y); y += 6;
+      checkPage(40);
+      doc.setFontSize(12); doc.setTextColor(0, 80, 150);
+      let qHeader = `Question ${i + 1} — Score: ${fb.score || '?'}/10`;
+      if (fb.difficulty) qHeader += ` | ${fb.difficulty}`;
+      if (fb.questionCategory) qHeader += ` | ${fb.questionCategory}`;
+      doc.text(qHeader, 20, y); y += 6;
 
       if (allQuestions[i]) {
-        doc.setFontSize(9); doc.setTextColor(60, 60, 60);
-        const qLines = doc.splitTextToSize(`Q: ${allQuestions[i].substring(0, 200)}`, 160);
+        doc.setFontSize(9); doc.setTextColor(40, 40, 40);
+        const qLines = doc.splitTextToSize(`Q: ${allQuestions[i].replace(/[\*#]/g, '')}`, 160);
         doc.text(qLines, 25, y); y += qLines.length * 4 + 2;
       }
       if (allAnswers[i]) {
-        const aLines = doc.splitTextToSize(`A: ${allAnswers[i].substring(0, 200)}`, 160);
+        checkPage(10);
+        doc.setTextColor(80, 80, 80);
+        const aLines = doc.splitTextToSize(`Your Answer: ${allAnswers[i].substring(0, 400)}`, 160);
         doc.text(aLines, 25, y); y += aLines.length * 4 + 2;
       }
       if (fb.feedback) {
+        checkPage(10);
         doc.setTextColor(0, 100, 0);
-        const fLines = doc.splitTextToSize(`Feedback: ${fb.feedback.substring(0, 300)}`, 155);
-        doc.text(fLines, 25, y); y += fLines.length * 4 + 4;
+        const fLines = doc.splitTextToSize(`Feedback: ${fb.feedback.substring(0, 500)}`, 155);
+        doc.text(fLines, 25, y); y += fLines.length * 4 + 2;
       }
-      y += 4;
+      if (fb.keyMissing?.length) {
+        checkPage(8);
+        doc.setTextColor(180, 100, 0);
+        doc.text(`Key Missing: ${fb.keyMissing.join(', ')}`, 25, y); y += 5;
+      }
+      if (fb.sampleAnswer) {
+        checkPage(10);
+        doc.setTextColor(0, 80, 120);
+        const mLines = doc.splitTextToSize(`Model Answer: ${fb.sampleAnswer.substring(0, 400)}`, 155);
+        doc.text(mLines, 25, y); y += mLines.length * 4 + 2;
+      }
+      y += 6;
     });
 
-    doc.setFontSize(8); doc.setTextColor(150, 150, 150);
-    doc.text('Generated by CareerGPT - AI-Powered Career Guidance', 20, 285);
-    doc.save('CareerGPT_Interview_Report.pdf');
+    // Footer on every page
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= totalPages; p++) {
+      doc.setPage(p);
+      doc.setFontSize(7); doc.setTextColor(150, 150, 150);
+      doc.text('Generated by CareerGPT — AI-Powered Career Guidance', 20, 290);
+      doc.text(`Page ${p} of ${totalPages}`, 175, 290);
+    }
+    doc.save(`CareerGPT_Interview_${role.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`);
   };
 
   const resetInterview = () => {
     stopVoice(); setStarted(false); setFeedback(null); setAllFeedback([]);
     setAllQuestions([]); setAllAnswers([]); setTimer(0); setTimerActive(false);
-    setIsComplete(false); setError('');
+    setIsComplete(false); setError(''); setExpandedQ(null); setTotalQuestions(questionCount);
   };
 
   if (!started) {
@@ -2277,6 +2401,26 @@ function MockInterview() {
                     <SelectItem value="coding">Coding</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+
+            {/* Question Count & Focus */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Questions</label>
+                <Select value={String(questionCount)} onValueChange={v => setQuestionCount(Number(v))}>
+                  <SelectTrigger className="input-glass h-11"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700">
+                    <SelectItem value="3">3 Questions (Quick)</SelectItem>
+                    <SelectItem value="5">5 Questions (Standard)</SelectItem>
+                    <SelectItem value="7">7 Questions (Thorough)</SelectItem>
+                    <SelectItem value="10">10 Questions (Full)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Focus Areas (optional)</label>
+                <Input value={focusAreas} onChange={e => setFocusAreas(e.target.value)} className="input-glass h-11" placeholder="e.g., React, Leadership, SQL" />
               </div>
             </div>
 
@@ -2329,10 +2473,10 @@ function MockInterview() {
             <Clock className="w-3.5 h-3.5 text-cyan-400" />
             <span className={`text-sm font-mono font-bold ${timer > 180 ? 'text-red-400' : timer > 120 ? 'text-yellow-400' : 'text-white'}`}>{formatTimer(timer)}</span>
           </div>
-          <Badge className="bg-violet-500/20 text-violet-300 border-violet-500/30">Q{Math.min(questionNum, 5)}/5</Badge>
+          <Badge className="bg-violet-500/20 text-violet-300 border-violet-500/30">Q{Math.min(questionNum, totalQuestions)}/{totalQuestions}</Badge>
         </div>
       </div>
-      <Progress value={Math.min(questionNum, 5) * 20} className="h-2 mb-4" />
+      <Progress value={Math.min(questionNum, totalQuestions) / totalQuestions * 100} className="h-2 mb-4" />
 
       {/* Current Question / Feedback */}
       {feedback && !feedback.raw ? (
@@ -2361,6 +2505,17 @@ function MockInterview() {
                 {feedback.usedSTAR ? 'STAR Method Used' : 'Try using STAR Method'}
               </div>
             )}
+            {/* Difficulty & Category badges */}
+            <div className="flex items-center gap-2 mb-3">
+              {feedback.difficulty && (
+                <Badge className={`text-[9px] ${feedback.difficulty === 'hard' ? 'bg-red-500/15 text-red-300 border-red-500/20' : feedback.difficulty === 'medium' ? 'bg-yellow-500/15 text-yellow-300 border-yellow-500/20' : 'bg-green-500/15 text-green-300 border-green-500/20'}`}>
+                  {feedback.difficulty.charAt(0).toUpperCase() + feedback.difficulty.slice(1)}
+                </Badge>
+              )}
+              {feedback.questionCategory && (
+                <Badge className="bg-slate-500/15 text-slate-300 border-slate-500/20 text-[9px]">{feedback.questionCategory}</Badge>
+              )}
+            </div>
             <p className="text-sm text-slate-300 mb-3 leading-relaxed">{feedback.feedback}</p>
             {feedback.strengths?.length > 0 && (
               <div className="mb-3">
@@ -2372,6 +2527,18 @@ function MockInterview() {
               <div className="mb-3">
                 <p className="text-[10px] text-amber-400 font-medium mb-1">Areas to Improve:</p>
                 <div className="flex flex-wrap gap-1">{feedback.improvements.map((s, i) => <Badge key={i} className="bg-amber-500/10 text-amber-300 border-amber-500/20 text-[9px]">{s}</Badge>)}</div>
+              </div>
+            )}
+            {feedback.keyMissing?.length > 0 && (
+              <div className="mb-3">
+                <p className="text-[10px] text-red-400 font-medium mb-1">Key Points You Missed:</p>
+                <div className="flex flex-wrap gap-1">{feedback.keyMissing.map((s, i) => <Badge key={i} className="bg-red-500/10 text-red-300 border-red-500/20 text-[9px]">{s}</Badge>)}</div>
+              </div>
+            )}
+            {feedback.followUpTip && (
+              <div className="p-3 bg-cyan-500/5 border border-cyan-500/10 rounded-xl mb-3">
+                <p className="text-[10px] text-cyan-400 mb-1 font-medium flex items-center gap-1"><Sparkles className="w-3 h-3" />Pro Tip</p>
+                <p className="text-xs text-slate-300">{feedback.followUpTip}</p>
               </div>
             )}
             {feedback.sampleAnswer && <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-xl"><p className="text-[10px] text-green-400 mb-1 font-medium">Sample Better Answer:</p><p className="text-xs text-slate-300">{feedback.sampleAnswer}</p></div>}
@@ -2432,18 +2599,51 @@ function MockInterview() {
             <div className="glass-card-bright">
               <div className="p-5">
                 <h3 className="text-white font-semibold mb-4 flex items-center gap-2"><Award className="w-5 h-5 text-amber-400" />Interview Performance Summary</h3>
+
+                {/* Overall Grade & Hire Recommendation */}
+                {(() => {
+                  const lastFb = allFeedback[allFeedback.length - 1];
+                  const avgScore = (allFeedback.reduce((a, b) => a + (b.score || 0), 0) / allFeedback.length);
+                  const grade = lastFb?.overallGrade || (avgScore >= 9 ? 'A+' : avgScore >= 8 ? 'A' : avgScore >= 7 ? 'B+' : avgScore >= 6 ? 'B' : avgScore >= 5 ? 'C+' : avgScore >= 4 ? 'C' : 'D');
+                  const gradeColor = grade.startsWith('A') ? 'text-green-400' : grade.startsWith('B') ? 'text-blue-400' : grade.startsWith('C') ? 'text-yellow-400' : 'text-red-400';
+                  const hire = lastFb?.hireRecommendation || '';
+                  const hireColor = hire.includes('Strong Hire') ? 'bg-green-500/15 text-green-300 border-green-500/20' : hire.includes('Hire') && !hire.includes('No') ? 'bg-blue-500/15 text-blue-300 border-blue-500/20' : hire.includes('Lean Hire') ? 'bg-yellow-500/15 text-yellow-300 border-yellow-500/20' : 'bg-red-500/15 text-red-300 border-red-500/20';
+                  return (
+                    <div className="flex items-center gap-6 mb-5 p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                      <div className="text-center">
+                        <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Grade</p>
+                        <p className={`text-4xl font-black ${gradeColor}`}>{grade}</p>
+                      </div>
+                      <div className="text-center flex-1">
+                        <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Average Score</p>
+                        <p className="text-3xl font-bold text-gradient">{avgScore.toFixed(1)}/10</p>
+                      </div>
+                      {hire && (
+                        <div className="text-center">
+                          <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Verdict</p>
+                          <Badge className={`${hireColor} text-xs px-3 py-1`}>{hire}</Badge>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
+                {/* Final Assessment */}
+                {allFeedback[allFeedback.length - 1]?.finalAssessment && (
+                  <div className="p-3 rounded-xl bg-violet-500/5 border border-violet-500/10 mb-4">
+                    <p className="text-sm text-slate-300 leading-relaxed">{allFeedback[allFeedback.length - 1].finalAssessment}</p>
+                  </div>
+                )}
+
+                {/* Per-question scores */}
                 <div className="grid grid-cols-5 gap-2 mb-4">
                   {allFeedback.map((fb, i) => (
                     <div key={i} className="text-center p-2 rounded-xl bg-white/[0.04] border border-white/[0.06]">
                       <p className="text-[10px] text-slate-400">Q{i+1}</p>
                       <p className={`text-lg font-bold ${(fb.score || 0) >= 7 ? 'text-green-400' : (fb.score || 0) >= 5 ? 'text-yellow-400' : 'text-red-400'}`}>{fb.score || '?'}</p>
+                      {fb.difficulty && <p className="text-[8px] text-slate-500 capitalize">{fb.difficulty}</p>}
                     </div>
                   ))}
-                </div>
-
-                <div className="text-center mb-4">
-                  <p className="text-slate-400 text-xs">Average Score</p>
-                  <p className="text-3xl font-bold text-gradient">{(allFeedback.reduce((a, b) => a + (b.score || 0), 0) / allFeedback.length).toFixed(1)}/10</p>
                 </div>
 
                 {/* Category Averages */}
@@ -2462,18 +2662,65 @@ function MockInterview() {
                   }).filter(Boolean)}
                 </div>
 
-                {/* Question Review */}
+                {/* Top Strengths & Improvements from final assessment */}
+                {(() => {
+                  const lastFb = allFeedback[allFeedback.length - 1];
+                  return (
+                    <>
+                      {lastFb?.topStrengths?.length > 0 && (
+                        <div className="mb-3">
+                          <p className="text-xs text-green-400 font-medium mb-1.5 uppercase tracking-wider">Top Strengths</p>
+                          <div className="space-y-1">{lastFb.topStrengths.map((s, i) => <div key={i} className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-green-400 mt-0.5 flex-shrink-0" /><span className="text-xs text-slate-300">{s}</span></div>)}</div>
+                        </div>
+                      )}
+                      {lastFb?.topImprovements?.length > 0 && (
+                        <div className="mb-3">
+                          <p className="text-xs text-amber-400 font-medium mb-1.5 uppercase tracking-wider">Key Improvements</p>
+                          <div className="space-y-1">{lastFb.topImprovements.map((s, i) => <div key={i} className="flex items-start gap-2"><AlertCircle className="w-3.5 h-3.5 text-amber-400 mt-0.5 flex-shrink-0" /><span className="text-xs text-slate-300">{s}</span></div>)}</div>
+                        </div>
+                      )}
+                      {lastFb?.improvementRoadmap?.length > 0 && (
+                        <div className="mb-4 p-4 rounded-xl bg-indigo-500/5 border border-indigo-500/10">
+                          <p className="text-xs text-indigo-400 font-medium mb-2 uppercase tracking-wider">Improvement Roadmap</p>
+                          <div className="space-y-2">
+                            {lastFb.improvementRoadmap.map((step, i) => (
+                              <div key={i} className="flex items-start gap-3">
+                                <div className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">{i+1}</div>
+                                <p className="text-xs text-slate-300">{step}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+
+                {/* Question Review — expandable */}
                 <div className="space-y-3 border-t border-white/[0.05] pt-4">
                   <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">Question Review</p>
                   {allFeedback.map((fb, i) => (
-                    <div key={i} className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs text-slate-400">Question {i + 1}</span>
-                        <Badge className={`text-[9px] ${(fb.score||0) >= 7 ? 'bg-green-500/15 text-green-300 border-green-500/20' : (fb.score||0) >= 5 ? 'bg-yellow-500/15 text-yellow-300 border-yellow-500/20' : 'bg-red-500/15 text-red-300 border-red-500/20'}`}>{fb.score}/10</Badge>
-                      </div>
-                      {allQuestions[i] && <p className="text-xs text-white mb-1 font-medium">{allQuestions[i].substring(0, 150)}...</p>}
-                      {allAnswers[i] && <p className="text-[10px] text-slate-400 italic">Your answer: {allAnswers[i].substring(0, 100)}...</p>}
-                      {fb.feedback && <p className="text-[10px] text-slate-500 mt-1">{fb.feedback.substring(0, 150)}...</p>}
+                    <div key={i} className="rounded-xl bg-white/[0.02] border border-white/[0.05] overflow-hidden">
+                      <button onClick={() => setExpandedQ(expandedQ === i ? null : i)} className="w-full p-3 flex items-center justify-between text-left">
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <span className="text-xs text-slate-400">Q{i + 1}</span>
+                          {fb.questionCategory && <Badge className="bg-slate-700/50 text-slate-400 border-slate-600/30 text-[8px]">{fb.questionCategory}</Badge>}
+                          {fb.difficulty && <Badge className={`text-[8px] ${fb.difficulty === 'hard' ? 'bg-red-500/10 text-red-300' : fb.difficulty === 'medium' ? 'bg-yellow-500/10 text-yellow-300' : 'bg-green-500/10 text-green-300'}`}>{fb.difficulty}</Badge>}
+                          <span className="text-xs text-white truncate flex-1">{allQuestions[i] ? allQuestions[i].replace(/[\*#]/g, '').substring(0, 60) + '...' : ''}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge className={`text-[9px] ${(fb.score||0) >= 7 ? 'bg-green-500/15 text-green-300 border-green-500/20' : (fb.score||0) >= 5 ? 'bg-yellow-500/15 text-yellow-300 border-yellow-500/20' : 'bg-red-500/15 text-red-300 border-red-500/20'}`}>{fb.score}/10</Badge>
+                          <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${expandedQ === i ? 'rotate-180' : ''}`} />
+                        </div>
+                      </button>
+                      {expandedQ === i && (
+                        <div className="p-3 pt-0 space-y-2 animate-slide-up border-t border-white/[0.03]">
+                          {allQuestions[i] && <div><p className="text-[10px] text-cyan-400 font-medium mb-0.5">Question:</p><p className="text-xs text-white">{allQuestions[i].replace(/[\*#]/g, '')}</p></div>}
+                          {allAnswers[i] && <div><p className="text-[10px] text-violet-400 font-medium mb-0.5">Your Answer:</p><p className="text-xs text-slate-400 italic">{allAnswers[i]}</p></div>}
+                          {fb.feedback && <div><p className="text-[10px] text-slate-400 font-medium mb-0.5">Feedback:</p><p className="text-xs text-slate-500">{fb.feedback}</p></div>}
+                          {fb.sampleAnswer && <div className="p-2 rounded-lg bg-green-500/5 border border-green-500/10"><p className="text-[10px] text-green-400 font-medium mb-0.5">Model Answer:</p><p className="text-xs text-slate-300">{fb.sampleAnswer}</p></div>}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -2523,6 +2770,8 @@ function JobMatchingTab() {
   const [experience, setExperience] = useState('');
   const [industry, setIndustry] = useState('');
   const [location, setLocation] = useState('');
+  const [employmentType, setEmploymentType] = useState('');
+  const [experienceLevel, setExperienceLevel] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
@@ -2534,8 +2783,13 @@ function JobMatchingTab() {
   const [showAlerts, setShowAlerts] = useState(false);
   const [creatingAlert, setCreatingAlert] = useState(false);
   const [alertFrequency, setAlertFrequency] = useState('daily');
+  const [resumes, setResumes] = useState([]);
+  const [selectedResumeId, setSelectedResumeId] = useState('');
+  const [sortBy, setSortBy] = useState('matchScore');
+  const [minScore, setMinScore] = useState(0);
+  const [expandedMatch, setExpandedMatch] = useState(null);
 
-  // Load search history & alerts
+  // Load search history, alerts, saved jobs, and resumes
   useEffect(() => {
     api.get('/job-match/history').then(d => {
       if (d.history) setHistory(d.history);
@@ -2546,13 +2800,33 @@ function JobMatchingTab() {
     api.get('/job-alerts').then(d => {
       if (d.alerts) setAlerts(d.alerts);
     }).catch(() => {});
+    api.get('/resumes').then(d => {
+      if (d.resumes) setResumes(d.resumes);
+    }).catch(() => {});
   }, []);
+
+  // Auto-fill skills from resume
+  const fillFromResume = async (resumeId) => {
+    if (!resumeId) return;
+    setSelectedResumeId(resumeId);
+    try {
+      const resume = resumes.find(r => r.id === resumeId || r._id === resumeId);
+      if (resume) {
+        if (resume.skills?.length) setSkills(resume.skills.join(', '));
+        if (resume.experience) setExperience(resume.experience);
+      }
+    } catch (e) { console.error(e); }
+  };
 
   const match = async () => {
     setLoading(true);
     setError('');
     try {
-      const d = await api.post('/job-match', { skills, interests, experience, targetIndustry: industry, location });
+      const payload = { skills, interests, experience, targetIndustry: industry, location };
+      if (employmentType) payload.employmentType = employmentType;
+      if (experienceLevel) payload.experienceLevel = experienceLevel;
+      if (selectedResumeId) payload.resumeId = selectedResumeId;
+      const d = await api.post('/job-match', payload);
       if (d.error) throw new Error(d.error);
       setResult(d);
     } catch (e) {
@@ -2603,7 +2877,16 @@ function JobMatchingTab() {
   };
 
   if (result) {
-    const matches = result.matches || [];
+    const allMatches = result.matches || [];
+    // Filter by min score
+    const filtered = allMatches.filter(m => (m.matchScore || 0) >= minScore);
+    // Sort
+    const matches = [...filtered].sort((a, b) => {
+      if (sortBy === 'matchScore') return (b.matchScore || 0) - (a.matchScore || 0);
+      if (sortBy === 'salary') return (b.salary || '').localeCompare(a.salary || '');
+      if (sortBy === 'growth') { const order = { high: 3, medium: 2, low: 1 }; return (order[b.growth_potential] || 0) - (order[a.growth_potential] || 0); }
+      return 0;
+    });
     const isReal = result.dataSource === 'real_jobs_ranked_by_ai';
     const isMock = result.dataSource === 'mock_fallback';
     return (
@@ -2615,10 +2898,32 @@ function JobMatchingTab() {
               <Badge className={`text-[10px] ${isReal ? 'bg-green-500/15 text-green-300 border-green-500/20' : isMock ? 'bg-amber-500/15 text-amber-300 border-amber-500/20' : 'bg-blue-500/15 text-blue-300 border-blue-500/20'}`}>
                 {isReal ? '✓ Live Jobs' : isMock ? 'Sample Data' : 'AI Generated'}
               </Badge>
-              <span className="text-slate-500 text-xs">{result.totalMatches} matches found</span>
+              <span className="text-slate-500 text-xs">{matches.length}/{allMatches.length} matches</span>
             </div>
           </div>
           <Button onClick={() => setResult(null)} variant="outline" className="border-slate-600 text-slate-300 rounded-xl">Search Again</Button>
+        </div>
+
+        {/* Sort & Filter Bar */}
+        <div className="flex items-center gap-3 mb-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider">Sort:</span>
+            <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="input-glass text-xs py-1.5 px-3 rounded-lg">
+              <option value="matchScore">Match Score</option>
+              <option value="salary">Salary</option>
+              <option value="growth">Growth Potential</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider">Min Score:</span>
+            <select value={minScore} onChange={e => setMinScore(Number(e.target.value))} className="input-glass text-xs py-1.5 px-3 rounded-lg">
+              <option value={0}>All</option>
+              <option value={50}>50+</option>
+              <option value={60}>60+</option>
+              <option value={70}>70+</option>
+              <option value={80}>80+</option>
+            </select>
+          </div>
         </div>
 
         {/* Message banner */}
@@ -2661,7 +2966,7 @@ function JobMatchingTab() {
             {matches.length === 0 && (
               <div className="glass-card-static p-8 text-center">
                 <Briefcase className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                <p className="text-slate-400">No matches found. Try broader keywords like "Developer", "Engineer", or "Data Scientist".</p>
+                <p className="text-slate-400">{minScore > 0 ? `No matches above ${minScore}%. Try lowering the filter.` : 'No matches found. Try broader keywords like "Developer", "Engineer", or "Data Scientist".'}</p>
               </div>
             )}
             {matches.map((m, i) => (
@@ -2669,7 +2974,7 @@ function JobMatchingTab() {
                 <div className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <h3 className="text-lg font-semibold text-white">{m.role}</h3>
                         {m.source && m.source !== 'ai' && m.source !== 'mock' && (
                           <Badge className="bg-emerald-500/15 text-emerald-300 border-emerald-500/20 text-[9px]">Live</Badge>
@@ -2680,11 +2985,17 @@ function JobMatchingTab() {
                         {m.source && m.source !== 'mock' && m.source !== 'ai' && (
                           <Badge className="bg-slate-700/50 text-slate-400 border-slate-600/30 text-[8px] uppercase">{m.source}</Badge>
                         )}
+                        {m.timeToReady && (
+                          <Badge className={`text-[9px] ${m.timeToReady.includes('Ready') || m.timeToReady.includes('0') ? 'bg-green-500/15 text-green-300 border-green-500/20' : m.timeToReady.includes('1-2') || m.timeToReady.includes('week') ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/20' : 'bg-amber-500/15 text-amber-300 border-amber-500/20'}`}>
+                            ⏱ {m.timeToReady}
+                          </Badge>
+                        )}
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-slate-400">
+                      <div className="flex items-center gap-2 text-xs text-slate-400 flex-wrap">
                         <span>{m.company_type}</span>
                         {m.location && <><span className="text-slate-600">|</span><MapPin className="w-3 h-3" /><span>{m.location}</span></>}
                         {m.salary && <><span className="text-slate-600">|</span><span className="text-green-400 font-medium">{m.salary}</span></>}
+                        {m.employmentType && <><span className="text-slate-600">|</span><span className="text-cyan-300">{m.employmentType}</span></>}
                       </div>
                     </div>
                     {m.matchScore > 0 && (
@@ -2703,13 +3014,26 @@ function JobMatchingTab() {
                     {(m.skills_matched || []).map((s, j) => <Badge key={j} className="bg-green-500/15 text-green-300 border-green-500/20 text-[10px]">{s}</Badge>)}
                     {(m.skills_gap || []).map((s, j) => <Badge key={'g'+j} className="bg-red-500/15 text-red-300 border-red-500/20 text-[10px]">Gap: {s}</Badge>)}
                   </div>
+
+                  {/* Interview Focus Tags */}
+                  {m.interviewFocus && m.interviewFocus.length > 0 && (
+                    <div className="mb-3 p-2.5 rounded-xl bg-violet-500/[0.04] border border-violet-500/10">
+                      <p className="text-[10px] text-violet-400 font-medium uppercase tracking-wider mb-1.5">Interview Focus Areas</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {m.interviewFocus.map((f, j) => <Badge key={j} className="bg-violet-500/15 text-violet-300 border-violet-500/20 text-[10px]">{f}</Badge>)}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between pt-3 border-t border-white/[0.05]">
-                    <div className="flex gap-4 text-[10px]">
+                    <div className="flex gap-4 text-[10px] flex-wrap">
                       <span className="text-slate-400">Growth: <span className={m.growth_potential === 'high' ? 'text-green-400 font-medium' : 'text-yellow-400'}>{m.growth_potential}</span></span>
                       <span className="text-slate-400">Demand: <span className={m.demand === 'high' ? 'text-green-400 font-medium' : 'text-yellow-400'}>{m.demand}</span></span>
-                      {m.employmentType && <span className="text-slate-400">Type: <span className="text-slate-300">{m.employmentType}</span></span>}
                     </div>
                     <div className="flex gap-2">
+                      <button onClick={() => setExpandedMatch(expandedMatch === i ? null : i)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] hover:text-white transition-colors text-[10px] font-medium">
+                        <ChevronDown className={`w-3 h-3 transition-transform ${expandedMatch === i ? 'rotate-180' : ''}`} />Details
+                      </button>
                       {m.jobUrl && m.source !== 'mock' && (
                         <a href={m.jobUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-300 hover:bg-blue-600/30 transition-colors text-[10px] font-medium border border-blue-500/20">
                           <ExternalLink className="w-3 h-3" />Apply Now
@@ -2724,6 +3048,21 @@ function JobMatchingTab() {
                       </button>
                     </div>
                   </div>
+
+                  {/* Expanded details */}
+                  {expandedMatch === i && (
+                    <div className="mt-3 pt-3 border-t border-white/[0.05] space-y-3 animate-slide-up">
+                      {m.jobDescription && (
+                        <div><p className="text-[10px] text-slate-400 font-medium mb-1 uppercase tracking-wider">Full Description</p><p className="text-xs text-slate-300 leading-relaxed">{m.jobDescription}</p></div>
+                      )}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
+                        <div className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.05]"><p className="text-[9px] text-slate-500">Growth</p><p className={`text-xs font-medium ${m.growth_potential === 'high' ? 'text-green-400' : 'text-yellow-400'}`}>{m.growth_potential}</p></div>
+                        <div className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.05]"><p className="text-[9px] text-slate-500">Demand</p><p className={`text-xs font-medium ${m.demand === 'high' ? 'text-green-400' : 'text-yellow-400'}`}>{m.demand}</p></div>
+                        {m.employmentType && <div className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.05]"><p className="text-[9px] text-slate-500">Type</p><p className="text-xs font-medium text-slate-300">{m.employmentType}</p></div>}
+                        {m.timeToReady && <div className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.05]"><p className="text-[9px] text-slate-500">Ready In</p><p className="text-xs font-medium text-cyan-300">{m.timeToReady}</p></div>}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -2780,6 +3119,23 @@ function JobMatchingTab() {
 
       <div className="glass-card overflow-hidden">
         <div className="p-6 space-y-5">
+          {/* Resume Auto-fill */}
+          {resumes.length > 0 && (
+            <div className="p-3 rounded-xl bg-cyan-500/[0.04] border border-cyan-500/10">
+              <div className="flex items-center gap-3">
+                <FileText className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                <div className="flex-1">
+                  <p className="text-xs text-cyan-300 font-medium">Auto-fill from Resume</p>
+                  <p className="text-[10px] text-slate-500">Import skills & experience from your uploaded resume</p>
+                </div>
+                <select value={selectedResumeId} onChange={e => fillFromResume(e.target.value)} className="input-glass text-xs py-1.5 px-3 rounded-lg max-w-[200px]">
+                  <option value="">Select resume...</option>
+                  {resumes.map(r => <option key={r.id || r._id} value={r.id || r._id}>{r.name || r.fileName || 'Resume'}</option>)}
+                </select>
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Skills *</label>
             <textarea value={skills} onChange={e => setSkills(e.target.value)} rows={2} placeholder="Python, React, SQL, Machine Learning..." className="w-full input-glass resize-none text-sm" />
@@ -2804,6 +3160,39 @@ function JobMatchingTab() {
               <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="Remote, New York, India..." className="input-glass h-11" />
             </div>
           </div>
+
+          {/* Employment Type & Experience Level */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Employment Type</label>
+              <Select value={employmentType} onValueChange={setEmploymentType}>
+                <SelectTrigger className="input-glass h-11"><SelectValue placeholder="Any type" /></SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-700">
+                  <SelectItem value="full-time">Full-time</SelectItem>
+                  <SelectItem value="part-time">Part-time</SelectItem>
+                  <SelectItem value="contract">Contract</SelectItem>
+                  <SelectItem value="freelance">Freelance</SelectItem>
+                  <SelectItem value="internship">Internship</SelectItem>
+                  <SelectItem value="remote">Remote Only</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-slate-300 text-xs font-medium block mb-1.5 uppercase tracking-wider">Experience Level</label>
+              <Select value={experienceLevel} onValueChange={setExperienceLevel}>
+                <SelectTrigger className="input-glass h-11"><SelectValue placeholder="Any level" /></SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-700">
+                  <SelectItem value="entry">Entry Level / Fresher</SelectItem>
+                  <SelectItem value="junior">Junior (1-2 years)</SelectItem>
+                  <SelectItem value="mid">Mid-Level (3-5 years)</SelectItem>
+                  <SelectItem value="senior">Senior (5-8 years)</SelectItem>
+                  <SelectItem value="lead">Lead / Staff (8+ years)</SelectItem>
+                  <SelectItem value="executive">Executive / Director</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           <Button onClick={match} disabled={loading || !skills.trim()} className="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white border-0 h-12 rounded-xl btn-glow shadow-lg shadow-green-500/15">
             {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Finding matches...</> : <><Search className="w-4 h-4 mr-2" />Find Matching Jobs</>}
           </Button>
