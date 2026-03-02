@@ -392,7 +392,7 @@ function Sidebar({ currentPage, onNavigate, user, onLogout, collapsed, onToggle 
         {user ? (
           <div className={`flex items-center gap-3 p-2 rounded-xl hover:bg-white/[0.04] transition-colors ${collapsed ? 'justify-center' : ''}`}>
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-500/15">
-              <span className="text-white text-xs font-bold">{user.name?.[0]?.toUpperCase()}</span>
+              <span className="text-white text-xs font-bold">{(user.name || 'U')[0]?.toUpperCase()}</span>
             </div>
             {!collapsed && (
               <div className="flex-1 min-w-0 animate-fade-in">
@@ -456,7 +456,7 @@ function Dashboard({ user, onNavigate }) {
     if ((stats.resumeCount || 0) === 0) tips.push({ text: 'Upload your resume for ATS scoring & feedback', action: 'resume', icon: FileText, color: 'text-teal-400' });
     if ((stats.interviewCount || 0) === 0) tips.push({ text: 'Practice with an AI mock interview', action: 'interview', icon: Mic, color: 'text-purple-400' });
     if ((stats.careerPathCount || 0) === 0) tips.push({ text: 'Generate a personalized career roadmap', action: 'career', icon: Compass, color: 'text-amber-400' });
-    if ((stats.savedJobsCount || 0) === 0) tips.push({ text: 'Search and save jobs to track applications', action: 'livejobs', icon: Briefcase, color: 'text-green-400' });
+    if ((stats.savedJobsCount || 0) === 0) tips.push({ text: 'Search and save jobs to track applications', action: 'jobs', icon: Briefcase, color: 'text-green-400' });
     if ((stats.chatCount || 0) === 0) tips.push({ text: 'Ask AI for career guidance and advice', action: 'chat', icon: MessageSquare, color: 'text-cyan-400' });
     if ((stats.jobMatchCount || 0) === 0) tips.push({ text: 'Find jobs that match your skills with AI', action: 'jobs', icon: Target, color: 'text-green-400' });
     if ((stats.learningPathCount || 0) === 0) tips.push({ text: 'Discover skill gaps and learning resources', action: 'learning', icon: GraduationCap, color: 'text-indigo-400' });
@@ -469,7 +469,7 @@ function Dashboard({ user, onNavigate }) {
     { id: 'career', title: 'Career Path', desc: 'Structured roadmaps', icon: Compass, color: 'from-amber-500 to-orange-500', count: stats?.careerPathCount },
     { id: 'interview', title: 'Mock Interview', desc: 'AI interview practice', icon: Mic, color: 'from-violet-500 to-purple-500', count: stats?.interviewCount },
     { id: 'jobs', title: 'Job Matching', desc: 'AI skill matching', icon: Briefcase, color: 'from-green-500 to-emerald-500', count: stats?.jobMatchCount },
-    { id: 'livejobs', title: 'Job Board', desc: 'Live job openings', icon: Globe, color: 'from-emerald-500 to-teal-500' },
+    { id: 'jobs', title: 'Job Board', desc: 'Live job openings', icon: Globe, color: 'from-emerald-500 to-teal-500' },
     { id: 'savedjobs', title: 'Saved Jobs', desc: 'Track applications', icon: Bookmark, color: 'from-yellow-500 to-amber-500', count: stats?.savedJobsCount },
     { id: 'learning', title: 'Learning Center', desc: 'Skill gap analysis', icon: GraduationCap, color: 'from-indigo-500 to-purple-500', count: stats?.learningPathCount },
     { id: 'analytics', title: 'Analytics', desc: 'Usage insights', icon: BarChart3, color: 'from-pink-500 to-rose-500' },
@@ -758,9 +758,18 @@ function AIChat() {
   }, []);
 
   const loadSession = async (id) => {
-    const d = await api.get(`/chat/sessions/${id}`);
-    setActiveSession(id);
-    setMessages(d.session?.messages || []);
+    try {
+      setLoading(true);
+      const d = await api.get(`/chat/sessions/${id}`);
+      if (d.error) throw new Error(d.error);
+      setActiveSession(id);
+      setMessages(d.session?.messages || []);
+    } catch (e) {
+      console.error('Failed to load session:', e);
+      setMessages([{ role: 'assistant', content: `Failed to load conversation: ${e.message}`, isError: true }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleModel = (name) => {
@@ -1173,7 +1182,7 @@ function ResumeAnalyzer() {
     if (!file) return;
     const valErr = validateFile(file);
     if (valErr) { setError(valErr); return; }
-    setError(''); setUploading(true);
+    setError(''); setAnalysis(null); setUploading(true);
     try {
       const fd = new FormData(); fd.append('file', file);
       const up = await api.post('/resume/upload', fd);
@@ -2261,6 +2270,8 @@ function MockInterview() {
   const [isListening, setIsListening] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(false);
   const recognitionRef = useRef(null);
+  const isRecordingRef = useRef(false);
+  const answerRef = useRef('');
   const [audioLevel, setAudioLevel] = useState(0);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
@@ -2295,7 +2306,7 @@ function MockInterview() {
     recognition.interimResults = true;
     recognition.lang = 'en-US';
 
-    let finalTranscript = answer;
+    let finalTranscript = answerRef.current;
 
     recognition.onresult = (event) => {
       let interim = '';
@@ -2307,14 +2318,16 @@ function MockInterview() {
         }
       }
       setAnswer(finalTranscript + interim);
+      answerRef.current = finalTranscript;
     };
 
     recognition.onerror = (e) => { console.error('Speech error:', e); stopVoice(); };
-    recognition.onend = () => { if (isRecording) { try { recognition.start(); } catch(e) {} } };
+    recognition.onend = () => { if (isRecordingRef.current) { try { recognition.start(); } catch(e) {} } };
 
     recognitionRef.current = recognition;
     recognition.start();
     setIsRecording(true);
+    isRecordingRef.current = true;
     setIsListening(true);
 
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
@@ -2340,6 +2353,7 @@ function MockInterview() {
 
   const stopVoice = () => {
     setIsRecording(false);
+    isRecordingRef.current = false;
     setIsListening(false);
     if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch(e) {} recognitionRef.current = null; }
     if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
@@ -2365,6 +2379,7 @@ function MockInterview() {
   const submitAnswer = async () => {
     if (!answer.trim()) return;
     setLoading(true); setFeedback(null); setError('');
+    setTimerActive(false); // Pause timer while submitting
     try {
       const d = await api.post('/mock-interview/respond', { sessionId, answer });
       if (d.error) throw new Error(d.error);
@@ -2380,6 +2395,7 @@ function MockInterview() {
         setCurrentContent(fb.nextQuestion);
         setAllQuestions(prev => [...prev, fb.nextQuestion]);
         setTimer(0);
+        setTimerActive(true); // Resume timer for next question
       } else {
         setTimerActive(false);
       }
@@ -3505,9 +3521,13 @@ function SavedJobs() {
   };
 
   const removeJob = async (jobId) => {
+    const job = jobs.find(j => j.jobId === jobId);
     await api.post('/saved-jobs/delete', { jobId });
     setJobs(prev => prev.filter(j => j.jobId !== jobId));
-    setStats(prev => ({ ...prev, total: (prev.total || 1) - 1 }));
+    setStats(prev => {
+      const status = job?.status || 'saved';
+      return { ...prev, total: Math.max(0, (prev.total || 1) - 1), [status]: Math.max(0, (prev[status] || 1) - 1) };
+    });
   };
 
   const exportCSV = () => {
@@ -3930,8 +3950,8 @@ function LearningCenter() {
   const [gapLoading, setGapLoading] = useState(false);
 
   useEffect(() => {
-    api.get('/resumes').then(d => setResumes(d.resumes || []));
-    api.get('/learning-paths').then(d => setPaths(d.paths || []));
+    api.get('/resumes').then(d => setResumes(d.resumes || [])).catch(() => {});
+    api.get('/learning-paths').then(d => setPaths(d.paths || [])).catch(() => {});
   }, []);
 
   const generatePath = async () => {
@@ -4172,12 +4192,18 @@ function Analytics() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  const [error, setError] = useState(null);
+
   const loadData = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
+    setError(null);
     try {
       const d = await api.get('/admin/analytics');
-      setData(d);
-    } catch(e) {}
+      if (d.error) { setError(d.error); }
+      else { setData(d); }
+    } catch(e) {
+      setError('Failed to load analytics data');
+    }
     setLoading(false);
     setRefreshing(false);
   };
@@ -4213,6 +4239,7 @@ function Analytics() {
   };
 
   if (loading) return <div className="p-6 flex items-center justify-center h-full"><div className="flex flex-col items-center gap-3"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /><p className="text-sm text-slate-500">Loading analytics...</p></div></div>;
+  if (error) return <div className="p-6 text-center"><p className="text-red-400 mb-3">{error}</p><Button onClick={() => loadData()} variant="outline" className="border-slate-600 text-slate-300 rounded-xl text-xs h-9">Retry</Button></div>;
   if (!data) return <div className="p-6 text-slate-400 text-center">No analytics data</div>;
 
   const s = data.stats;
@@ -4356,11 +4383,20 @@ function UserProfile({ user, onUpdate }) {
   const [nameError, setNameError] = useState('');
 
   useEffect(() => {
-    api.get('/resumes').then(d => setResumes(d.resumes || []));
+    api.get('/resumes').then(d => setResumes(d.resumes || [])).catch(() => {});
     api.get('/profile').then(d => {
       setStats(d.stats);
       setRecentActivity(d.recentActivity || []);
-    });
+      // Populate form fields from server profile if local state is empty
+      const p = d.profile || d.user?.profile;
+      if (p) {
+        if (!skills && p.skills) setSkills(Array.isArray(p.skills) ? p.skills.join(', ') : p.skills);
+        if (!interests && p.interests) setInterests(Array.isArray(p.interests) ? p.interests.join(', ') : p.interests);
+        if (!education && p.education) setEducation(p.education);
+        if (!experience && p.experience) setExperience(p.experience);
+        if (!careerGoal && p.careerGoal) setCareerGoal(p.careerGoal);
+      }
+    }).catch(() => {});
   }, []);
 
   // Profile completeness
@@ -4379,20 +4415,24 @@ function UserProfile({ user, onUpdate }) {
     setNameError('');
     setSaving(true);
     setSaved(false);
-    await api.put('/profile', {
-      name: name.trim(),
-      profile: {
+    try {
+      const profileData = {
         skills: skills.split(',').map(s => s.trim()).filter(Boolean),
         interests: interests.split(',').map(s => s.trim()).filter(Boolean),
         education: education.trim(),
         experience: experience.trim(),
         careerGoal: careerGoal.trim(),
-      },
-    });
-    setSaving(false);
-    setSaved(true);
-    if (onUpdate) onUpdate({ ...user, name: name.trim(), profile: { skills: skills.split(',').map(s => s.trim()).filter(Boolean), interests: interests.split(',').map(s => s.trim()).filter(Boolean), education: education.trim(), experience: experience.trim(), careerGoal: careerGoal.trim() } });
-    setTimeout(() => setSaved(false), 3000);
+      };
+      const result = await api.put('/profile', { name: name.trim(), profile: profileData });
+      if (result.error) throw new Error(result.error);
+      setSaved(true);
+      if (onUpdate) onUpdate({ ...user, name: name.trim(), profile: profileData });
+      setTimeout(() => setSaved(false), 3000);
+    } catch (e) {
+      setNameError(e.message || 'Failed to save profile');
+    } finally {
+      setSaving(false);
+    }
   };
 
   // Export profile data
