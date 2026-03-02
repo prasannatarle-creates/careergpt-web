@@ -154,6 +154,10 @@ const ALL_MODELS = [
 const GUARANTEED_MODELS = ALL_MODELS.filter(m => m.guaranteed);
 let modelRotationIndex = 0;
 
+// Track which models have been verified working at runtime
+const modelHealth = {};
+ALL_MODELS.forEach(m => { modelHealth[m.name] = { healthy: true, lastError: null, failCount: 0 }; });
+
 async function callModel(client, modelStr, messages, maxTokens = 3000, temperature = 0.7) {
   try {
     const response = await client.chat.completions.create({
@@ -172,47 +176,40 @@ async function callMultiModel(systemPrompt, userMessage, activeModelNames = null
     ? ALL_MODELS.filter(m => activeModelNames.includes(m.name))
     : ALL_MODELS;
 
-  // Prioritize guaranteed models first, then beta models
-  modelsToUse = [
-    ...modelsToUse.filter(m => m.guaranteed),
-    ...modelsToUse.filter(m => !m.guaranteed)
-  ];
-
   const messages = [
     { role: 'system', content: systemPrompt },
     { role: 'user', content: userMessage },
   ];
 
-  // Use sequential model calls with timeouts - guaranteed models first
-  const results = [];
-  const timeoutMs = 20000; // 20 second timeout per model
-  
-  for (const m of modelsToUse) {
+  // Query ALL requested models in parallel with per-model timeouts
+  const modelPromises = modelsToUse.map(async (m) => {
     const start = Date.now();
+    const timeoutMs = m.guaranteed ? 20000 : 12000;
     try {
+      // Skip unhealthy models (3+ consecutive failures, 5 min cooldown)
+      const health = modelHealth[m.name];
+      if (health.failCount >= 3 && health.lastError && (Date.now() - health.lastError < 300000)) {
+        return { name: m.name, color: m.color, response: null, duration: 0, success: false, skipped: true };
+      }
       const modelStr = getModelStr(m.provider, m.model);
-      
-      // Add timeout wrapper
       const modelPromise = callModel(client, modelStr, messages, maxTokens);
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Model timeout')), timeoutMs)
       );
-      
       const response = await Promise.race([modelPromise, timeoutPromise]);
-      results.push({ name: m.name, color: m.color, response, duration: Date.now() - start, success: !!response });
+      if (response) { modelHealth[m.name].failCount = 0; modelHealth[m.name].healthy = true; }
+      return { name: m.name, color: m.color, response, duration: Date.now() - start, success: !!response };
     } catch (e) {
       console.warn(`Model ${m.name} failed:`, e.message);
-      results.push({ name: m.name, color: m.color, response: null, duration: Date.now() - start, success: false });
+      modelHealth[m.name].failCount++;
+      modelHealth[m.name].lastError = Date.now();
+      modelHealth[m.name].healthy = false;
+      return { name: m.name, color: m.color, response: null, duration: Date.now() - start, success: false };
     }
-    
-    // Early exit after 2 successful responses (allows synthesis) or after trying all guaranteed models
-    const validCount = results.filter(r => r.success).length;
-    const guaranteedDone = modelsToUse.filter(m => m.guaranteed).every(m => results.some(r => r.name === m.name));
-    if (validCount >= 2 || (validCount >= 1 && guaranteedDone)) {
-      console.log(`Early exit: Got ${validCount} successful model(s), skipping remaining ${modelsToUse.length - results.length}`);
-      break;
-    }
-  }
+  });
+
+  const results = await Promise.all(modelPromises);
+  console.log(`[callMultiModel] ${results.filter(r => r.success).length}/${results.length} models responded: ${results.filter(r => r.success).map(r => r.name).join(', ')}`);
 
   const valid = results.filter(r => r.response);
   const failed = results.filter(r => !r.response);
@@ -240,26 +237,61 @@ async function callMultiModel(systemPrompt, userMessage, activeModelNames = null
 
 async function callSingleModel(systemPrompt, userMessage, maxTokens = 3000, temperature = 0.7) {
   const client = getOpenAIClient();
-  // Rotate among all 3 guaranteed models (GPT-4.1, Claude 4 Sonnet, Gemini 2.5 Flash)
-  // so every model participates across all modules, not just GPT-4.1
-  const model = GUARANTEED_MODELS[modelRotationIndex % GUARANTEED_MODELS.length];
-  modelRotationIndex++;
+  // Rotate among ALL 5 models (GPT-4.1, Claude 4 Sonnet, Gemini 2.5 Flash, Grok 3 Mini, Perplexity Sonar)
+  // Every model participates across all modules — not just GPT-4.1
+  // Skip models that have failed 3+ times consecutively (auto-recovers after 5 min)
+  let model = null;
+  let attempts = 0;
+  while (attempts < ALL_MODELS.length) {
+    const candidate = ALL_MODELS[modelRotationIndex % ALL_MODELS.length];
+    modelRotationIndex++;
+    attempts++;
+    const health = modelHealth[candidate.name];
+    // Skip if model has failed 3+ times, unless 5 min cooldown has passed
+    if (health.failCount >= 3 && health.lastError && (Date.now() - health.lastError < 300000)) {
+      console.log(`[callSingleModel] Skipping ${candidate.name} (${health.failCount} consecutive failures)`);
+      continue;
+    }
+    model = candidate;
+    break;
+  }
+  if (!model) model = ALL_MODELS[0]; // Ultimate fallback to GPT-4.1
+  
   const modelStr = getModelStr(model.provider, model.model);
   console.log(`[callSingleModel] Using ${model.name} (rotation #${modelRotationIndex})`);
-  const result = await callModel(client, modelStr, [
+  
+  const messages = [
     { role: 'system', content: systemPrompt },
     { role: 'user', content: userMessage },
-  ], maxTokens, temperature);
-  // If chosen model fails, fallback to GPT-4.1
-  if (!result && model.model !== 'gpt-4.1') {
-    console.warn(`[callSingleModel] ${model.name} failed, falling back to GPT-4.1`);
-    const fallbackStr = getModelStr('openai', 'gpt-4.1');
-    return await callModel(client, fallbackStr, [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userMessage },
-    ], maxTokens, temperature);
+  ];
+  
+  // Add timeout for beta models (Grok, Perplexity) — 12s vs 20s for guaranteed
+  const timeoutMs = model.guaranteed ? 20000 : 12000;
+  try {
+    const resultPromise = callModel(client, modelStr, messages, maxTokens, temperature);
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error(`${model.name} timeout (${timeoutMs}ms)`)), timeoutMs));
+    const result = await Promise.race([resultPromise, timeoutPromise]);
+    
+    if (result) {
+      // Model succeeded — reset fail counter
+      modelHealth[model.name].failCount = 0;
+      modelHealth[model.name].healthy = true;
+      return result;
+    }
+  } catch (e) {
+    console.warn(`[callSingleModel] ${model.name} failed: ${e.message}`);
+    modelHealth[model.name].failCount++;
+    modelHealth[model.name].lastError = Date.now();
+    modelHealth[model.name].healthy = false;
   }
-  return result;
+  
+  // Fallback to GPT-4.1 if chosen model failed
+  if (model.model !== 'gpt-4.1') {
+    console.warn(`[callSingleModel] Falling back to GPT-4.1`);
+    const fallbackStr = getModelStr('openai', 'gpt-4.1');
+    return await callModel(client, fallbackStr, messages, maxTokens, temperature);
+  }
+  return null;
 }
 
 // ============ AUTH HELPERS ============
@@ -909,35 +941,41 @@ async function handleChatSend(request) {
     const client = getOpenAIClient();
     let modelsToUse = activeModels ? ALL_MODELS.filter(m => activeModels.includes(m.name)) : ALL_MODELS;
     
-    // Prioritize guaranteed models first for faster response
-    modelsToUse = [
-      ...modelsToUse.filter(m => m.guaranteed),
-      ...modelsToUse.filter(m => !m.guaranteed)
-    ];
+    const guaranteedModels = modelsToUse.filter(m => m.guaranteed);
+    const betaModels = modelsToUse.filter(m => !m.guaranteed);
 
-    // Sequential with early exit — query multiple models for consensus
+    // Query ALL models in parallel — guaranteed get 20s timeout, beta get 12s
     const results = [];
-    const timeoutMs = 15000;
-    for (const m of modelsToUse) {
+    const modelPromises = modelsToUse.map(async (m) => {
       const start = Date.now();
+      const timeoutMs = m.guaranteed ? 20000 : 12000;
       try {
+        // Skip unhealthy beta models
+        const health = modelHealth[m.name];
+        if (!m.guaranteed && health.failCount >= 3 && health.lastError && (Date.now() - health.lastError < 300000)) {
+          return { name: m.name, color: m.color, response: null, duration: 0, success: false, skipped: true };
+        }
         const modelStr = getModelStr(m.provider, m.model);
         const modelPromise = callModel(client, modelStr, fullMessages);
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Model timeout')), timeoutMs));
         const response = await Promise.race([modelPromise, timeoutPromise]);
-        results.push({ name: m.name, color: m.color, response, duration: Date.now() - start, success: !!response });
+        if (response) {
+          modelHealth[m.name].failCount = 0;
+          modelHealth[m.name].healthy = true;
+        }
+        return { name: m.name, color: m.color, response, duration: Date.now() - start, success: !!response };
       } catch (e) {
         console.warn(`Chat model ${m.name} failed:`, e.message);
-        results.push({ name: m.name, color: m.color, response: null, duration: Date.now() - start, success: false });
+        modelHealth[m.name].failCount++;
+        modelHealth[m.name].lastError = Date.now();
+        modelHealth[m.name].healthy = false;
+        return { name: m.name, color: m.color, response: null, duration: Date.now() - start, success: false };
       }
-      // Wait for at least 2 successful models for synthesis, or all guaranteed models tried
-      const validCount = results.filter(r => r.success).length;
-      const guaranteedDone = modelsToUse.filter(gm => gm.guaranteed).every(gm => results.some(r => r.name === gm.name));
-      if (validCount >= 2 || (validCount >= 1 && guaranteedDone)) {
-        console.log(`[Chat] Got ${validCount} model responses, ${results.length} tried — proceeding to synthesis`);
-        break;
-      }
-    }
+    });
+    
+    const allResults = await Promise.all(modelPromises);
+    results.push(...allResults);
+    console.log(`[Chat] ${results.filter(r => r.success).length}/${results.length} models responded: ${results.filter(r => r.success).map(r => r.name).join(', ')}`);
 
     const valid = results.filter(r => r.response);
     const failed = results.filter(r => !r.response);
@@ -1070,7 +1108,7 @@ Return ONLY valid JSON (no markdown) with EXACTLY these field names:
 Make salary ranges location-appropriate if location is specified. Include at least 3 timeline phases.`;
 
   try {
-    const result = await callMultiModel(CAREER_PATH_SYSTEM, prompt, ['GPT-4.1', 'Claude 4 Sonnet', 'Perplexity Sonar'], 4000);
+    const result = await callMultiModel(CAREER_PATH_SYSTEM, prompt, null, 4000);
     
     if (!result || !result.combinedResponse) {
       return NextResponse.json({ error: 'Failed to generate career path: LLM did not return a valid response' }, { status: 500 });
@@ -2263,6 +2301,7 @@ async function handleTestModels(request) {
     activeCount: active,
     totalCount: total,
     models: results,
+    health: Object.fromEntries(ALL_MODELS.map(m => [m.name, modelHealth[m.name]])),
     testedAt: new Date().toISOString(),
     rotationIndex: modelRotationIndex,
   });
