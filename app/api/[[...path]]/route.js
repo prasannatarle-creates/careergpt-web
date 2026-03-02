@@ -147,10 +147,10 @@ const ALL_MODELS = [
   { provider: 'perplexity', model: 'sonar-pro', name: 'Perplexity Sonar', color: '#22d3ee', guaranteed: false },
 ];
 
-async function callModel(client, modelStr, messages) {
+async function callModel(client, modelStr, messages, maxTokens = 3000) {
   try {
     const response = await client.chat.completions.create({
-      model: modelStr, messages, max_tokens: 1500, temperature: 0.7,
+      model: modelStr, messages, max_tokens: maxTokens, temperature: 0.7,
     });
     return response.choices[0]?.message?.content || '';
   } catch (error) {
@@ -159,7 +159,7 @@ async function callModel(client, modelStr, messages) {
   }
 }
 
-async function callMultiModel(systemPrompt, userMessage, activeModelNames = null) {
+async function callMultiModel(systemPrompt, userMessage, activeModelNames = null, maxTokens = 3000) {
   const client = getOpenAIClient();
   let modelsToUse = activeModelNames
     ? ALL_MODELS.filter(m => activeModelNames.includes(m.name))
@@ -178,7 +178,7 @@ async function callMultiModel(systemPrompt, userMessage, activeModelNames = null
 
   // Use sequential model calls with timeouts - guaranteed models first
   const results = [];
-  const timeoutMs = 15000; // 15 second timeout per model
+  const timeoutMs = 20000; // 20 second timeout per model
   
   for (const m of modelsToUse) {
     const start = Date.now();
@@ -186,7 +186,7 @@ async function callMultiModel(systemPrompt, userMessage, activeModelNames = null
       const modelStr = getModelStr(m.provider, m.model);
       
       // Add timeout wrapper
-      const modelPromise = callModel(client, modelStr, messages);
+      const modelPromise = callModel(client, modelStr, messages, maxTokens);
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Model timeout')), timeoutMs)
       );
@@ -252,13 +252,34 @@ function verifyToken(request) {
 
 // ============ ANALYTICS HELPER ============
 async function logAnalytics(db, type, data = {}) {
+  const { userId, ...rest } = data;
   await db.collection('analytics').insertOne({
-    id: uuidv4(), type, data, createdAt: new Date().toISOString(),
+    id: uuidv4(), type, userId: userId || null, metadata: rest, createdAt: new Date().toISOString(),
   });
 }
 
 // ============ SYSTEM PROMPTS ============
-const CAREER_SYSTEM = `You are CareerGPT, an expert AI career guidance counselor. Help students and job seekers with career paths, skills, interviews, and job search strategies. Be specific, actionable, and encouraging. Use markdown formatting.`;
+const CAREER_SYSTEM = `You are CareerGPT, an expert AI career guidance counselor with deep knowledge of the 2025-2026 job market, industry trends, and career development strategies.
+
+Your expertise includes:
+- Career planning, transitions, and growth strategies
+- Resume optimization and ATS best practices
+- Interview preparation (behavioral, technical, case studies)
+- Salary negotiation and compensation packages
+- Skill development roadmaps and learning resources
+- Industry trends, emerging roles, and market demand
+- Professional networking and personal branding
+- Remote work, freelancing, and entrepreneurship
+
+Guidelines:
+- Give SPECIFIC, ACTIONABLE advice with concrete steps, timelines, and resources
+- Include real platforms, tools, certifications, and learning resources when relevant
+- Use data-driven insights (salary ranges, growth rates, demand levels)
+- Tailor responses to the user's experience level and goals
+- Format with markdown: use headers, bullet points, bold for key terms, and numbered steps
+- When suggesting career paths, include estimated timelines and milestones
+- End longer responses with 2-3 suggested follow-up questions the user might ask next
+- Be encouraging but realistic about challenges and timelines`;
 
 const CAREER_PATH_SYSTEM = `You are an expert career path architect and labor market analyst. Given a user's profile, generate a comprehensive STRUCTURED career path. You MUST return valid JSON (no markdown, no code fences) with this exact structure:
 {
@@ -734,7 +755,8 @@ async function handleGetProfile(request) {
   return NextResponse.json({
     user: { id: user.id, name: user.name, email: user.email, role: user.role, profile: user.profile, createdAt: user.createdAt },
     stats: { resumeCount, interviewCount, chatCount, careerPathCount, savedJobsCount, jobMatchCount, learningPathCount },
-    recentActivity: recentActivity.map(a => ({ type: a.type, createdAt: a.createdAt, metadata: a.metadata })),
+    recentActivity: recentActivity.map(a => ({ type: a.type, createdAt: a.createdAt, metadata: a.metadata || a.data })),
+    profile: user.profile || {},
   });
 }
 
@@ -794,6 +816,13 @@ async function handleChatSend(request) {
   const userId = auth?.id || 'anonymous';
   let sid = sessionId || uuidv4();
 
+  // Load user profile for personalized responses
+  let userProfile = null;
+  if (auth?.id) {
+    const userDoc = await db.collection('users').findOne({ id: auth.id });
+    userProfile = userDoc?.profile || null;
+  }
+
   let session = sessionId ? await db.collection('sessions').findOne({ id: sessionId }) : null;
   if (!session) {
     session = {
@@ -807,7 +836,21 @@ async function handleChatSend(request) {
   const userMsg = { role: 'user', content: message, timestamp: new Date().toISOString() };
 
   try {
-    const fullMessages = [{ role: 'system', content: CAREER_SYSTEM }, ...recentMsgs, { role: 'user', content: message }];
+    // Build personalized system prompt with user context
+    let systemPrompt = CAREER_SYSTEM;
+    if (userProfile) {
+      const profileCtx = [];
+      if (userProfile.skills?.length > 0) profileCtx.push(`Skills: ${Array.isArray(userProfile.skills) ? userProfile.skills.join(', ') : userProfile.skills}`);
+      if (userProfile.interests?.length > 0) profileCtx.push(`Interests: ${Array.isArray(userProfile.interests) ? userProfile.interests.join(', ') : userProfile.interests}`);
+      if (userProfile.education) profileCtx.push(`Education: ${userProfile.education}`);
+      if (userProfile.experience) profileCtx.push(`Experience: ${userProfile.experience}`);
+      if (userProfile.careerGoal) profileCtx.push(`Career Goal: ${userProfile.careerGoal}`);
+      if (profileCtx.length > 0) {
+        systemPrompt += `\n\nUser Profile (use to personalize your advice):\n${profileCtx.join('\n')}`;
+      }
+    }
+
+    const fullMessages = [{ role: 'system', content: systemPrompt }, ...recentMsgs, { role: 'user', content: message }];
     const client = getOpenAIClient();
     let modelsToUse = activeModels ? ALL_MODELS.filter(m => activeModels.includes(m.name)) : ALL_MODELS;
     
@@ -864,12 +907,28 @@ async function handleChatSend(request) {
 
     await logAnalytics(db, 'chat_message', { userId, models: valid.map(r => r.name) });
 
+    // Generate follow-up suggestions based on the conversation
+    let followUpSuggestions = [];
+    try {
+      const suggestPrompt = `Based on this career conversation, suggest exactly 3 short follow-up questions (max 10 words each) the user might ask next. Return ONLY a JSON array of strings, no markdown:\nUser: ${message}\nAssistant: ${combinedResponse.substring(0, 500)}`;
+      const suggestResult = await callModel(client, getModelStr('openai', 'gpt-4.1'), [
+        { role: 'system', content: 'Return only a JSON array of 3 short follow-up questions. No markdown, no explanation.' },
+        { role: 'user', content: suggestPrompt },
+      ], 200);
+      if (suggestResult) {
+        const cleaned = suggestResult.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        followUpSuggestions = JSON.parse(cleaned);
+        if (!Array.isArray(followUpSuggestions)) followUpSuggestions = [];
+      }
+    } catch { /* follow-ups are optional, don't block response */ }
+
     return NextResponse.json({
       sessionId: sid, response: combinedResponse, synthesized,
       models: valid.map(r => ({ name: r.name, color: r.color, duration: r.duration })),
       failedModels: failed.map(r => ({ name: r.name })),
       successCount: valid.length, totalModels: modelsToUse.length,
       individualResponses: valid.map(r => ({ name: r.name, color: r.color, preview: r.response?.substring(0, 200) + '...', duration: r.duration })),
+      followUpSuggestions,
     });
   } catch (error) {
     return NextResponse.json({ error: 'AI error: ' + error.message }, { status: 500 });
@@ -946,7 +1005,7 @@ Return ONLY valid JSON (no markdown) with EXACTLY these field names:
 Make salary ranges location-appropriate if location is specified. Include at least 3 timeline phases.`;
 
   try {
-    const result = await callMultiModel(CAREER_PATH_SYSTEM, prompt, ['GPT-4.1', 'Claude 4 Sonnet', 'Perplexity Sonar']);
+    const result = await callMultiModel(CAREER_PATH_SYSTEM, prompt, ['GPT-4.1', 'Claude 4 Sonnet', 'Perplexity Sonar'], 4000);
     
     if (!result || !result.combinedResponse) {
       return NextResponse.json({ error: 'Failed to generate career path: LLM did not return a valid response' }, { status: 500 });
@@ -984,13 +1043,38 @@ Make salary ranges location-appropriate if location is specified. Include at lea
       salaryRange: src.salaryRange || src.salary || src.salaryRanges || src.salary_ranges || src.compensation || { entry: 'N/A', mid: 'N/A', senior: 'N/A' },
       certifications: src.certifications || src.certs || src.recommendedCertifications || src.recommended_certifications || [],
       topRoles: src.topRoles || src.top_roles || src.roles || src.suggestedRoles || src.careerOptions || [],
-      skillGaps: src.skillGaps || src.skill_gaps || src.gaps || src.missingSkills || [],
+      skillGaps: (src.skillGaps || src.skill_gaps || src.gaps || src.missingSkills || []).map(sg => 
+        typeof sg === 'string' ? { skill: sg, importance: 'important', howToLearn: `Study ${sg} through online courses and hands-on projects` } : sg
+      ),
       marketDemand: src.marketDemand || src.market_demand || src.demand || src.market || { level: 'medium' },
-      alternativePaths: src.alternativePaths || src.alternative_paths || src.alternatives || [],
+      alternativePaths: (src.alternativePaths || src.alternative_paths || src.alternatives || []).map(ap =>
+        typeof ap === 'string' ? { title: ap, reason: 'Alternative career direction based on your skills' } : ap
+      ),
       networkingTips: src.networkingTips || src.networking_tips || src.networking || [],
       recommendations: src.recommendations || src.tips || src.advice || [],
       raw: parsed.raw || false
     };
+
+    // Normalize timeline phases — ensure each has duration and proper fields
+    normalized.timeline = normalized.timeline.map((phase, idx) => ({
+      ...phase,
+      phase: phase.phase || phase.step || phase.name || phase.title || `Phase ${idx + 1}`,
+      duration: phase.duration || phase.timeframe || phase.period || '',
+      goals: phase.goals || phase.objectives || phase.tasks || [],
+      skills: phase.skills || phase.skillsToLearn || phase.technologies || [],
+      milestone: phase.milestone || phase.milestones?.[0] || phase.outcome || '',
+      resources: phase.resources || phase.learningResources || [],
+    }));
+
+    // Normalize certifications — handle strings
+    normalized.certifications = normalized.certifications.map(c =>
+      typeof c === 'string' ? { name: c, provider: '', priority: 'medium' } : c
+    );
+
+    // Normalize topRoles — handle strings
+    normalized.topRoles = normalized.topRoles.map(r =>
+      typeof r === 'string' ? { title: r, demand: 'medium', description: '' } : r
+    );
 
     const db = await getDb();
     const careerPath = {
