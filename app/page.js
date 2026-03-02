@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -733,6 +733,7 @@ function AIChat() {
   const [showIndividual, setShowIndividual] = useState(null);
   const [renamingSession, setRenamingSession] = useState(null);
   const [renameValue, setRenameValue] = useState('');
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
@@ -744,6 +745,9 @@ function AIChat() {
         setActiveModels(d.models.map(m => m.name));
       }
     });
+    api.get('/profile').then(d => {
+      if (d.profile) setUserProfile(d.profile);
+    }).catch(() => {});
   }, []);
 
   // Close export dropdown on outside click
@@ -821,7 +825,7 @@ function AIChat() {
       const d = await api.post('/chat/send', { sessionId: activeSession, message: msg, activeModels });
       if (d.error) throw new Error(d.error);
       if (!activeSession) setActiveSession(d.sessionId);
-      setMessages(prev => [...prev, { role: 'assistant', content: d.response, timestamp: new Date().toISOString(), models: d.models, failedModels: d.failedModels, synthesized: d.synthesized, individualResponses: d.individualResponses }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: d.response, timestamp: new Date().toISOString(), models: d.models, failedModels: d.failedModels, synthesized: d.synthesized, individualResponses: d.individualResponses, followUpSuggestions: d.followUpSuggestions }]);
       api.get('/chat/sessions').then(d2 => setSessions((d2.sessions || []).filter(s => s.type === 'career-chat')));
     } catch (e) { setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${e.message}`, isError: true }]); }
     finally { setLoading(false); }
@@ -829,14 +833,28 @@ function AIChat() {
 
   const filteredSessions = sessions.filter(s => !searchQuery || s.title?.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const quickPrompts = [
-    { icon: '\uD83D\uDE80', text: 'Top AI & tech careers in 2026?' },
-    { icon: '\uD83D\uDCB0', text: 'How to negotiate a higher salary?' },
-    { icon: '\uD83C\uDFAF', text: 'Build a 90-day career transition plan' },
-    { icon: '\uD83E\uDDE0', text: 'Most in-demand skills for remote work' },
-    { icon: '\uD83C\uDFA4', text: 'How to ace behavioral interviews?' },
-    { icon: '\uD83D\uDCCA', text: 'Career roadmap for data science' },
-  ];
+  const quickPrompts = useMemo(() => {
+    const basePrompts = [
+      { icon: '\uD83D\uDE80', text: 'Top AI & tech careers in 2026?' },
+      { icon: '\uD83D\uDCB0', text: 'How to negotiate a higher salary?' },
+      { icon: '\uD83C\uDFAF', text: 'Build a 90-day career transition plan' },
+      { icon: '\uD83E\uDDE0', text: 'Most in-demand skills for remote work' },
+      { icon: '\uD83C\uDFA4', text: 'How to ace behavioral interviews?' },
+      { icon: '\uD83D\uDCCA', text: 'Career roadmap for data science' },
+    ];
+    if (!userProfile) return basePrompts;
+    const personalized = [];
+    const p = userProfile;
+    const skillList = Array.isArray(p.skills) ? p.skills.join(', ') : p.skills;
+    const interestList = Array.isArray(p.interests) ? p.interests.join(', ') : p.interests;
+    if (p.careerGoal) personalized.push({ icon: '\uD83C\uDFAF', text: `What skills do I need to become a ${p.careerGoal}?` });
+    if (skillList) personalized.push({ icon: '\uD83D\uDCAA', text: `Best career paths for someone with ${skillList} skills?` });
+    if (interestList) personalized.push({ icon: '\u2728', text: `High-paying jobs in ${interestList}?` });
+    if (p.experience) personalized.push({ icon: '\uD83D\uDCC8', text: `Career growth strategies with ${p.experience} experience` });
+    if (p.education) personalized.push({ icon: '\uD83C\uDF93', text: `Best roles for a ${p.education} graduate?` });
+    if (personalized.length > 0) personalized.push({ icon: '\uD83D\uDCB0', text: 'How to negotiate a higher salary?' });
+    return personalized.length >= 4 ? personalized.slice(0, 6) : [...personalized, ...basePrompts.slice(0, 6 - personalized.length)];
+  }, [userProfile]);
 
   return (
     <div className="flex h-full">
@@ -1019,6 +1037,19 @@ function AIChat() {
                             ))}
                           </div>
                         )}
+                      </div>
+                    )}
+                    {/* Follow-up suggestion buttons */}
+                    {msg.followUpSuggestions && msg.followUpSuggestions.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-slate-700/30">
+                        <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-2">Follow-up Questions</p>
+                        <div className="flex flex-wrap gap-2">
+                          {msg.followUpSuggestions.map((q, k) => (
+                            <button key={k} onClick={() => { setInput(q); }} className="text-xs text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 hover:border-cyan-500/40 px-3 py-1.5 rounded-full transition-all duration-200">
+                              {q}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -1630,7 +1661,7 @@ function ResumeAnalyzer() {
 }
 
 // ============ CAREER PATH GENERATOR ============
-function CareerPath({ onNavigate }) {
+function CareerPath({ onNavigate, user }) {
   const [skills, setSkills] = useState('');
   const [interests, setInterests] = useState('');
   const [education, setEducation] = useState('');
@@ -1645,6 +1676,31 @@ function CareerPath({ onNavigate }) {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [completedGoals, setCompletedGoals] = useState({});
   const [expandedPhase, setExpandedPhase] = useState(0);
+  const [profileLoaded, setProfileLoaded] = useState(false);
+
+  // Auto-fill from user profile
+  useEffect(() => {
+    if (profileLoaded) return;
+    const fillFromProfile = async () => {
+      try {
+        let profile = user?.profile;
+        if (!profile) {
+          const d = await api.get('/profile');
+          profile = d?.profile;
+        }
+        if (profile) {
+          if (!skills && profile.skills) setSkills(Array.isArray(profile.skills) ? profile.skills.join(', ') : profile.skills);
+          if (!interests && profile.interests) setInterests(Array.isArray(profile.interests) ? profile.interests.join(', ') : profile.interests);
+          if (!education && profile.education) setEducation(profile.education);
+          if (!experience && profile.experience) setExperience(profile.experience);
+          if (!targetRole && profile.careerGoal) setTargetRole(profile.careerGoal);
+          if (!location && profile.location) setLocation(profile.location);
+        }
+      } catch (e) { console.error('Profile load error:', e); }
+      setProfileLoaded(true);
+    };
+    fillFromProfile();
+  }, [user]);
 
   // Load history
   const loadHistory = async () => {
@@ -1810,6 +1866,31 @@ function CareerPath({ onNavigate }) {
           <div className="glass-card-static p-6"><div className="prose prose-invert max-w-none [&>*]:text-slate-200 [&>p]:text-slate-200 [&>h1]:text-white [&>h2]:text-white [&>h3]:text-cyan-300 [&>strong]:text-cyan-300 [&>li]:text-slate-200"><ReactMarkdown remarkPlugins={[remarkGfm]}>{cp.summary}</ReactMarkdown></div></div>
         ) : (
           <div className="space-y-6">
+            {/* Overall Progress Indicator */}
+            {cp.timeline && cp.timeline.length > 0 && (() => {
+              const totalGoals = cp.timeline.reduce((sum, phase) => sum + (phase.goals?.length || 0), 0);
+              const totalCompleted = Object.values(completedGoals).filter(Boolean).length;
+              const progressPct = totalGoals > 0 ? Math.round((totalCompleted / totalGoals) * 100) : 0;
+              return totalGoals > 0 ? (
+                <div className="glass-card-bright p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Target className="w-4 h-4 text-cyan-400" />
+                      <span className="text-sm font-medium text-white">Overall Progress</span>
+                    </div>
+                    <span className="text-sm font-bold" style={{ color: progressPct >= 80 ? '#22c55e' : progressPct >= 40 ? '#eab308' : '#94a3b8' }}>{progressPct}%</span>
+                  </div>
+                  <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-700 ease-out" style={{ width: `${progressPct}%`, background: progressPct >= 80 ? 'linear-gradient(90deg, #22c55e, #10b981)' : progressPct >= 40 ? 'linear-gradient(90deg, #eab308, #f59e0b)' : 'linear-gradient(90deg, #3b82f6, #06b6d4)' }} />
+                  </div>
+                  <div className="flex items-center justify-between mt-1.5">
+                    <span className="text-[10px] text-slate-500">{totalCompleted} of {totalGoals} goals completed</span>
+                    <span className="text-[10px] text-slate-500">{cp.timeline.length} phases</span>
+                  </div>
+                </div>
+              ) : null;
+            })()}
+
             {/* Summary + Match Score + Day in Life */}
             <div className="glass-card-bright">
               <div className="p-6">
@@ -4662,7 +4743,7 @@ function App() {
       case 'profile': return <UserProfile user={user} onUpdate={(u) => setUser(u)} />;
       case 'chat': return <AIChat />;
       case 'resume': return <ResumeAnalyzer />;
-      case 'career': return <CareerPath onNavigate={setPage} />;
+      case 'career': return <CareerPath onNavigate={setPage} user={user} />;
       case 'interview': return <MockInterview />;
       case 'jobs': return <Jobs />;
       case 'savedjobs': return <SavedJobs />;
