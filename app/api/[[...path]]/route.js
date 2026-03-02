@@ -82,6 +82,11 @@ async function getDb() {
       await cachedDb.collection('career_paths').createIndex({ userId: 1 });
       await cachedDb.collection('job_matches').createIndex({ userId: 1 });
       await cachedDb.collection('analytics').createIndex({ type: 1, createdAt: -1 });
+      await cachedDb.collection('analytics').createIndex({ userId: 1, createdAt: -1 });
+      await cachedDb.collection('saved_jobs').createIndex({ userId: 1 });
+      await cachedDb.collection('job_alerts').createIndex({ userId: 1 });
+      await cachedDb.collection('learning_paths').createIndex({ userId: 1 });
+      await cachedDb.collection('shared_chats').createIndex({ shareCode: 1 }, { unique: true, sparse: true });
     } catch (e) { /* indexes may already exist */ }
     
     console.log('✓ Connected to real MongoDB');
@@ -147,10 +152,10 @@ const ALL_MODELS = [
   { provider: 'perplexity', model: 'sonar-pro', name: 'Perplexity Sonar', color: '#22d3ee', guaranteed: false },
 ];
 
-async function callModel(client, modelStr, messages, maxTokens = 3000) {
+async function callModel(client, modelStr, messages, maxTokens = 3000, temperature = 0.7) {
   try {
     const response = await client.chat.completions.create({
-      model: modelStr, messages, max_tokens: maxTokens, temperature: 0.7,
+      model: modelStr, messages, max_tokens: maxTokens, temperature,
     });
     return response.choices[0]?.message?.content || '';
   } catch (error) {
@@ -198,9 +203,10 @@ async function callMultiModel(systemPrompt, userMessage, activeModelNames = null
       results.push({ name: m.name, color: m.color, response: null, duration: Date.now() - start, success: false });
     }
     
-    // Return early if we have 1 successful model (faster response)
+    // Early exit after 2 successful responses (allows synthesis) or after trying all guaranteed models
     const validCount = results.filter(r => r.success).length;
-    if (validCount >= 1) {
+    const guaranteedDone = modelsToUse.filter(m => m.guaranteed).every(m => results.some(r => r.name === m.name));
+    if (validCount >= 2 || (validCount >= 1 && guaranteedDone)) {
       console.log(`Early exit: Got ${validCount} successful model(s), skipping remaining ${modelsToUse.length - results.length}`);
       break;
     }
@@ -227,13 +233,13 @@ async function callMultiModel(systemPrompt, userMessage, activeModelNames = null
   return { combinedResponse, modelResponses: valid, failedModels: failed.map(r => ({ name: r.name })), synthesized, successCount: valid.length, totalModels: modelsToUse.length };
 }
 
-async function callSingleModel(systemPrompt, userMessage) {
+async function callSingleModel(systemPrompt, userMessage, maxTokens = 3000, temperature = 0.7) {
   const client = getOpenAIClient();
   const modelStr = getModelStr('openai', 'gpt-4.1');
   return await callModel(client, modelStr, [
     { role: 'system', content: systemPrompt },
     { role: 'user', content: userMessage },
-  ]);
+  ], maxTokens, temperature);
 }
 
 // ============ AUTH HELPERS ============
@@ -447,6 +453,9 @@ async function handleRegister(body, clientIp) {
 
     const { name, email, password } = body;
     if (!name || !email || !password) return NextResponse.json({ error: 'Name, email, and password are required' }, { status: 400 });
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
     if (password.length < 6) return NextResponse.json({ error: 'Password must be at least 6 characters' }, { status: 400 });
     
     // Password strength validation
@@ -546,20 +555,24 @@ async function handleVerifyEmail(token) {
       { $set: { verified: true, verificationToken: null } }
     );
 
-    // Send welcome email
-    const { subject, html, text } = emailTemplates.welcomeEmail(user.name);
-    await sendEmail(user.email, subject, html, text);
+    // Send welcome email (fire-and-forget, don't block verification)
+    try {
+      const { subject, html, text } = emailTemplates.welcomeEmail(user.name);
+      await sendEmail(user.email, subject, html, text);
+    } catch (emailErr) {
+      console.warn('Welcome email failed (non-blocking):', emailErr.message);
+    }
 
     await logAnalytics(db, 'email_verified', { userId: user.id });
 
     // Auto-login after verification: generate token
     const updatedUser = await db.collection('users').findOne({ email: decoded.email });
-    const token = generateToken(updatedUser);
+    const authToken = generateToken(updatedUser);
 
     return NextResponse.json({
       message: 'Email verified successfully!',
       verified: true,
-      token,
+      token: authToken,
       user: { id: updatedUser.id, name: updatedUser.name, email: updatedUser.email, role: updatedUser.role, profile: updatedUser.profile }
     });
   } catch (error) {
@@ -643,7 +656,13 @@ async function handleForgotPassword(body) {
 
     const resetLink = `${process.env.APP_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
     const { subject, html, text } = emailTemplates.resetPassword(resetLink);
-    await sendEmail(user.email, subject, html, text);
+    try {
+      await sendEmail(user.email, subject, html, text);
+    } catch (emailErr) {
+      console.warn('Reset email failed:', emailErr.message);
+      // In development without email provider, return the reset token directly  
+      return NextResponse.json({ message: 'If an account exists, password reset link sent to email', resetToken, devFallback: true });
+    }
 
     await logAnalytics(db, 'password_reset_requested', { userId: user.id });
 
@@ -945,10 +964,9 @@ async function handleGetSessions(request) {
 
 async function handleGetSession(request, sessionId) {
   const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const db = await getDb();
-  const filter = { id: sessionId };
-  if (auth) filter.userId = auth.id;
-  const session = await db.collection('sessions').findOne(filter);
+  const session = await db.collection('sessions').findOne({ id: sessionId, userId: auth.id });
   if (!session) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ session });
 }
@@ -963,11 +981,12 @@ async function handleDeleteSession(request, sessionId) {
 
 async function handleRenameSession(request) {
   const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const body = await request.json();
   const { sessionId, title } = body;
   if (!sessionId || !title) return NextResponse.json({ error: 'Session ID and title required' }, { status: 400 });
   const db = await getDb();
-  await db.collection('sessions').updateOne({ id: sessionId }, { $set: { title: title.trim().substring(0, 100), updatedAt: new Date().toISOString() } });
+  await db.collection('sessions').updateOne({ id: sessionId, userId: auth.id }, { $set: { title: title.trim().substring(0, 100), updatedAt: new Date().toISOString() } });
   return NextResponse.json({ success: true });
 }
 
@@ -1185,6 +1204,8 @@ async function handleResumeUpload(request) {
 }
 
 async function handleResumeAnalyze(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const body = await request.json();
     const { resumeId, targetRole } = body;
@@ -1202,9 +1223,9 @@ async function handleResumeAnalyze(request) {
       console.warn('Resume parsing warning:', parseError.message);
     }
 
-    // Get ATS analysis
+    // Get ATS analysis — use lower temperature for reliable JSON
     const roleContext = targetRole ? `\nTarget Role: ${targetRole}\nEvaluate keywords and fit for this specific role.` : '';
-    const response = await callSingleModel(RESUME_ATS_SYSTEM, `Analyze this resume:${roleContext}\n\n${resume.textContent}`);
+    const response = await callSingleModel(RESUME_ATS_SYSTEM, `Analyze this resume:${roleContext}\n\n${resume.textContent}`, 4000, 0.4);
 
     if (!response) {
       return NextResponse.json({ error: 'Failed to analyze resume: LLM did not return a response' }, { status: 500 });
@@ -1273,9 +1294,11 @@ async function handleGetResumes(request) {
   return NextResponse.json({ resumes });
 }
 
-async function handleGetResume(resumeId) {
+async function handleGetResume(request, resumeId) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const db = await getDb();
-  const resume = await db.collection('resumes').findOne({ id: resumeId });
+  const resume = await db.collection('resumes').findOne({ id: resumeId, userId: auth.id });
   if (!resume) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ resume });
 }
@@ -1385,11 +1408,12 @@ Evaluate thoroughly. Be honest and specific in scoring. Return ONLY valid JSON m
   try {
     const recentMsgs = session.messages.filter(m => !m.hidden).slice(-6).map(m => ({ role: m.role, content: m.content }));
     const client = getOpenAIClient();
+    const maxTok = isLast ? 4000 : 3000;
     const response = await callModel(client, getModelStr('openai', 'gpt-4.1'), [
       { role: 'system', content: INTERVIEW_FEEDBACK_SYSTEM },
       ...recentMsgs,
       { role: 'user', content: evalPrompt },
-    ]);
+    ], maxTok, 0.4);
 
     if (!response) {
       return NextResponse.json({ error: 'Failed to evaluate answer: LLM did not return a response' }, { status: 500 });
@@ -2125,9 +2149,8 @@ async function handleExportInterviewReport(request, reportId) {
 // --- ADMIN ANALYTICS ---
 async function handleGetAnalytics(request) {
   const auth = verifyToken(request);
-  if (!auth || auth.role !== 'admin') {
-    // Allow any authenticated user for now, but mark non-admin
-  }
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  // Non-admin users get limited analytics (their own data only in future)
 
   const db = await getDb();
 
@@ -2378,6 +2401,8 @@ async function handleGetDashboard(request) {
 }
 
 async function handleGetDAU(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const db = await getDb();
     const daysBack = new URL(request.url).searchParams.get('days') || '1';
@@ -2394,6 +2419,8 @@ async function handleGetDAU(request) {
 }
 
 async function handleGetWAU(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const db = await getDb();
     const wau = await calculateWAU(db);
@@ -2409,6 +2436,8 @@ async function handleGetWAU(request) {
 }
 
 async function handleGetMAU(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const db = await getDb();
     const mau = await calculateMAU(db);
@@ -2424,6 +2453,8 @@ async function handleGetMAU(request) {
 }
 
 async function handleGetFunnel(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const db = await getDb();
     const funnel = await analyzeFunnel(db);
@@ -2443,6 +2474,8 @@ async function handleGetFunnel(request) {
 }
 
 async function handleGetSegmentation(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const db = await getDb();
     const segmentType = new URL(request.url).searchParams.get('type') || 'experience';
@@ -2463,6 +2496,8 @@ async function handleGetSegmentation(request) {
 }
 
 async function handleGetCohort(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const db = await getDb();
     const cohorts = await analyzeCohorts(db);
@@ -2482,6 +2517,8 @@ async function handleGetCohort(request) {
 }
 
 async function handleGetModuleUsage(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const db = await getDb();
     const usage = await getModuleUsage(db);
@@ -2677,8 +2714,10 @@ async function handleGetPublicSharedChat(shareCode, password = null, clientIp = 
 async function handleHealth() {
   try {
     const db = await getDb();
-    await db.command({ ping: 1 });
-    return NextResponse.json({ status: 'healthy', timestamp: new Date().toISOString() });
+    if (typeof db.command === 'function') {
+      await db.command({ ping: 1 });
+    }
+    return NextResponse.json({ status: 'healthy', usingMockDb, timestamp: new Date().toISOString() });
   } catch (error) {
     return NextResponse.json({ status: 'unhealthy', error: error.message }, { status: 500 });
   }
@@ -2688,8 +2727,16 @@ async function handleHealth() {
     const guestUser = {
       id: uuidv4(),
       email: `guest-${Date.now()}@careergpt.local`,
-      role: 'guest'
+      name: 'Guest',
+      role: 'guest',
+      verified: true,
+      profile: {},
+      createdAt: new Date().toISOString(),
     };
+
+    // Persist guest user to DB so downstream handlers can find them
+    const db = await getDb();
+    await db.collection('users').insertOne(guestUser);
 
     const token = generateToken(guestUser);
 
@@ -2719,6 +2766,8 @@ export async function GET(request) {
     // Debug endpoints - for development/testing
     const clientIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
     if (path === '/debug/rate-limiter-reset') {
+      const isLocal = clientIp === '127.0.0.1' || clientIp === '::1' || clientIp === '::ffff:127.0.0.1' || clientIp.startsWith('192.168.') || clientIp === 'localhost';
+      if (!isLocal) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       authLimiter.resetAll();
       registerLimiter.resetAll();
       return NextResponse.json({ message: 'Rate limiter reset', timestamp: new Date() });
@@ -2743,7 +2792,7 @@ export async function GET(request) {
     if (path.startsWith('/chat/sessions/')) return handleGetSession(request, path.split('/chat/sessions/')[1]);
     if (path === '/resumes') return handleGetResumes(request);
     if (path.startsWith('/resume/compare/')) return handleGetResumeComparison(request, path.split('/resume/compare/')[1]);
-    if (path.startsWith('/resume/')) return handleGetResume(path.split('/resume/')[1]);
+    if (path.startsWith('/resume/')) return handleGetResume(request, path.split('/resume/')[1]);
     if (path === '/career-paths') return handleGetCareerPaths(request);
     if (path.startsWith('/interview/report/')) return handleExportInterviewReport(request, path.split('/interview/report/')[1]);
     if (path === '/admin/analytics') return handleGetAnalytics(request);
