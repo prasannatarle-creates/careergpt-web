@@ -211,28 +211,73 @@ async function callMultiModel(systemPrompt, userMessage, activeModelNames = null
   const results = await Promise.all(modelPromises);
   console.log(`[callMultiModel] ${results.filter(r => r.success).length}/${results.length} models responded: ${results.filter(r => r.success).map(r => r.name).join(', ')}`);
 
-  const valid = results.filter(r => r.response);
+  let valid = results.filter(r => r.response);
   const failed = results.filter(r => !r.response);
 
+  // MINIMUM 4 MODELS REQUIRED: If fewer than 4 responded, retry failed models once
+  const MIN_MODELS = Math.min(4, modelsToUse.length);
+  if (valid.length < MIN_MODELS && failed.length > 0) {
+    console.log(`[callMultiModel] Only ${valid.length} models responded, need ${MIN_MODELS}. Retrying ${failed.length} failed models...`);
+    const retryPromises = failed.map(async (f) => {
+      const mInfo = modelsToUse.find(m => m.name === f.name);
+      if (!mInfo) return f;
+      const start = Date.now();
+      try {
+        const modelStr = getModelStr(mInfo.provider, mInfo.model);
+        const response = await Promise.race([
+          callModel(client, modelStr, messages, maxTokens),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Retry timeout')), 25000))
+        ]);
+        if (response) {
+          modelHealth[mInfo.name].failCount = 0;
+          modelHealth[mInfo.name].healthy = true;
+          return { name: mInfo.name, color: mInfo.color, response, duration: Date.now() - start, success: true };
+        }
+        return f;
+      } catch (e) {
+        console.warn(`[callMultiModel] Retry ${mInfo.name} failed:`, e.message);
+        return f;
+      }
+    });
+    const retryResults = await Promise.all(retryPromises);
+    const retryValid = retryResults.filter(r => r.success && r.response);
+    valid = [...valid, ...retryValid];
+    console.log(`[callMultiModel] After retry: ${valid.length} models total`);
+  }
+
   if (valid.length === 0) throw new Error('All models failed');
+  if (valid.length < MIN_MODELS) {
+    console.warn(`[callMultiModel] WARNING: Only ${valid.length}/${MIN_MODELS} models responded (below minimum)`);
+  }
 
   let combinedResponse = valid[0].response;
   let synthesized = false;
 
   if (valid.length > 1) {
-    const synthPrompt = `Combine these ${valid.length} expert responses into one comprehensive answer:\n\n${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}\n\nProvide a unified markdown response with the best insights from all. Do NOT mention multiple models. Only include factually accurate information.`;
-    // Use the fastest valid model for synthesis
-    const fastestValid = valid.sort((a, b) => a.duration - b.duration)[0];
+    const synthPrompt = `You are given ${valid.length} independent expert responses to the same question. Your job is to synthesize them into ONE comprehensive, factually accurate response.
+
+RULES:
+- Cross-reference facts between responses — only include information confirmed by multiple sources
+- If responses conflict, go with the majority or flag the uncertainty
+- NEVER invent new information not present in any source response
+- Remove any fake URLs, made-up statistics, or hallucinated company names
+- Use real, well-known platforms (LinkedIn, Coursera, Udemy, Glassdoor, Indeed, etc.)
+- Output markdown format only
+
+Responses to synthesize:
+
+${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}`;
+    const fastestValid = [...valid].sort((a, b) => a.duration - b.duration)[0];
     const synthModelInfo = modelsToUse.find(m => m.name === fastestValid.name) || modelsToUse[0];
     const synthModel = getModelStr(synthModelInfo.provider, synthModelInfo.model);
     const synthResult = await callModel(client, synthModel, [
-      { role: 'system', content: 'You synthesize multiple AI responses into one cohesive response. Output only the final response in markdown. Only include factually accurate, verifiable information.' },
+      { role: 'system', content: 'You are a fact-checking synthesis engine. Combine multiple AI responses into one accurate, unified response. Strip out any hallucinated data, fake URLs, or invented statistics. Only include verifiable, factual information. Output markdown.' },
       { role: 'user', content: synthPrompt },
     ]);
     if (synthResult) { combinedResponse = synthResult; synthesized = true; }
   }
 
-  return { combinedResponse, modelResponses: valid, failedModels: failed.map(r => ({ name: r.name })), synthesized, successCount: valid.length, totalModels: modelsToUse.length };
+  return { combinedResponse, modelResponses: valid, failedModels: results.filter(r => !r.response).map(r => ({ name: r.name })), synthesized, successCount: valid.length, totalModels: modelsToUse.length };
 }
 
 async function callSingleModel(systemPrompt, userMessage, maxTokens = 3000, temperature = 0.7) {
@@ -339,13 +384,17 @@ Guidelines:
 - End longer responses with 2-3 suggested follow-up questions the user might ask next
 - Be encouraging but realistic about challenges and timelines
 
-FACTUAL ACCURACY RULES (CRITICAL):
-- ONLY recommend real, existing companies, platforms, certifications, and tools
-- ONLY cite real salary data based on known market ranges — if unsure, give a range with a caveat
-- NEVER invent fake URLs, fake courses, fake certifications, or fake statistics
-- If you are uncertain about specific data, say "approximately" or "based on industry estimates"
+FACTUAL ACCURACY RULES (CRITICAL — ZERO TOLERANCE FOR HALLUCINATION):
+- ONLY recommend REAL, EXISTING companies, platforms, certifications, and tools that you are CERTAIN exist
+- ONLY cite REAL salary data based on known market ranges — if unsure, give a range with "approximately" or "based on industry estimates"
+- NEVER invent fake URLs, fake courses, fake certifications, fake statistics, or fake company names
+- NEVER generate URLs unless you are 100% certain they are valid — instead provide the platform name and say "search for [topic] on [platform]"
+- If you are uncertain about specific data, explicitly say so rather than making it up
 - Do NOT fabricate job titles, company names, or programs that don't exist
-- When mentioning resources, use well-known ones: LinkedIn, Coursera, Udemy, edX, freeCodeCamp, LeetCode, HackerRank, Glassdoor, Indeed, etc.`;
+- When mentioning resources, ONLY use well-known verified ones: LinkedIn, Coursera, Udemy, edX, freeCodeCamp, LeetCode, HackerRank, Glassdoor, Indeed, GitHub, Stack Overflow, Khan Academy, MIT OpenCourseWare
+- For salary data, reference known sources: Glassdoor, Levels.fyi, Payscale, Bureau of Labor Statistics
+- EVERY recommendation must be something that actually exists in the real world as of 2025-2026
+- If asked about something you don't know, say "I don't have specific data on this" rather than inventing an answer`;
 
 const CAREER_PATH_SYSTEM = `You are an expert career path architect and labor market analyst. Given a user's profile, generate a comprehensive STRUCTURED career path. You MUST return valid JSON (no markdown, no code fences) with this exact structure:
 {
@@ -367,7 +416,15 @@ const CAREER_PATH_SYSTEM = `You are an expert career path architect and labor ma
 }
 Provide at least 3-4 timeline phases. For resources, include REAL URLs to actual courses/platforms (Coursera, Udemy, freeCodeCamp, YouTube, etc). Be specific and actionable.
 
-FACTUAL ACCURACY: Only include REAL certifications from actual providers (Google, AWS, Microsoft, CompTIA, Meta, etc). Only cite REAL platforms with REAL course names. Salary ranges must reflect actual market data. Do NOT invent fake certifications, fake courses, or fake URLs. If a URL might not be exact, provide the platform's main URL instead.`;
+FACTUAL ACCURACY (ZERO TOLERANCE FOR HALLUCINATION):
+- Only include REAL certifications from actual providers (Google, AWS, Microsoft, CompTIA, Meta, IBM, Salesforce, etc)
+- Only cite REAL platforms: Coursera, Udemy, edX, LinkedIn Learning, Pluralsight, freeCodeCamp, YouTube, MIT OCW, Khan Academy
+- DO NOT generate specific course URLs — instead use the platform's main URL (e.g., https://www.coursera.org, https://www.udemy.com)
+- Salary ranges MUST reflect actual market data — reference Glassdoor, Levels.fyi, Payscale, or BLS
+- Do NOT invent fake certifications, fake courses, fake job titles, or fake URLs
+- Every timeline phase must contain achievable, realistic goals
+- Growth rates and market demand must be based on real industry trends (BLS, LinkedIn Economic Graph, etc)
+- If you cannot provide exact data, say "approximately" or "based on industry estimates" — NEVER make up specific numbers`;
 
 const RESUME_ATS_SYSTEM = `You are an expert ATS (Applicant Tracking System) resume analyzer. Analyze the resume and return ONLY valid JSON (no markdown, no code fences) with this exact structure:
 {
@@ -480,6 +537,10 @@ Rules:
 6. Identify actionable skill gaps and concrete ways to fill them
 7. Consider remote vs on-site based on location preference
 8. Include roles from different company sizes (startup, mid-size, enterprise)
+9. NEVER invent fake job titles — only suggest roles that actually exist on LinkedIn, Indeed, and Glassdoor
+10. Salary data must come from real market benchmarks (Glassdoor, Levels.fyi, Payscale, BLS)
+11. Do NOT create fictional company names or types — use real categories (e.g., "Fortune 500 Tech", "Series B SaaS Startup")
+12. If you are unsure about a specific data point, say "approximately" rather than inventing numbers
 
 Return ONLY valid JSON (no markdown, no code fences):
 {
@@ -863,6 +924,28 @@ async function handleUpdateProfile(request) {
   return NextResponse.json({ success: true });
 }
 
+// --- PROFILE AVATAR ---
+async function handleUpdateAvatar(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    const body = await request.json();
+    const { avatar } = body;
+    if (!avatar || !avatar.startsWith('data:image/')) {
+      return NextResponse.json({ error: 'Invalid image data' }, { status: 400 });
+    }
+    // Limit to 2MB base64
+    if (avatar.length > 2.8 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Image too large (max 2MB)' }, { status: 400 });
+    }
+    const db = await getDb();
+    await db.collection('users').updateOne({ id: auth.id }, { $set: { 'profile.avatar': avatar } });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
 // --- CHANGE PASSWORD ---
 async function handleChangePassword(request) {
   const auth = verifyToken(request);
@@ -977,20 +1060,56 @@ async function handleChatSend(request) {
     results.push(...allResults);
     console.log(`[Chat] ${results.filter(r => r.success).length}/${results.length} models responded: ${results.filter(r => r.success).map(r => r.name).join(', ')}`);
 
-    const valid = results.filter(r => r.response);
-    const failed = results.filter(r => !r.response);
+    let valid = results.filter(r => r.response);
+    let failed = results.filter(r => !r.response);
+
+    // MINIMUM 4 MODELS: Retry failed models if fewer than 4 responded
+    const MIN_CHAT_MODELS = Math.min(4, modelsToUse.length);
+    if (valid.length < MIN_CHAT_MODELS && failed.length > 0) {
+      console.log(`[Chat] Only ${valid.length} models, need ${MIN_CHAT_MODELS}. Retrying ${failed.length} failed...`);
+      const retryPromises = failed.map(async (f) => {
+        const mInfo = modelsToUse.find(m => m.name === f.name);
+        if (!mInfo) return f;
+        const start = Date.now();
+        try {
+          const modelStr = getModelStr(mInfo.provider, mInfo.model);
+          const response = await Promise.race([
+            callModel(client, modelStr, fullMessages),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Retry timeout')), 25000))
+          ]);
+          if (response) {
+            modelHealth[mInfo.name].failCount = 0;
+            modelHealth[mInfo.name].healthy = true;
+            return { name: mInfo.name, color: mInfo.color, response, duration: Date.now() - start, success: true };
+          }
+          return f;
+        } catch (e) { return f; }
+      });
+      const retryResults = await Promise.all(retryPromises);
+      valid = [...valid, ...retryResults.filter(r => r.success && r.response)];
+      console.log(`[Chat] After retry: ${valid.length} models`);
+    }
+
     if (valid.length === 0) throw new Error('All models failed');
 
     let combinedResponse = valid[0].response;
     let synthesized = false;
 
     if (valid.length > 1) {
-      const synthPrompt = `Combine these expert career advice responses:\n\n${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}\n\nProvide one unified markdown response. Keep only factually accurate, real-world information.`;
-      // Use the fastest responding model for synthesis (it already proved it works)
-      const fastestModel = valid.sort((a, b) => a.duration - b.duration)[0];
+      const synthPrompt = `You are given ${valid.length} independent expert career advice responses. Synthesize into ONE unified response.
+
+RULES:
+- Cross-reference facts: only keep info confirmed by 2+ sources
+- NEVER invent companies, URLs, statistics, or certifications
+- Use ONLY real platforms: LinkedIn, Coursera, Udemy, edX, Glassdoor, Indeed, freeCodeCamp, LeetCode, etc.
+- If responses conflict, note the disagreement briefly
+- Format in clean markdown
+
+Responses:\n\n${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}`;
+      const fastestModel = [...valid].sort((a, b) => a.duration - b.duration)[0];
       const synthModelStr = getModelStr(ALL_MODELS.find(m => m.name === fastestModel.name)?.provider || 'openai', ALL_MODELS.find(m => m.name === fastestModel.name)?.model || 'gpt-4.1');
       const synthResult = await callModel(client, synthModelStr, [
-        { role: 'system', content: 'Synthesize multiple AI responses into one cohesive career advice response. Only include factually accurate, verifiable information. Do not invent statistics, companies, or URLs that may not exist.' },
+        { role: 'system', content: 'You are a fact-checking career advice synthesizer. Merge multiple AI responses into one accurate response. Strip hallucinated data, fake URLs, invented statistics. Only include real, verifiable career information. Output markdown.' },
         { role: 'user', content: synthPrompt },
       ]);
       if (synthResult) { combinedResponse = synthResult; synthesized = true; }
@@ -1179,6 +1298,36 @@ Make salary ranges location-appropriate if location is specified. Include at lea
       typeof r === 'string' ? { title: r, demand: 'medium', description: '' } : r
     );
 
+    // Validate and sanitize career path: strip hallucinated URLs
+    const KNOWN_DOMAINS = ['coursera.org', 'udemy.com', 'edx.org', 'linkedin.com', 'freecodecamp.org', 'youtube.com', 'github.com', 'stackoverflow.com', 'glassdoor.com', 'indeed.com', 'leetcode.com', 'hackerrank.com', 'kaggle.com', 'medium.com', 'pluralsight.com', 'skillshare.com', 'codecademy.com', 'khanacademy.org', 'mit.edu', 'stanford.edu', 'aws.amazon.com', 'cloud.google.com', 'learn.microsoft.com', 'developer.mozilla.org', 'w3schools.com'];
+    const sanitizeUrl = (url) => {
+      if (!url || typeof url !== 'string') return null;
+      try {
+        const hostname = new URL(url).hostname.replace('www.', '');
+        return KNOWN_DOMAINS.some(d => hostname.endsWith(d)) ? url : null;
+      } catch { return null; }
+    };
+    // Sanitize URLs in timeline resources
+    if (normalized.timeline) {
+      normalized.timeline.forEach(phase => {
+        if (phase.resources) {
+          phase.resources.forEach(r => {
+            if (typeof r === 'object' && r.url) {
+              r.url = sanitizeUrl(r.url);
+            }
+          });
+        }
+      });
+    }
+    // Sanitize URLs in certifications
+    if (normalized.certifications) {
+      normalized.certifications.forEach(c => {
+        if (typeof c === 'object' && c.url) {
+          c.url = sanitizeUrl(c.url);
+        }
+      });
+    }
+
     const db = await getDb();
     const careerPath = {
       id: uuidv4(), userId: auth?.id || 'anonymous', input: { skills, interests, education, experience, targetRole, location },
@@ -1188,7 +1337,7 @@ Make salary ranges location-appropriate if location is specified. Include at lea
     await db.collection('career_paths').insertOne(careerPath);
     await logAnalytics(db, 'career_path_generated', { userId: auth?.id });
 
-    return NextResponse.json({ careerPath: normalized, path: normalized, id: careerPath.id, pathId: careerPath.id, models: result.modelResponses.map(r => r.name), synthesized: result.synthesized });
+    return NextResponse.json({ careerPath: normalized, path: normalized, id: careerPath.id, pathId: careerPath.id, models: result.modelResponses.map(r => r.name), synthesized: result.synthesized, modelCount: result.successCount, totalModels: result.totalModels });
   } catch (error) {
     console.error('Career path generation error:', error.message);
     return NextResponse.json({ error: 'Failed: ' + error.message }, { status: 500 });
@@ -1652,7 +1801,7 @@ Include a mix of:
 
 Return ONLY valid JSON matching the system prompt schema.`;
 
-      const result = await callMultiModel(JOB_MATCH_SYSTEM, prompt, ['GPT-4.1', 'Claude 4 Sonnet']);
+      const result = await callMultiModel(JOB_MATCH_SYSTEM, prompt, null);
 
       if (result && result.combinedResponse) {
         try {
@@ -2993,6 +3142,7 @@ export async function POST(request) {
     if (path === '/auth/forgot-password') return handleForgotPassword(await request.json());
     if (path === '/auth/reset-password') return handleResetPassword(await request.json());
     if (path === '/auth/change-password') return handleChangePassword(request);
+    if (path === '/profile/avatar') return handleUpdateAvatar(request);
     
     // Original endpoints
     if (path === '/chat/send') return handleChatSend(request);

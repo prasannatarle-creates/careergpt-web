@@ -21,7 +21,8 @@ import {
   MapPin, ExternalLink, Clock, Bell, Bookmark, Globe,
   Filter, Building2, XCircle, MoreVertical, Heart,
   Copy, Check, Share2, Edit2, Link2,
-  BookOpen, GraduationCap, Download, RefreshCw
+  BookOpen, GraduationCap, Download, RefreshCw,
+  Users, PieChart, Layers
 } from 'lucide-react';
 
 // ============ HYDRATION-SAFE DATE FORMATTER ============
@@ -1139,6 +1140,10 @@ function ResumeAnalyzer() {
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(false);
+  const [showCompare, setShowCompare] = useState(false);
+  const [comparison, setComparison] = useState(null);
+  const [loadingCompare, setLoadingCompare] = useState(false);
+  const [trackingMetric, setTrackingMetric] = useState(null);
   const fileRef = useRef(null);
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -1155,6 +1160,28 @@ function ResumeAnalyzer() {
   };
 
   useEffect(() => { loadHistory(); }, []);
+
+  const loadComparison = async (baseResumeId) => {
+    setLoadingCompare(true);
+    try {
+      const d = await api.get(`/resume/compare/${baseResumeId}`);
+      if (d.comparison) { setComparison(d); setShowCompare(true); }
+    } catch(e) { console.error('Comparison load error:', e); }
+    finally { setLoadingCompare(false); }
+  };
+
+  const trackMetric = async (resumeId, metricType) => {
+    setTrackingMetric(`${resumeId}-${metricType}`);
+    try {
+      await api.post('/resume/track-metric', { resumeId, metricType, value: 1 });
+      if (comparison) {
+        const baseId = comparison.baseResumeId;
+        const d = await api.get(`/resume/compare/${baseId}`);
+        if (d.comparison) setComparison(d);
+      }
+    } catch(e) { console.error('Track metric error:', e); }
+    finally { setTrackingMetric(null); }
+  };
 
   const validateFile = (f) => {
     if (!f) return 'No file selected';
@@ -1362,6 +1389,9 @@ function ResumeAnalyzer() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
+                  <Button size="sm" variant="ghost" className="text-xs text-purple-400 hover:bg-purple-500/10" onClick={(e) => { e.stopPropagation(); loadComparison(r.id); }}>
+                    {loadingCompare ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Compare'}
+                  </Button>
                   {r.analysis?.atsScore != null && (
                     <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center`} style={{ borderColor: scoreBorder(r.analysis.atsScore) }}>
                       <span className={`text-sm font-bold ${scoreColor(r.analysis.atsScore)}`}>{r.analysis.atsScore}</span>
@@ -1371,6 +1401,89 @@ function ResumeAnalyzer() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Resume A/B Comparison panel
+  if (showCompare && comparison) {
+    return (
+      <div className="p-6 lg:p-8 max-w-5xl mx-auto page-transition">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-white">Resume Version Comparison</h1>
+            <p className="text-sm text-slate-400">{comparison.totalVariants} version{comparison.totalVariants !== 1 ? 's' : ''} tracked</p>
+          </div>
+          <Button onClick={() => setShowCompare(false)} variant="outline" className="border-slate-600/30 text-slate-300 hover:bg-slate-800/30 rounded-xl">
+            <ArrowRight className="w-4 h-4 mr-2 rotate-180" />Back
+          </Button>
+        </div>
+
+        <div className="space-y-4">
+          {comparison.comparison.map((v, i) => (
+            <div key={v.resumeId} className={`glass-card overflow-hidden ${i === 0 ? 'ring-1 ring-green-500/30' : ''}`}>
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${v.isBaseResume ? 'bg-blue-500/15' : 'bg-purple-500/15'}`}>
+                      <FileText className={`w-5 h-5 ${v.isBaseResume ? 'text-blue-400' : 'text-purple-400'}`} />
+                    </div>
+                    <div>
+                      <h3 className="text-white font-semibold text-sm flex items-center gap-2">
+                        {v.label}
+                        {i === 0 && <Badge className="bg-green-500/15 text-green-300 border-green-500/20 text-[9px]">Best</Badge>}
+                        {v.isBaseResume && <Badge className="bg-blue-500/15 text-blue-300 border-blue-500/20 text-[9px]">Original</Badge>}
+                      </h3>
+                      <p className="text-[10px] text-slate-500">{formatDate(v.createdAt)}</p>
+                    </div>
+                  </div>
+                  {v.atsScore > 0 && (
+                    <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center`} style={{ borderColor: v.atsScore >= 70 ? '#22c55e' : v.atsScore >= 50 ? '#eab308' : '#ef4444' }}>
+                      <span className={`text-sm font-bold ${v.atsScore >= 70 ? 'text-green-400' : v.atsScore >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>{v.atsScore}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Metrics */}
+                <div className="grid grid-cols-5 gap-2 mb-3">
+                  {[
+                    { label: 'Views', key: 'views', value: v.metrics.views },
+                    { label: 'Sent', key: 'application', value: v.metrics.applicationsSent },
+                    { label: 'Interviews', key: 'interview', value: v.metrics.interviews },
+                    { label: 'Offers', key: 'offer', value: v.metrics.offers },
+                    { label: 'Conv. Rate', value: `${v.conversionRate}%`, noTrack: true },
+                  ].map(m => (
+                    <div key={m.label} className="text-center p-2 rounded-lg bg-white/[0.02] border border-white/[0.05]">
+                      <p className="text-lg font-bold text-white">{m.value}</p>
+                      <p className="text-[9px] text-slate-500 uppercase tracking-wider">{m.label}</p>
+                      {!m.noTrack && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); trackMetric(v.resumeId, m.key); }}
+                          disabled={trackingMetric === `${v.resumeId}-${m.key}`}
+                          className="mt-1 text-[9px] px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 transition-colors"
+                        >+1</button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {v.changes && <p className="text-[10px] text-slate-500">Changes: {v.changes.label || JSON.stringify(v.changes).substring(0, 80)}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Insights */}
+        {comparison.analysis?.insights && (
+          <div className="mt-4 glass-card-static p-4">
+            <h4 className="text-sm font-semibold text-white mb-2 flex items-center gap-2"><Sparkles className="w-4 h-4 text-amber-400" />Insights</h4>
+            <div className="space-y-1.5">
+              {comparison.analysis.insights.map((insight, i) => (
+                <p key={i} className="text-xs text-slate-400 flex items-start gap-2"><span className="text-cyan-400 mt-0.5">•</span>{insight}</p>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -1686,6 +1799,20 @@ function CareerPath({ onNavigate, user }) {
   const [completedGoals, setCompletedGoals] = useState({});
   const [expandedPhase, setExpandedPhase] = useState(0);
   const [profileLoaded, setProfileLoaded] = useState(false);
+
+  // Persist completed goals to localStorage
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('cgpt_career_goals') || '{}');
+      if (Object.keys(saved).length > 0) setCompletedGoals(saved);
+    } catch(e) {}
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(completedGoals).length > 0) {
+      try { localStorage.setItem('cgpt_career_goals', JSON.stringify(completedGoals)); } catch(e) {}
+    }
+  }, [completedGoals]);
 
   // Auto-fill from user profile
   useEffect(() => {
@@ -3563,6 +3690,7 @@ function SavedJobs() {
     switch (sortBy) {
       case 'date-desc': return new Date(b.savedAt || 0) - new Date(a.savedAt || 0);
       case 'date-asc': return new Date(a.savedAt || 0) - new Date(b.savedAt || 0);
+      case 'match': return (b.matchScore || 0) - (a.matchScore || 0);
       case 'company': return (a.company || '').localeCompare(b.company || '');
       case 'title': return (a.jobTitle || '').localeCompare(b.jobTitle || '');
       default: return 0;
@@ -3621,6 +3749,7 @@ function SavedJobs() {
           <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="input-glass text-[10px] py-1.5 px-2 rounded-lg">
             <option value="date-desc">Newest First</option>
             <option value="date-asc">Oldest First</option>
+            <option value="match">Match Score</option>
             <option value="company">Company A-Z</option>
             <option value="title">Title A-Z</option>
           </select>
@@ -3652,6 +3781,7 @@ function SavedJobs() {
                         <Building2 className="w-3 h-3" /><span>{job.company}</span>
                         {job.location && <><span className="text-slate-600">|</span><MapPin className="w-3 h-3" /><span>{job.location}</span></>}
                         {job.salary && <><span className="text-slate-600">|</span><span className="text-green-400">{job.salary}</span></>}
+                        {job.matchScore && job.matchScore > 0 && <><span className="text-slate-600">|</span><span className={`font-semibold ${job.matchScore >= 80 ? 'text-green-400' : job.matchScore >= 60 ? 'text-yellow-400' : 'text-slate-400'}`}>{job.matchScore}% match</span></>}
                       </div>
 
                       {/* Inline Notes Edit */}
@@ -3948,11 +4078,30 @@ function LearningCenter() {
   const [activeTab, setActiveTab] = useState('generate');
   const [skillGaps, setSkillGaps] = useState(null);
   const [gapLoading, setGapLoading] = useState(false);
+  const [courseProgress, setCourseProgress] = useState({});
+  const [updatingProgress, setUpdatingProgress] = useState(null);
 
   useEffect(() => {
     api.get('/resumes').then(d => setResumes(d.resumes || [])).catch(() => {});
     api.get('/learning-paths').then(d => setPaths(d.paths || [])).catch(() => {});
+    api.get('/learning-progress').then(d => {
+      if (d.courses) {
+        const map = {};
+        d.courses.forEach(c => { map[`${c.courseId}_${c.platform}`] = c.progressPercentage || 0; });
+        setCourseProgress(map);
+      }
+    }).catch(() => {});
   }, []);
+
+  const updateProgress = async (courseId, platform, progress) => {
+    const key = `${courseId}_${platform}`;
+    setUpdatingProgress(key);
+    try {
+      await api.post('/course/track-progress', { courseId, platform, progressPercentage: progress });
+      setCourseProgress(prev => ({ ...prev, [key]: progress }));
+    } catch(e) { console.error('Progress update error:', e); }
+    finally { setUpdatingProgress(null); }
+  };
 
   const generatePath = async () => {
     if (!selectedResume || !targetRole.trim()) { setError('Select a resume and enter target role'); return; }
@@ -4083,13 +4232,35 @@ function LearningCenter() {
                       <div>
                         <p className="text-xs text-slate-400 font-medium mb-2 uppercase tracking-wider">Recommended Courses</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {p.learningPath.courses.slice(0, 6).map((c, i) => (
+                          {p.learningPath.courses.slice(0, 6).map((c, i) => {
+                            const courseKey = `${c.id || c.title || i}_${c.platform || c.provider || 'unknown'}`;
+                            const progress = courseProgress[courseKey] || 0;
+                            return (
                             <div key={i} className="p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
                               <p className="text-sm text-slate-200 font-medium">{c.title || c.name}</p>
                               <p className="text-[10px] text-slate-500 mt-0.5">{c.platform || c.provider} {c.duration ? `• ${c.duration}` : ''}</p>
-                              {c.url && <a href={c.url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-cyan-400 hover:underline mt-1 inline-flex items-center gap-1"><ExternalLink className="w-3 h-3" />View Course</a>}
+                              {/* Progress Bar */}
+                              <div className="mt-2">
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className="text-[10px] text-slate-500">Progress</span>
+                                  <span className={`text-[10px] font-medium ${progress >= 100 ? 'text-green-400' : progress > 0 ? 'text-cyan-400' : 'text-slate-500'}`}>{progress}%</span>
+                                </div>
+                                <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                  <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress}%`, background: progress >= 100 ? '#22c55e' : progress > 0 ? 'linear-gradient(90deg, #06b6d4, #3b82f6)' : 'transparent' }} />
+                                </div>
+                                <div className="flex items-center gap-1 mt-1.5">
+                                  {[25, 50, 75, 100].map(val => (
+                                    <button key={val} onClick={(e) => { e.stopPropagation(); updateProgress(c.id || c.title || i, c.platform || c.provider || 'unknown', val); }}
+                                      disabled={updatingProgress === courseKey}
+                                      className={`px-1.5 py-0.5 rounded text-[9px] transition-all ${progress >= val ? 'bg-cyan-500/20 text-cyan-300' : 'bg-slate-800/50 text-slate-500 hover:bg-slate-700/50 hover:text-slate-300'}`}
+                                    >{val}%</button>
+                                  ))}
+                                </div>
+                              </div>
+                              {c.url && <a href={c.url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-cyan-400 hover:underline mt-1.5 inline-flex items-center gap-1"><ExternalLink className="w-3 h-3" />View Course</a>}
                             </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -4191,8 +4362,10 @@ function Analytics() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [tabData, setTabData] = useState({});
+  const [tabLoading, setTabLoading] = useState(null);
 
   const loadData = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -4208,7 +4381,32 @@ function Analytics() {
     setRefreshing(false);
   };
 
+  const loadTabData = async (tab) => {
+    if (tabData[tab]) return; // Already loaded
+    setTabLoading(tab);
+    try {
+      const endpointMap = {
+        'active-users': ['/analytics/dau', '/analytics/wau', '/analytics/mau'],
+        'funnel': ['/analytics/funnel'],
+        'segmentation': ['/analytics/segmentation'],
+        'cohorts': ['/analytics/cohorts'],
+        'module-usage': ['/analytics/module-usage'],
+      };
+      const endpoints = endpointMap[tab] || [];
+      const results = await Promise.all(endpoints.map(ep => api.get(ep)));
+      if (tab === 'active-users') {
+        setTabData(prev => ({ ...prev, [tab]: { dau: results[0], wau: results[1], mau: results[2] } }));
+      } else {
+        setTabData(prev => ({ ...prev, [tab]: results[0] }));
+      }
+    } catch(e) {
+      console.error(`Failed to load ${tab}:`, e);
+    }
+    setTabLoading(null);
+  };
+
   useEffect(() => { loadData(); }, []);
+  useEffect(() => { if (activeTab !== 'overview') loadTabData(activeTab); }, [activeTab]);
 
   const exportData = () => {
     if (!data) return;
@@ -4238,6 +4436,15 @@ function Analytics() {
     URL.revokeObjectURL(url);
   };
 
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: BarChart3 },
+    { id: 'active-users', label: 'Active Users', icon: Users },
+    { id: 'funnel', label: 'Funnel', icon: TrendingUp },
+    { id: 'segmentation', label: 'Segments', icon: PieChart },
+    { id: 'cohorts', label: 'Cohorts', icon: Clock },
+    { id: 'module-usage', label: 'Features', icon: Layers },
+  ];
+
   if (loading) return <div className="p-6 flex items-center justify-center h-full"><div className="flex flex-col items-center gap-3"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /><p className="text-sm text-slate-500">Loading analytics...</p></div></div>;
   if (error) return <div className="p-6 text-center"><p className="text-red-400 mb-3">{error}</p><Button onClick={() => loadData()} variant="outline" className="border-slate-600 text-slate-300 rounded-xl text-xs h-9">Retry</Button></div>;
   if (!data) return <div className="p-6 text-slate-400 text-center">No analytics data</div>;
@@ -4245,6 +4452,194 @@ function Analytics() {
   const s = data.stats;
   const totalActivity = (data.dailyActivity || []).reduce((a, b) => a + b.count, 0);
   const avgDaily = (data.dailyActivity || []).length > 0 ? (totalActivity / (data.dailyActivity || []).length).toFixed(1) : 0;
+
+  const renderActiveUsers = () => {
+    const d = tabData['active-users'];
+    if (!d) return null;
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="glass-card p-5 text-center"><p className="text-3xl font-bold text-blue-400">{d.dau?.dau ?? 0}</p><p className="text-xs text-slate-400 mt-1">Daily Active Users</p><p className="text-[10px] text-slate-500">{d.dau?.totalEvents ?? 0} events today</p></div>
+          <div className="glass-card p-5 text-center"><p className="text-3xl font-bold text-cyan-400">{d.wau?.wau ?? 0}</p><p className="text-xs text-slate-400 mt-1">Weekly Active Users</p><p className="text-[10px] text-slate-500">Avg {d.wau?.avgDailyUsers ?? 0}/day</p></div>
+          <div className="glass-card p-5 text-center"><p className="text-3xl font-bold text-violet-400">{d.mau?.mau ?? 0}</p><p className="text-xs text-slate-400 mt-1">Monthly Active Users</p><p className="text-[10px] text-slate-500">{d.mau?.totalEvents ?? 0} total events</p></div>
+        </div>
+        {d.wau?.dailyBreakdown && (
+          <div className="glass-card-static p-5">
+            <h4 className="text-sm font-semibold text-white mb-3">Weekly Breakdown</h4>
+            <div className="flex items-end gap-3 h-28">
+              {Object.entries(d.wau.dailyBreakdown).map(([day, count], i) => {
+                const max = Math.max(...Object.values(d.wau.dailyBreakdown), 1);
+                return (<div key={i} className="flex-1 flex flex-col items-center gap-1"><div className="w-full bg-gradient-to-t from-cyan-500/40 to-cyan-500/10 rounded-t-lg" style={{ height: `${Math.max((count / max) * 100, 5)}%` }} /><span className="text-[9px] text-slate-500">{day.slice(5)}</span><span className="text-[9px] text-slate-300">{count}</span></div>);
+              })}
+            </div>
+          </div>
+        )}
+        {d.mau?.weeklyBreakdown && (
+          <div className="glass-card-static p-5">
+            <h4 className="text-sm font-semibold text-white mb-3">Monthly Weekly Breakdown</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {Object.entries(d.mau.weeklyBreakdown).map(([week, count]) => (
+                <div key={week} className="text-center p-3 rounded-lg bg-white/[0.02] border border-white/[0.05]"><p className="text-lg font-bold text-violet-400">{count}</p><p className="text-[10px] text-slate-500">{week}</p></div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderFunnel = () => {
+    const d = tabData['funnel'];
+    if (!d) return null;
+    const stages = d.stages || {};
+    const conversions = d.conversions || {};
+    const dropoff = d.dropoff || {};
+    const funnelSteps = [
+      { label: 'Signups', value: stages.signup, color: 'bg-blue-500', width: '100%' },
+      { label: 'Resume Uploaded', value: stages.resumeUploaded, color: 'bg-teal-500', width: `${conversions.signupToResume}%` },
+      { label: 'Interview Started', value: stages.interviewStarted, color: 'bg-amber-500', width: `${conversions.resumeToInterview}%` },
+      { label: 'Offers Received', value: stages.offersReceived, color: 'bg-green-500', width: `${conversions.interviewToOffer}%` },
+    ];
+    return (
+      <div className="space-y-6">
+        <div className="glass-card-static p-5">
+          <h4 className="text-sm font-semibold text-white mb-4">Conversion Funnel</h4>
+          <div className="space-y-3">
+            {funnelSteps.map((step, i) => (
+              <div key={i}>
+                <div className="flex justify-between text-sm mb-1"><span className="text-slate-300">{step.label}</span><span className="text-white font-medium">{step.value ?? 0}</span></div>
+                <div className="h-6 bg-white/[0.05] rounded-lg overflow-hidden"><div className={`h-full ${step.color}/30 rounded-lg transition-all duration-700`} style={{ width: step.width }} /></div>
+                {i < funnelSteps.length - 1 && <p className="text-[10px] text-slate-500 mt-1">↓ {Object.values(dropoff)[i] ?? 0}% drop-off</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: 'Signup → Resume', value: `${conversions.signupToResume ?? 0}%`, color: 'text-teal-400' },
+            { label: 'Resume → Interview', value: `${conversions.resumeToInterview ?? 0}%`, color: 'text-amber-400' },
+            { label: 'Interview → Offer', value: `${conversions.interviewToOffer ?? 0}%`, color: 'text-green-400' },
+            { label: 'Overall', value: `${conversions.overallConversion ?? 0}%`, color: 'text-cyan-400' },
+          ].map((c, i) => (
+            <div key={i} className="glass-card p-4 text-center"><p className={`text-xl font-bold ${c.color}`}>{c.value}</p><p className="text-[10px] text-slate-500 mt-1">{c.label}</p></div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderSegmentation = () => {
+    const d = tabData['segmentation'];
+    if (!d) return null;
+    const segments = d.segments || {};
+    const total = Object.values(segments).reduce((a, b) => a + b, 0) || 1;
+    const colors = ['bg-blue-400', 'bg-teal-400', 'bg-violet-400', 'bg-amber-400', 'bg-green-400', 'bg-pink-400', 'bg-cyan-400', 'bg-red-400'];
+    return (
+      <div className="space-y-6">
+        <div className="glass-card-static p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-sm font-semibold text-white">User Segmentation: {d.segmentType || 'role'}</h4>
+            <Badge className="bg-slate-700/50 text-slate-300 text-[10px]">{d.totalUsers ?? 0} users</Badge>
+          </div>
+          <div className="space-y-3">
+            {Object.entries(segments).sort((a, b) => b[1] - a[1]).map(([seg, count], i) => {
+              const pct = Math.round((count / total) * 100);
+              return (
+                <div key={seg}>
+                  <div className="flex justify-between text-sm mb-1"><span className="text-slate-300 capitalize">{seg.replace(/_/g, ' ')}</span><span className="text-slate-400">{count} ({pct}%)</span></div>
+                  <div className="h-2 bg-white/[0.05] rounded-full overflow-hidden"><div className={`h-full ${colors[i % colors.length]}/40 rounded-full`} style={{ width: `${pct}%` }} /></div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        {d.largestSegment && (
+          <div className="glass-card p-4 border-l-2 border-blue-500/50">
+            <p className="text-xs text-slate-400">Largest Segment</p>
+            <p className="text-white font-medium capitalize">{d.largestSegment[0]?.replace(/_/g, ' ')}</p>
+            <p className="text-sm text-blue-400">{d.largestSegment[1]} users</p>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderCohorts = () => {
+    const d = tabData['cohorts'];
+    if (!d) return null;
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="glass-card p-4 text-center"><p className="text-2xl font-bold text-blue-400">{d.totalCohorts ?? 0}</p><p className="text-[10px] text-slate-500">Total Cohorts</p></div>
+          <div className="glass-card p-4 text-center"><p className="text-2xl font-bold text-green-400">{d.avgWeek1Retention ?? 0}%</p><p className="text-[10px] text-slate-500">Avg Week 1 Retention</p></div>
+          <div className="glass-card p-4 text-center"><p className="text-2xl font-bold text-amber-400">{d.avgWeek4Retention ?? 0}%</p><p className="text-[10px] text-slate-500">Avg Week 4 Retention</p></div>
+        </div>
+        <div className="glass-card-static p-5">
+          <h4 className="text-sm font-semibold text-white mb-4">Cohort Retention</h4>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead><tr className="text-slate-500 border-b border-white/[0.05]"><th className="text-left p-2">Signup Week</th><th className="text-center p-2">Users</th><th className="text-center p-2">Week 1</th><th className="text-center p-2">Week 2</th><th className="text-center p-2">Week 4</th></tr></thead>
+              <tbody>
+                {(d.cohorts || []).slice(0, 10).map((c, i) => (
+                  <tr key={i} className="border-b border-white/[0.03] hover:bg-white/[0.02]">
+                    <td className="p-2 text-slate-300">{c.signupWeek}</td>
+                    <td className="p-2 text-center text-white font-medium">{c.signups}</td>
+                    <td className="p-2 text-center"><span className={c.week1Retention >= 50 ? 'text-green-400' : 'text-amber-400'}>{c.week1Retention}%</span></td>
+                    <td className="p-2 text-center"><span className={c.week2Retention >= 40 ? 'text-green-400' : 'text-amber-400'}>{c.week2Retention}%</span></td>
+                    <td className="p-2 text-center"><span className={c.week4Retention >= 30 ? 'text-green-400' : 'text-red-400'}>{c.week4Retention}%</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderModuleUsage = () => {
+    const d = tabData['module-usage'];
+    if (!d) return null;
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="glass-card p-4 text-center"><p className="text-2xl font-bold text-gradient">{d.totalEvents ?? 0}</p><p className="text-[10px] text-slate-500">Total Events</p></div>
+          <div className="glass-card p-4 text-center"><p className="text-2xl font-bold text-cyan-400">{d.uniqueFeatures ?? 0}</p><p className="text-[10px] text-slate-500">Unique Features</p></div>
+          <div className="glass-card p-4 text-center"><p className="text-2xl font-bold text-amber-400">{d.topFeatures?.[0]?.percentage ?? 0}%</p><p className="text-[10px] text-slate-500">Top Feature Share</p></div>
+        </div>
+        {d.topFeatures?.length > 0 && (
+          <div className="glass-card-static p-5">
+            <h4 className="text-sm font-semibold text-white mb-4">Top Features</h4>
+            <div className="space-y-3">
+              {d.topFeatures.map((f, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="text-lg font-bold text-slate-600 w-6">{i + 1}</span>
+                  <div className="flex-1">
+                    <div className="flex justify-between text-sm mb-1"><span className="text-slate-300">{f.name}</span><span className="text-slate-400">{f.count} ({f.percentage}%)</span></div>
+                    <Progress value={f.percentage} className="h-1.5" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="glass-card-static p-5">
+          <h4 className="text-sm font-semibold text-white mb-4">All Feature Usage</h4>
+          <div className="space-y-2">
+            {Object.entries(d.usage || {}).map(([feat, count]) => {
+              const max = Math.max(...Object.values(d.usage || {}), 1);
+              return (
+                <div key={feat}>
+                  <div className="flex justify-between text-xs mb-1"><span className="text-slate-400">{feat}</span><span className="text-slate-500">{count}</span></div>
+                  <Progress value={(count / max) * 100} className="h-1" />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto page-transition">
@@ -4262,6 +4657,29 @@ function Analytics() {
           </Button>
         </div>
       </div>
+
+      {/* Tab Navigation */}
+      <div className="flex gap-1 mb-6 overflow-x-auto pb-1">
+        {tabs.map(tab => (
+          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${activeTab === tab.id ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 hover:text-slate-300 hover:bg-white/[0.03]'}`}>
+            <tab.icon className="w-3.5 h-3.5" />{tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Loading */}
+      {tabLoading && (
+        <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-cyan-400" /></div>
+      )}
+
+      {/* Tab Content */}
+      {activeTab === 'active-users' && !tabLoading && tabData['active-users'] && renderActiveUsers()}
+      {activeTab === 'funnel' && !tabLoading && tabData['funnel'] && renderFunnel()}
+      {activeTab === 'segmentation' && !tabLoading && tabData['segmentation'] && renderSegmentation()}
+      {activeTab === 'cohorts' && !tabLoading && tabData['cohorts'] && renderCohorts()}
+      {activeTab === 'module-usage' && !tabLoading && tabData['module-usage'] && renderModuleUsage()}
+
+      {activeTab === 'overview' && <>
       {/* Engagement Summary */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="glass-card-static p-4 text-center">
@@ -4355,6 +4773,7 @@ function Analytics() {
           </div>
         </div>
       </div>
+      </>}
     </div>
   );
 }
@@ -4381,6 +4800,10 @@ function UserProfile({ user, onUpdate }) {
   const [pwMsg, setPwMsg] = useState(null);
   // Validation
   const [nameError, setNameError] = useState('');
+  // Profile picture
+  const [profilePic, setProfilePic] = useState(user?.profile?.avatar || null);
+  const [uploadingPic, setUploadingPic] = useState(false);
+  const picInputRef = useRef(null);
 
   useEffect(() => {
     api.get('/resumes').then(d => setResumes(d.resumes || [])).catch(() => {});
@@ -4390,6 +4813,7 @@ function UserProfile({ user, onUpdate }) {
       // Populate form fields from server profile if local state is empty
       const p = d.profile || d.user?.profile;
       if (p) {
+        if (p.avatar) setProfilePic(p.avatar);
         if (!skills && p.skills) setSkills(Array.isArray(p.skills) ? p.skills.join(', ') : p.skills);
         if (!interests && p.interests) setInterests(Array.isArray(p.interests) ? p.interests.join(', ') : p.interests);
         if (!education && p.education) setEducation(p.education);
@@ -4480,6 +4904,29 @@ function UserProfile({ user, onUpdate }) {
     finally { setPwLoading(false); }
   };
 
+  const handlePicUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) return;
+    if (file.size > 2 * 1024 * 1024) { setNameError('Image must be under 2MB'); return; }
+    setUploadingPic(true);
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64 = reader.result;
+        const d = await api.post('/profile/avatar', { avatar: base64 });
+        if (d.error) throw new Error(d.error);
+        setProfilePic(base64);
+        if (onUpdate) onUpdate({ ...user, profile: { ...user?.profile, avatar: base64 } });
+        setUploadingPic(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setNameError(err.message || 'Failed to upload picture');
+      setUploadingPic(false);
+    }
+  };
+
   return (
     <div className="p-6 lg:p-8 max-w-4xl mx-auto page-transition">
       <div className="mb-8">
@@ -4494,8 +4941,18 @@ function UserProfile({ user, onUpdate }) {
           <div className="glass-card overflow-hidden">
             <div className="p-5">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-cyan-500/20">
-                  {initials}
+                <div className="relative group cursor-pointer" onClick={() => picInputRef.current?.click()}>
+                  {profilePic ? (
+                    <img src={profilePic} alt="Avatar" className="w-16 h-16 rounded-2xl object-cover shadow-lg shadow-cyan-500/20" />
+                  ) : (
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-cyan-500/20">
+                      {initials}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 rounded-2xl bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                    {uploadingPic ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : <Upload className="w-5 h-5 text-white" />}
+                  </div>
+                  <input ref={picInputRef} type="file" accept="image/*" className="hidden" onChange={handlePicUpload} />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-white">{user?.name || 'User'}</h3>
