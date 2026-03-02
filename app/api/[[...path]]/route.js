@@ -151,6 +151,8 @@ const ALL_MODELS = [
   { provider: 'x-ai', model: 'grok-3-mini', name: 'Grok 3 Mini', color: '#ef4444', guaranteed: false },
   { provider: 'perplexity', model: 'sonar-pro', name: 'Perplexity Sonar', color: '#22d3ee', guaranteed: false },
 ];
+const GUARANTEED_MODELS = ALL_MODELS.filter(m => m.guaranteed);
+let modelRotationIndex = 0;
 
 async function callModel(client, modelStr, messages, maxTokens = 3000, temperature = 0.7) {
   try {
@@ -221,10 +223,13 @@ async function callMultiModel(systemPrompt, userMessage, activeModelNames = null
   let synthesized = false;
 
   if (valid.length > 1) {
-    const synthPrompt = `Combine these ${valid.length} expert responses into one comprehensive answer:\n\n${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}\n\nProvide a unified markdown response with the best insights from all. Do NOT mention multiple models.`;
-    const synthModel = getModelStr('openai', 'gpt-4.1');
+    const synthPrompt = `Combine these ${valid.length} expert responses into one comprehensive answer:\n\n${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}\n\nProvide a unified markdown response with the best insights from all. Do NOT mention multiple models. Only include factually accurate information.`;
+    // Use the fastest valid model for synthesis
+    const fastestValid = valid.sort((a, b) => a.duration - b.duration)[0];
+    const synthModelInfo = modelsToUse.find(m => m.name === fastestValid.name) || modelsToUse[0];
+    const synthModel = getModelStr(synthModelInfo.provider, synthModelInfo.model);
     const synthResult = await callModel(client, synthModel, [
-      { role: 'system', content: 'You synthesize multiple AI responses into one cohesive response. Output only the final response in markdown.' },
+      { role: 'system', content: 'You synthesize multiple AI responses into one cohesive response. Output only the final response in markdown. Only include factually accurate, verifiable information.' },
       { role: 'user', content: synthPrompt },
     ]);
     if (synthResult) { combinedResponse = synthResult; synthesized = true; }
@@ -235,11 +240,26 @@ async function callMultiModel(systemPrompt, userMessage, activeModelNames = null
 
 async function callSingleModel(systemPrompt, userMessage, maxTokens = 3000, temperature = 0.7) {
   const client = getOpenAIClient();
-  const modelStr = getModelStr('openai', 'gpt-4.1');
-  return await callModel(client, modelStr, [
+  // Rotate among all 3 guaranteed models (GPT-4.1, Claude 4 Sonnet, Gemini 2.5 Flash)
+  // so every model participates across all modules, not just GPT-4.1
+  const model = GUARANTEED_MODELS[modelRotationIndex % GUARANTEED_MODELS.length];
+  modelRotationIndex++;
+  const modelStr = getModelStr(model.provider, model.model);
+  console.log(`[callSingleModel] Using ${model.name} (rotation #${modelRotationIndex})`);
+  const result = await callModel(client, modelStr, [
     { role: 'system', content: systemPrompt },
     { role: 'user', content: userMessage },
   ], maxTokens, temperature);
+  // If chosen model fails, fallback to GPT-4.1
+  if (!result && model.model !== 'gpt-4.1') {
+    console.warn(`[callSingleModel] ${model.name} failed, falling back to GPT-4.1`);
+    const fallbackStr = getModelStr('openai', 'gpt-4.1');
+    return await callModel(client, fallbackStr, [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userMessage },
+    ], maxTokens, temperature);
+  }
+  return result;
 }
 
 // ============ AUTH HELPERS ============
@@ -285,7 +305,15 @@ Guidelines:
 - Format with markdown: use headers, bullet points, bold for key terms, and numbered steps
 - When suggesting career paths, include estimated timelines and milestones
 - End longer responses with 2-3 suggested follow-up questions the user might ask next
-- Be encouraging but realistic about challenges and timelines`;
+- Be encouraging but realistic about challenges and timelines
+
+FACTUAL ACCURACY RULES (CRITICAL):
+- ONLY recommend real, existing companies, platforms, certifications, and tools
+- ONLY cite real salary data based on known market ranges — if unsure, give a range with a caveat
+- NEVER invent fake URLs, fake courses, fake certifications, or fake statistics
+- If you are uncertain about specific data, say "approximately" or "based on industry estimates"
+- Do NOT fabricate job titles, company names, or programs that don't exist
+- When mentioning resources, use well-known ones: LinkedIn, Coursera, Udemy, edX, freeCodeCamp, LeetCode, HackerRank, Glassdoor, Indeed, etc.`;
 
 const CAREER_PATH_SYSTEM = `You are an expert career path architect and labor market analyst. Given a user's profile, generate a comprehensive STRUCTURED career path. You MUST return valid JSON (no markdown, no code fences) with this exact structure:
 {
@@ -305,7 +333,9 @@ const CAREER_PATH_SYSTEM = `You are an expert career path architect and labor ma
   "dayInLife": "A brief 2-3 sentence description of a typical day in this career",
   "marketDemand": {"level": "high/medium/low", "growthRate": "15% by 2030", "topLocations": ["City 1", "City 2", "City 3"], "remoteAvailability": "high/medium/low"}
 }
-Provide at least 3-4 timeline phases. For resources, include REAL URLs to actual courses/platforms (Coursera, Udemy, freeCodeCamp, YouTube, etc). Be specific and actionable.`;
+Provide at least 3-4 timeline phases. For resources, include REAL URLs to actual courses/platforms (Coursera, Udemy, freeCodeCamp, YouTube, etc). Be specific and actionable.
+
+FACTUAL ACCURACY: Only include REAL certifications from actual providers (Google, AWS, Microsoft, CompTIA, Meta, etc). Only cite REAL platforms with REAL course names. Salary ranges must reflect actual market data. Do NOT invent fake certifications, fake courses, or fake URLs. If a URL might not be exact, provide the platform's main URL instead.`;
 
 const RESUME_ATS_SYSTEM = `You are an expert ATS (Applicant Tracking System) resume analyzer. Analyze the resume and return ONLY valid JSON (no markdown, no code fences) with this exact structure:
 {
@@ -350,7 +380,8 @@ const RESUME_ATS_SYSTEM = `You are an expert ATS (Applicant Tracking System) res
     "suggestions": ["Shorten some bullet points", "Use simpler language in summary"]
   }
 }
-Evaluate ALL checklist items honestly based on the actual resume content. Set passed to true/false accurately.`;
+Evaluate ALL checklist items honestly based on the actual resume content. Set passed to true/false accurately.
+FACTUAL ACCURACY: Base your analysis ONLY on what is actually present in the resume text. Do NOT assume or invent content that isn't there. Score sections as 0 if they are missing. Only suggest keywords and skills that are genuinely relevant to the target role in the real job market.`;
 
 const INTERVIEW_SYSTEM = `You are an expert senior interviewer at a top-tier company conducting a realistic mock interview. 
 You specialize in adapting to the specific role, level, and interview type.
@@ -366,6 +397,7 @@ Rules:
 8. Start with an easier warm-up question, then progressively increase difficulty
 9. Make questions specific to the role (e.g., React questions for Frontend Developer, SQL for Data Engineer)
 10. Be professional and create a realistic interview atmosphere
+11. Only ask questions that are realistic and commonly asked in real interviews — do NOT make up unrealistic scenarios
 
 Format your question clearly in markdown. Include context when needed.`;
 
@@ -380,6 +412,8 @@ Scoring Guide:
 - 1-2: Poor — fundamental misunderstanding
 
 Score each dimension independently based on actual answer quality. Do NOT default to middle scores.
+Provide HONEST scores — if the answer is weak, score it low. If it's strong, score it high.
+Your sample answer must be realistic and achievable, not an idealized perfect answer.
 
 Return this exact JSON structure:
 {
@@ -435,7 +469,9 @@ Return ONLY valid JSON (no markdown, no code fences):
   "summary": "Overall career market analysis for this profile (2-3 sentences)",
   "topSkillGaps": ["Most important skill to learn first", "Second priority"],
   "recommendations": ["Specific actionable recommendation with resource or next step"]
-}`;
+}
+
+FACTUAL ACCURACY: Only suggest REAL job titles that exist in the current job market. Salary ranges must reflect actual market data for the specified location. Do NOT invent job titles or salary ranges. Company types should be realistic categories, not specific company names unless the user asks. Skills and certifications mentioned must be real and currently relevant in the industry.`;
 
 // ============ ROUTE HANDLERS ============
 
@@ -879,7 +915,7 @@ async function handleChatSend(request) {
       ...modelsToUse.filter(m => !m.guaranteed)
     ];
 
-    // Sequential with early exit — much faster than Promise.all
+    // Sequential with early exit — query multiple models for consensus
     const results = [];
     const timeoutMs = 15000;
     for (const m of modelsToUse) {
@@ -894,8 +930,13 @@ async function handleChatSend(request) {
         console.warn(`Chat model ${m.name} failed:`, e.message);
         results.push({ name: m.name, color: m.color, response: null, duration: Date.now() - start, success: false });
       }
-      // Early exit once we have a successful response
-      if (results.filter(r => r.success).length >= 1) break;
+      // Wait for at least 2 successful models for synthesis, or all guaranteed models tried
+      const validCount = results.filter(r => r.success).length;
+      const guaranteedDone = modelsToUse.filter(gm => gm.guaranteed).every(gm => results.some(r => r.name === gm.name));
+      if (validCount >= 2 || (validCount >= 1 && guaranteedDone)) {
+        console.log(`[Chat] Got ${validCount} model responses, ${results.length} tried — proceeding to synthesis`);
+        break;
+      }
     }
 
     const valid = results.filter(r => r.response);
@@ -906,9 +947,12 @@ async function handleChatSend(request) {
     let synthesized = false;
 
     if (valid.length > 1) {
-      const synthPrompt = `Combine these expert career advice responses:\n\n${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}\n\nProvide one unified markdown response.`;
-      const synthResult = await callModel(client, getModelStr('openai', 'gpt-4.1'), [
-        { role: 'system', content: 'Synthesize multiple AI responses into one cohesive career advice response.' },
+      const synthPrompt = `Combine these expert career advice responses:\n\n${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}\n\nProvide one unified markdown response. Keep only factually accurate, real-world information.`;
+      // Use the fastest responding model for synthesis (it already proved it works)
+      const fastestModel = valid.sort((a, b) => a.duration - b.duration)[0];
+      const synthModelStr = getModelStr(ALL_MODELS.find(m => m.name === fastestModel.name)?.provider || 'openai', ALL_MODELS.find(m => m.name === fastestModel.name)?.model || 'gpt-4.1');
+      const synthResult = await callModel(client, synthModelStr, [
+        { role: 'system', content: 'Synthesize multiple AI responses into one cohesive career advice response. Only include factually accurate, verifiable information. Do not invent statistics, companies, or URLs that may not exist.' },
         { role: 'user', content: synthPrompt },
       ]);
       if (synthResult) { combinedResponse = synthResult; synthesized = true; }
@@ -926,11 +970,13 @@ async function handleChatSend(request) {
 
     await logAnalytics(db, 'chat_message', { userId, models: valid.map(r => r.name) });
 
-    // Generate follow-up suggestions based on the conversation
+    // Generate follow-up suggestions — rotate model
     let followUpSuggestions = [];
     try {
+      const suggestModel = GUARANTEED_MODELS[modelRotationIndex % GUARANTEED_MODELS.length];
+      modelRotationIndex++;
       const suggestPrompt = `Based on this career conversation, suggest exactly 3 short follow-up questions (max 10 words each) the user might ask next. Return ONLY a JSON array of strings, no markdown:\nUser: ${message}\nAssistant: ${combinedResponse.substring(0, 500)}`;
-      const suggestResult = await callModel(client, getModelStr('openai', 'gpt-4.1'), [
+      const suggestResult = await callModel(client, getModelStr(suggestModel.provider, suggestModel.model), [
         { role: 'system', content: 'Return only a JSON array of 3 short follow-up questions. No markdown, no explanation.' },
         { role: 'user', content: suggestPrompt },
       ], 200);
@@ -1409,22 +1455,40 @@ Evaluate thoroughly. Be honest and specific in scoring. Return ONLY valid JSON m
     const recentMsgs = session.messages.filter(m => !m.hidden).slice(-6).map(m => ({ role: m.role, content: m.content }));
     const client = getOpenAIClient();
     const maxTok = isLast ? 4000 : 3000;
-    const response = await callModel(client, getModelStr('openai', 'gpt-4.1'), [
+    // Rotate among guaranteed models for interview evaluation
+    const evalModel = GUARANTEED_MODELS[modelRotationIndex % GUARANTEED_MODELS.length];
+    modelRotationIndex++;
+    const evalModelStr = getModelStr(evalModel.provider, evalModel.model);
+    console.log(`[Interview] Evaluating with ${evalModel.name}`);
+    const response = await callModel(client, evalModelStr, [
       { role: 'system', content: INTERVIEW_FEEDBACK_SYSTEM },
       ...recentMsgs,
       { role: 'user', content: evalPrompt },
     ], maxTok, 0.4);
 
     if (!response) {
-      return NextResponse.json({ error: 'Failed to evaluate answer: LLM did not return a response' }, { status: 500 });
+      // Fallback to GPT-4.1 if chosen model fails
+      const fallbackStr = getModelStr('openai', 'gpt-4.1');
+      const fallbackResponse = await callModel(client, fallbackStr, [
+        { role: 'system', content: INTERVIEW_FEEDBACK_SYSTEM },
+        ...recentMsgs,
+        { role: 'user', content: evalPrompt },
+      ], maxTok, 0.4);
+      if (!fallbackResponse) {
+        return NextResponse.json({ error: 'Failed to evaluate answer: LLM did not return a response' }, { status: 500 });
+      }
+      // Use fallback response
+      var responseText = fallbackResponse;
+    } else {
+      var responseText = response;
     }
 
     let feedback;
     try {
-      const jsonStr = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonStr = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       feedback = JSON.parse(jsonStr);
     } catch {
-      feedback = { score: 5, maxScore: 10, feedback: response, raw: true };
+      feedback = { score: 5, maxScore: 10, feedback: responseText, raw: true };
     }
 
     // Ensure nextQuestion exists for non-final questions
@@ -2146,6 +2210,64 @@ async function handleExportInterviewReport(request, reportId) {
   }
 }
 
+// --- MODEL HEALTH TEST ---
+async function handleTestModels(request) {
+  const auth = verifyToken(request);
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const client = getOpenAIClient();
+  if (!client) return NextResponse.json({ error: 'No LLM API key configured' }, { status: 500 });
+
+  const testPrompt = 'Respond with exactly: "Model operational." Nothing else.';
+  const results = [];
+
+  for (const m of ALL_MODELS) {
+    const start = Date.now();
+    try {
+      const modelStr = getModelStr(m.provider, m.model);
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout (15s)')), 15000));
+      const modelPromise = callModel(client, modelStr, [
+        { role: 'system', content: 'You are a health check assistant. Respond exactly as instructed.' },
+        { role: 'user', content: testPrompt },
+      ], 50, 0.1);
+      const response = await Promise.race([modelPromise, timeoutPromise]);
+      results.push({
+        name: m.name,
+        provider: m.provider,
+        model: m.model,
+        color: m.color,
+        guaranteed: m.guaranteed,
+        status: response ? 'active' : 'no_response',
+        responsePreview: response ? response.substring(0, 100) : null,
+        latencyMs: Date.now() - start,
+      });
+    } catch (e) {
+      results.push({
+        name: m.name,
+        provider: m.provider,
+        model: m.model,
+        color: m.color,
+        guaranteed: m.guaranteed,
+        status: 'error',
+        error: e.message,
+        latencyMs: Date.now() - start,
+      });
+    }
+  }
+
+  const active = results.filter(r => r.status === 'active').length;
+  const total = results.length;
+
+  return NextResponse.json({
+    summary: `${active}/${total} models responding`,
+    activeCount: active,
+    totalCount: total,
+    models: results,
+    testedAt: new Date().toISOString(),
+    rotationIndex: modelRotationIndex,
+  });
+}
+
 // --- ADMIN ANALYTICS ---
 async function handleGetAnalytics(request) {
   const auth = verifyToken(request);
@@ -2787,6 +2909,7 @@ export async function GET(request) {
       return NextResponse.json({ message: 'User verified', email, timestamp: new Date() });
     }
     if (path === '/models') return NextResponse.json({ models: ALL_MODELS.map(m => ({ name: m.name, provider: m.provider, model: m.model, color: m.color, guaranteed: m.guaranteed })) });
+    if (path === '/models/test') return handleTestModels(request);
     if (path === '/profile') return handleGetProfile(request);
     if (path === '/chat/sessions') return handleGetSessions(request);
     if (path.startsWith('/chat/sessions/')) return handleGetSession(request, path.split('/chat/sessions/')[1]);
