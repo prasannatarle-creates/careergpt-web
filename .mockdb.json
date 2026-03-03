@@ -1720,6 +1720,291 @@
       },
       "analyzedAt": "2026-02-28T07:39:27.307Z",
       "targetRole": ""
+    },
+    {
+      "id": "af0385fa-1d8f-440c-b1e3-038624069c0f",
+      "userId": "0d874867-fe9c-4d2a-850a-cd38d48d64a7",
+      "fileName": "test_resume.txt",
+      "fileSize": 406,
+      "textContent": "John Doe johndoe@email.com (555) 123-4567 Summary Experienced software developer with 3 years in React and Node.js Experience Software Developer at TechCorp (2022-2025) - Built REST APIs using Node.js and Express - Developed React components for dashboard - Improved page load time by 40% Education BS Computer Science, State University (2022) Skills JavaScript, React, Node.js, PostgreSQL, Git, Docker",
+      "analysis": null,
+      "createdAt": "2026-03-03T11:25:41.674Z"
+    },
+    {
+      "id": "8a2c4856-2e93-4f07-8885-750445d5d974",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "fileName": "test_resume.txt",
+      "fileSize": 542,
+      "textContent": "John Doe johndoe@email.com (555) 123-4567 Summary Experienced software developer with 3 years in React and Node.js. Proficient in modern web technologies. Experience Software Developer at TechCorp (2022-2025) - Built REST APIs using Node.js and Express serving 100k requests/day - Developed React components for analytics dashboard reducing load time by 40% - Implemented CI/CD pipelines with GitHub Actions Education BS Computer Science, State University (2022) Skills JavaScript, React, Node.js, PostgreSQL, Git, Docker, TypeScript, AWS",
+      "analysis": null,
+      "createdAt": "2026-03-03T11:37:42.103Z"
+    },
+    {
+      "id": "6dd610c3-cd44-45d2-a139-ab2e8533f56b",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "fileName": "test_resume.txt",
+      "fileSize": 542,
+      "textContent": "John Doe johndoe@email.com (555) 123-4567 Summary Experienced software developer with 3 years in React and Node.js. Proficient in modern web technologies. Experience Software Developer at TechCorp (2022-2025) - Built REST APIs using Node.js and Express serving 100k requests/day - Developed React components for analytics dashboard reducing load time by 40% - Implemented CI/CD pipelines with GitHub Actions Education BS Computer Science, State University (2022) Skills JavaScript, React, Node.js, PostgreSQL, Git, Docker, TypeScript, AWS",
+      "analysis": {
+        "atsScore": 72,
+        "sections": {
+          "contact": {
+            "score": 90,
+            "feedback": "Contact information is complete and clearly presented, including email and phone number.",
+            "present": true
+          },
+          "summary": {
+            "score": 70,
+            "feedback": "Summary is concise and highlights relevant experience, but could be more tailored to frontend development and include specific frontend frameworks or achievements.",
+            "present": true
+          },
+          "experience": {
+            "score": 80,
+            "feedback": "Relevant work experience is described with strong action verbs and quantifiable results. More detail on frontend-specific tasks would strengthen this section.",
+            "present": true
+          },
+          "education": {
+            "score": 85,
+            "feedback": "Education section is clear and includes degree, field, institution, and graduation year.",
+            "present": true
+          },
+          "skills": {
+            "score": 60,
+            "feedback": "Skills section lists relevant technologies, but could include more frontend-specific tools (e.g., CSS, HTML, Redux, SASS, Responsive Design).",
+            "present": true
+          },
+          "projects": {
+            "score": 0,
+            "feedback": "No projects section present. Adding personal or open source projects would showcase practical frontend skills.",
+            "present": false
+          }
+        },
+        "keywords": {
+          "found": [
+            "React",
+            "JavaScript",
+            "Node.js",
+            "TypeScript",
+            "Git",
+            "Docker",
+            "AWS",
+            "REST APIs"
+          ],
+          "missing": [
+            "HTML",
+            "CSS",
+            "Redux",
+            "SASS",
+            "Responsive Design",
+            "Webpack",
+            "Testing (Jest/Enzyme)",
+            "Accessibility",
+            "Cross-browser compatibility"
+          ],
+          "suggestions": [
+            "Add HTML and CSS to your skills section to highlight core frontend abilities.",
+            "Include experience with Redux or state management libraries.",
+            "Mention responsive design and accessibility if applicable.",
+            "Add a projects section to showcase hands-on frontend work."
+          ]
+        },
+        "strengths": [
+          "Strong experience with React and Node.js",
+          "Quantifiable achievements (e.g., reducing load time, serving 100k requests/day)",
+          "Proficient with modern development tools (Git, Docker, AWS)"
+        ],
+        "weaknesses": [
+          "Missing core frontend keywords (HTML, CSS, Redux)",
+          "No projects section to demonstrate additional frontend work",
+          "Summary could be more tailored to frontend development"
+        ],
+        "rewrittenBullets": [
+          {
+            "original": "Developed React components for analytics dashboard reducing load time by 40%",
+            "improved": "Designed and implemented reusable React components for a responsive analytics dashboard, reducing page load time by 40% and improving user experience.",
+            "reason": "Adds specificity (reusable, responsive), mentions user experience, and uses stronger action verbs."
+          },
+          {
+            "original": "Built REST APIs using Node.js and Express serving 100k requests/day",
+            "improved": "Engineered scalable REST APIs with Node.js and Express, reliably handling over 100,000 daily requests.",
+            "reason": "Uses stronger verbs and clarifies scalability and reliability."
+          }
+        ],
+        "experienceLevel": "mid",
+        "matchingRoles": [
+          "Frontend Developer",
+          "React Developer",
+          "JavaScript Developer"
+        ],
+        "overallFeedback": "This resume demonstrates solid experience with React and Node.js, making it a good fit for frontend developer roles. However, it lacks some essential frontend keywords such as HTML, CSS, and Redux, which are commonly required for these positions. Adding a projects section and expanding on frontend-specific skills and achievements would improve ATS compatibility and appeal to hiring managers. Quantifiable results and modern tool usage are strengths, but tailoring the summary and skills section further toward frontend technologies is recommended.",
+        "atsChecklist": [
+          {
+            "item": "Uses standard section headings (Experience, Education, Skills)",
+            "passed": true,
+            "tip": "Section headings are clearly labeled"
+          },
+          {
+            "item": "No tables or complex formatting detected",
+            "passed": true,
+            "tip": "Clean formatting helps ATS parsing"
+          },
+          {
+            "item": "Contact information is complete",
+            "passed": true,
+            "tip": "Email and phone are present"
+          },
+          {
+            "item": "Consistent date formatting",
+            "passed": false,
+            "tip": "Use MM/YYYY format consistently"
+          },
+          {
+            "item": "Action verbs used in bullet points",
+            "passed": true,
+            "tip": "Strong action verbs improve readability"
+          },
+          {
+            "item": "Quantified achievements present",
+            "passed": true,
+            "tip": "Numbers and metrics strengthen impact"
+          },
+          {
+            "item": "Appropriate resume length",
+            "passed": true,
+            "tip": "Length is suitable for experience level"
+          },
+          {
+            "item": "No spelling or grammar errors",
+            "passed": true,
+            "tip": "Text appears clean"
+          },
+          {
+            "item": "Skills section matches target role",
+            "passed": false,
+            "tip": "Add more role-relevant skills"
+          },
+          {
+            "item": "Professional summary/objective present",
+            "passed": true,
+            "tip": "Summary effectively introduces candidate"
+          }
+        ],
+        "readability": {
+          "score": 75,
+          "level": "Good",
+          "avgSentenceLength": 16,
+          "suggestions": [
+            "Shorten some bullet points",
+            "Use simpler language in summary"
+          ]
+        },
+        "wordCount": 73,
+        "charCount": 538,
+        "pageEstimate": 1,
+        "structuredData": {
+          "contact": {
+            "name": "John Doe",
+            "email": "johndoe@email.com",
+            "phone": "(555) 123-4567",
+            "location": null,
+            "website": null,
+            "linkedin": null
+          },
+          "experience": [
+            {
+              "company": "TechCorp",
+              "role": "Software Developer",
+              "startDate": "2022",
+              "endDate": "2025",
+              "description": "Built REST APIs using Node.js and Express serving 100k requests/day. Developed React components for analytics dashboard reducing load time by 40%. Implemented CI/CD pipelines with GitHub Actions.",
+              "durationMonths": 36
+            }
+          ],
+          "education": [
+            {
+              "school": "State University",
+              "degree": "BS",
+              "fieldOfStudy": "Computer Science",
+              "graduationDate": "2022",
+              "gpa": null
+            }
+          ],
+          "skills": [
+            "JavaScript",
+            "React",
+            "Node.js",
+            "PostgreSQL",
+            "Git",
+            "Docker",
+            "TypeScript",
+            "AWS",
+            "Express",
+            "REST API"
+          ],
+          "totalExperienceYears": 3,
+          "seniority": "mid",
+          "focusArea": "DevOps Engineer",
+          "certifications": [],
+          "metadata": {
+            "totalExperienceYears": 3,
+            "projectsCount": 0,
+            "languagesCount": 0,
+            "certificationCount": 0,
+            "pages": 1
+          }
+        }
+      },
+      "createdAt": "2026-03-03T11:53:13.857Z",
+      "structured": {
+        "contact": {
+          "name": "John Doe",
+          "email": "johndoe@email.com",
+          "phone": "(555) 123-4567",
+          "location": null,
+          "website": null,
+          "linkedin": null
+        },
+        "summary": "Experienced software developer with 3 years in React and Node.js. Proficient in modern web technologies.",
+        "experience": [
+          {
+            "company": "TechCorp",
+            "role": "Software Developer",
+            "startDate": "2022",
+            "endDate": "2025",
+            "description": "Built REST APIs using Node.js and Express serving 100k requests/day. Developed React components for analytics dashboard reducing load time by 40%. Implemented CI/CD pipelines with GitHub Actions.",
+            "durationMonths": 36
+          }
+        ],
+        "education": [
+          {
+            "school": "State University",
+            "degree": "BS",
+            "fieldOfStudy": "Computer Science",
+            "graduationDate": "2022",
+            "gpa": null
+          }
+        ],
+        "skills": [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "PostgreSQL",
+          "Git",
+          "Docker",
+          "TypeScript",
+          "AWS"
+        ],
+        "certifications": [],
+        "metadata": {
+          "totalExperienceYears": 3,
+          "projectsCount": 0,
+          "languagesCount": 0,
+          "certificationCount": 0,
+          "pages": 1
+        }
+      },
+      "analyzedAt": "2026-03-03T11:53:35.186Z",
+      "targetRole": "Frontend Developer"
     }
   ],
   "analytics": [
@@ -1915,6 +2200,298 @@
         "type": "behavioral"
       },
       "createdAt": "2026-02-28T10:28:14.721Z"
+    },
+    {
+      "id": "f13e6382-925f-4df8-9ebf-5891ebf1552d",
+      "type": "user_register",
+      "userId": "0d874867-fe9c-4d2a-850a-cd38d48d64a7",
+      "metadata": {
+        "autoVerified": true
+      },
+      "createdAt": "2026-03-03T11:24:46.666Z"
+    },
+    {
+      "id": "058fde09-92a6-49c6-9a0d-dc877cc8fd6e",
+      "type": "chat_message",
+      "userId": "0d874867-fe9c-4d2a-850a-cd38d48d64a7",
+      "metadata": {
+        "models": [
+          "GPT-4.1",
+          "Perplexity Sonar",
+          "Claude 4 Sonnet"
+        ]
+      },
+      "createdAt": "2026-03-03T11:25:41.591Z"
+    },
+    {
+      "id": "1c7b3175-e49a-49aa-a8eb-0e1ce57a1060",
+      "type": "career_path_generated",
+      "userId": "0d874867-fe9c-4d2a-850a-cd38d48d64a7",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:26:37.743Z"
+    },
+    {
+      "id": "76b8f93f-bb1a-4ac6-9222-12fdf5f1f7d5",
+      "type": "interview_started",
+      "userId": "0d874867-fe9c-4d2a-850a-cd38d48d64a7",
+      "metadata": {
+        "role": "Frontend Developer",
+        "level": "mid",
+        "type": "behavioral",
+        "totalQuestions": 5
+      },
+      "createdAt": "2026-03-03T11:26:40.094Z"
+    },
+    {
+      "id": "c5f5f638-9f0b-4828-ae91-8deaba4f26e5",
+      "type": "job_match",
+      "userId": "0d874867-fe9c-4d2a-850a-cd38d48d64a7",
+      "metadata": {
+        "matchCount": 15,
+        "source": "real_jobs_ranked_by_ai"
+      },
+      "createdAt": "2026-03-03T11:26:59.956Z"
+    },
+    {
+      "id": "8e1ad898-77c2-45d6-a4a8-a554b75a2490",
+      "type": "user_register",
+      "userId": "65c69409-6c54-4a20-bc94-9026032bf298",
+      "metadata": {
+        "autoVerified": true
+      },
+      "createdAt": "2026-03-03T11:36:34.228Z"
+    },
+    {
+      "id": "01ce0c4f-f13f-4d83-bccf-57f61702c5f3",
+      "type": "password_changed",
+      "userId": "65c69409-6c54-4a20-bc94-9026032bf298",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:36:34.579Z"
+    },
+    {
+      "id": "65cca32d-aa24-49dd-a0f7-dd57cb4db523",
+      "type": "password_changed",
+      "userId": "65c69409-6c54-4a20-bc94-9026032bf298",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:36:34.722Z"
+    },
+    {
+      "id": "f6ac7269-d1c3-42eb-87d9-0886020d1551",
+      "type": "user_register",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "metadata": {
+        "autoVerified": true
+      },
+      "createdAt": "2026-03-03T11:36:42.543Z"
+    },
+    {
+      "id": "b4b25ad5-c869-4bec-87f7-226059303d09",
+      "type": "password_changed",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:36:42.862Z"
+    },
+    {
+      "id": "2d05482b-0027-4e43-b5c6-cb515ffbdb9c",
+      "type": "password_changed",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:36:43.004Z"
+    },
+    {
+      "id": "d7c4e9a8-32e2-4d58-b1dc-0bab304c2edf",
+      "type": "chat_message",
+      "userId": "65c69409-6c54-4a20-bc94-9026032bf298",
+      "metadata": {
+        "models": [
+          "GPT-4.1",
+          "Claude 4 Sonnet",
+          "Perplexity Sonar"
+        ]
+      },
+      "createdAt": "2026-03-03T11:37:30.480Z"
+    },
+    {
+      "id": "2bcc7ea1-4351-4dc2-ab4e-df1f490a80a7",
+      "type": "chat_message",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "metadata": {
+        "models": [
+          "GPT-4.1",
+          "Claude 4 Sonnet",
+          "Perplexity Sonar"
+        ]
+      },
+      "createdAt": "2026-03-03T11:37:38.762Z"
+    },
+    {
+      "id": "43d2392a-89d8-4d1a-a024-8e56a6350aaa",
+      "type": "career_path_generated",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:38:38.859Z"
+    },
+    {
+      "id": "04cd7fbf-d8bd-41ef-b980-521b539f0e8a",
+      "type": "interview_started",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "metadata": {
+        "role": "Frontend Developer",
+        "level": "mid",
+        "type": "behavioral",
+        "totalQuestions": 5
+      },
+      "createdAt": "2026-03-03T11:38:41.995Z"
+    },
+    {
+      "id": "cee54e9e-87a7-4ca8-bba9-26f0f26a5982",
+      "type": "interview_answer",
+      "userId": null,
+      "metadata": {
+        "sessionId": "b0534480-ef5f-4c1b-a9fd-0f997fec70a4",
+        "score": 6,
+        "category": "technical",
+        "questionNum": 1
+      },
+      "createdAt": "2026-03-03T11:38:47.508Z"
+    },
+    {
+      "id": "e7054060-ca10-4578-90d1-00f10dca1c3b",
+      "type": "job_match",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "metadata": {
+        "matchCount": 15,
+        "source": "real_jobs_ranked_by_ai"
+      },
+      "createdAt": "2026-03-03T11:38:58.077Z"
+    },
+    {
+      "id": "5c6f8682-ee89-400e-b15e-3da7f7159382",
+      "type": "job_saved",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "metadata": {
+        "jobId": "f30ffbfc-cd3f-433c-95b9-ae59331d3fdb"
+      },
+      "createdAt": "2026-03-03T11:38:58.122Z"
+    },
+    {
+      "id": "6f91c313-15a5-4d47-9973-736953b56be0",
+      "type": "job_alert_created",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:38:58.181Z"
+    },
+    {
+      "id": "c4e07534-4df6-4d5d-8d87-bf00c02260d5",
+      "type": "user_register",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "metadata": {
+        "autoVerified": true
+      },
+      "createdAt": "2026-03-03T11:52:22.206Z"
+    },
+    {
+      "id": "3329e87d-a556-4049-beaf-ddd9607408da",
+      "type": "password_changed",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:52:22.537Z"
+    },
+    {
+      "id": "cde418bc-c628-409b-8c32-5d9e2c5f0bef",
+      "type": "password_changed",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:52:22.687Z"
+    },
+    {
+      "id": "fe8808d0-735d-418a-bc89-731490e1444e",
+      "type": "chat_message",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "metadata": {
+        "models": [
+          "GPT-4.1",
+          "Claude 4 Sonnet",
+          "Perplexity Sonar"
+        ]
+      },
+      "createdAt": "2026-03-03T11:53:13.656Z"
+    },
+    {
+      "id": "dddcfb15-fb52-47af-a490-5d44e3141ffa",
+      "type": "resume_analyzed",
+      "userId": null,
+      "metadata": {
+        "resumeId": "6dd610c3-cd44-45d2-a139-ab2e8533f56b",
+        "atsScore": 72
+      },
+      "createdAt": "2026-03-03T11:53:35.189Z"
+    },
+    {
+      "id": "3c6d74d3-5380-4175-b1f8-baaffeeb3d44",
+      "type": "career_path_generated",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:54:34.472Z"
+    },
+    {
+      "id": "05e41add-739d-4e32-9e56-fb7111793ed0",
+      "type": "interview_started",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "metadata": {
+        "role": "Frontend Developer",
+        "level": "mid",
+        "type": "behavioral",
+        "totalQuestions": 5
+      },
+      "createdAt": "2026-03-03T11:54:37.804Z"
+    },
+    {
+      "id": "a83f23e9-3b6f-441f-a3cf-c7bb4358fb5d",
+      "type": "interview_answer",
+      "userId": null,
+      "metadata": {
+        "sessionId": "f9ac4b28-5a8b-4a3b-aec2-124ea67a6c04",
+        "score": 4,
+        "category": "behavioral",
+        "questionNum": 1
+      },
+      "createdAt": "2026-03-03T11:54:49.219Z"
+    },
+    {
+      "id": "c13db326-944f-4651-821e-8dc479b060c8",
+      "type": "job_match",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "metadata": {
+        "matchCount": 15,
+        "source": "real_jobs_ranked_by_ai"
+      },
+      "createdAt": "2026-03-03T11:55:09.659Z"
+    },
+    {
+      "id": "a924a9e1-dfc8-4062-b81d-4214469e5fcd",
+      "type": "job_saved",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "metadata": {
+        "jobId": "b0b2fd14-844f-4402-8809-5ffb3f04c490"
+      },
+      "createdAt": "2026-03-03T11:55:09.716Z"
+    },
+    {
+      "id": "4a149c78-efd6-4c52-b6be-8e11f735a03f",
+      "type": "job_alert_created",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "metadata": {},
+      "createdAt": "2026-03-03T11:55:09.785Z"
+    },
+    {
+      "id": "d47a9dc2-4d75-4c76-b11d-8feb3f1dbb40",
+      "type": "learning_path_generated",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "metadata": {
+        "targetRole": "Full Stack Developer"
+      },
+      "createdAt": "2026-03-03T11:55:10.405Z"
     }
   ],
   "sessions": [
@@ -2015,6 +2592,150 @@
       ],
       "createdAt": "2026-02-28T10:28:14.717Z",
       "updatedAt": "2026-02-28T10:28:14.717Z"
+    },
+    {
+      "id": "9df00880-54bc-41ef-9344-dfddb56913a6",
+      "userId": "0d874867-fe9c-4d2a-850a-cd38d48d64a7",
+      "title": "Interview: Frontend Developer",
+      "type": "mock-interview",
+      "role": "Frontend Developer",
+      "level": "mid",
+      "interviewType": "behavioral",
+      "questionCount": 1,
+      "totalQuestions": 5,
+      "focusAreas": null,
+      "scores": [],
+      "categoryScores": {},
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are conducting a 5-question mock behavioral interview for a mid Frontend Developer position.\n\n\nAsk a STAR-method behavioral question about a real workplace situation (e.g., conflict resolution, leadership, failure, teamwork). Start with a moderately easy warm-up question.\n\nAsk the FIRST question now. Be professional and create a realistic interview atmosphere. Start with a brief greeting, then ask your question.\nFormat: Use markdown. Bold the actual question.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Hello, thank you for joining us today. I’m looking forward to learning more about your experiences as a Frontend Developer. Let’s start with a warm-up question focused on teamwork, which is essential in frontend development.\n\n**Can you tell me about a time when you collaborated with designers or backend developers to deliver a feature? Please describe the situation, your specific role and actions, and the outcome.**",
+          "timestamp": "2026-03-03T11:26:40.092Z"
+        }
+      ],
+      "createdAt": "2026-03-03T11:26:40.092Z",
+      "updatedAt": "2026-03-03T11:26:40.092Z"
+    },
+    {
+      "id": "42c6dc99-e43f-4865-bbda-34e55f851181",
+      "userId": "65c69409-6c54-4a20-bc94-9026032bf298",
+      "title": "What are the top skills for a software developer in 2025?",
+      "type": "career-chat",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What are the top skills for a software developer in 2025?",
+          "timestamp": "2026-03-03T11:36:34.746Z"
+        },
+        {
+          "role": "assistant",
+          "content": "# Top In-Demand Skills for Software Developers in 2025\n\nThe most valuable skills for software developers in 2025, confirmed across multiple expert analyses and industry reports, center on **Python**, **JavaScript/TypeScript**, **cloud/DevOps**, **AI/ML integration**, **front-end frameworks like React**, **back-end/API development**, and **security practices**[1][2][5].\n\n## Core Technical Skills (Confirmed by 2+ Sources)\n- **Programming Languages**: **Python** (versatile for AI, web, automation; top-mentioned in job postings), **JavaScript/TypeScript** (essential for full-stack/web), plus Java, Go, Rust[1][5].\n- **Front-End Frameworks**: **React** (with Next.js, hooks; dominant in listings), Vue.js, Svelte[1].\n- **Back-End & APIs**: **Node.js** (with Express), Python frameworks (Django, FastAPI), **REST/GraphQL**, microservices[5].\n- **Databases**: SQL (e.g., PostgreSQL), NoSQL (e.g., MongoDB), Redis for caching[5].\n- **Cloud & DevOps**: **AWS**, Azure, GCP; **Docker**, Kubernetes; CI/CD (GitHub Actions); Infrastructure as Code (Terraform)[2][5].\n- **Testing & Version Control**: Jest, Git/GitHub workflows, advanced branching[5].\n\n## High-Growth Emerging Skills (Confirmed by 2+ Sources)\n- **AI/ML Integration**: Frameworks like TensorFlow, PyTorch; LLM APIs (OpenAI); model deployment, prompt engineering[1][5].\n- **Security**: OAuth/JWT, OWASP Top 10, secure coding, API security[5].\n\n## Essential Soft & Architectural Skills\n- Agile/Scrum, communication, code reviews, problem-solving, system design[2].\n\nNo major conflicts exist, though priority emphasis varies (e.g., Claude prioritizes TypeScript/Go more than others).\n\n## Learning Resources (Real Platforms Only, Confirmed Usage)\n- **freeCodeCamp**: Docker/Kubernetes, React, testing tutorials.\n- **Coursera**: Machine Learning (Andrew Ng).\n- **Udemy**: Node.js, Python/ML bootcamps.\n- **LeetCode**: Data structures/algorithms practice.\n- **LinkedIn/Glassdoor/Indeed**: Job search, resume updates.\n- Study **OWASP Top 10** for security.\n\n## Prioritized Roadmap for Full-Stack Developers\nFocus on high-demand areas building to portfolio projects (e.g., AI-integrated web app deployed to AWS).\n\n| Skill Category      | Priority | Action Steps (1-3 Months)                  |\n|---------------------|----------|--------------------------------------------|\n| Cloud/DevOps        | High     | freeCodeCamp Docker/K8s; AWS free tier     |\n| AI/ML Integration   | High     | Coursera ML; OpenAI API projects           |\n| Front-End (React)   | High     | Build Next.js apps on GitHub               |\n| Back-End/APIs       | High     | Udemy Node.js; PostgreSQL integration      |\n| Security/Testing    | Medium   | OWASP labs; Jest practice                  |\n\n**Next Steps**:\n1. Practice DS/Algo daily on **LeetCode**; build 2-3 GitHub projects.\n2. Deploy full-stack app with CI/CD.\n3. Update **LinkedIn** profile; apply via **Indeed/Glassdoor**.\n\n**Suggested Follow-Ups**: Best first skill for career impact? Portfolio project ideas for AI/web apps? Resume optimization for full-stack roles?",
+          "timestamp": "2026-03-03T11:37:30.477Z",
+          "models": [
+            "GPT-4.1",
+            "Claude 4 Sonnet",
+            "Perplexity Sonar"
+          ],
+          "synthesized": true
+        }
+      ],
+      "createdAt": "2026-03-03T11:36:34.741Z",
+      "updatedAt": "2026-03-03T11:37:30.477Z"
+    },
+    {
+      "id": "b0534480-ef5f-4c1b-a9fd-0f997fec70a4",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "title": "Interview: Frontend Developer",
+      "type": "mock-interview",
+      "role": "Frontend Developer",
+      "level": "mid",
+      "interviewType": "behavioral",
+      "questionCount": 2,
+      "totalQuestions": 5,
+      "focusAreas": null,
+      "scores": [
+        6
+      ],
+      "categoryScores": {
+        "technical": [
+          6
+        ]
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are conducting a 5-question mock behavioral interview for a mid Frontend Developer position.\n\n\nAsk a STAR-method behavioral question about a real workplace situation (e.g., conflict resolution, leadership, failure, teamwork). Start with a moderately easy warm-up question.\n\nAsk the FIRST question now. Be professional and create a realistic interview atmosphere. Start with a brief greeting, then ask your question.\nFormat: Use markdown. Bold the actual question.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Hello, and thank you for joining this mock interview today. I’ll be asking you a series of behavioral questions to understand how you’ve handled real-world situations in your previous roles as a Frontend Developer. Please try to answer using the STAR method—describe the Situation, Task, Action, and Result.\n\n**Let’s start with a warm-up question:**\n\n**Tell me about a time when you had to quickly learn a new technology or framework to complete a frontend project. How did you approach the learning process, and what was the outcome?**",
+          "timestamp": "2026-03-03T11:38:41.992Z"
+        },
+        {
+          "role": "user",
+          "content": "In my previous role at a startup, I led the migration of our legacy jQuery codebase to React. I started by identifying critical user-facing components, created a migration plan, and worked with the team over 3 sprints. We achieved 95% test coverage on new components and reduced bug reports by 60%.",
+          "timestamp": "2026-03-03T11:38:47.506Z"
+        },
+        {
+          "role": "assistant",
+          "content": "{\"score\":6,\"maxScore\":10,\"technicalAccuracy\":7,\"communicationScore\":6,\"structureScore\":5,\"confidenceScore\":6,\"questionCategory\":\"technical\",\"difficulty\":\"easy\",\"feedback\":\"The candidate provided a concise answer that demonstrates relevant experience with migrating from jQuery to React, which is a common scenario for frontend developers. They mentioned key actions like planning and collaboration, as well as positive outcomes. However, the response lacks detail about the learning process itself and doesn't clearly explain how they approached learning React or any specific challenges faced. The answer would be stronger with more insight into their individual learning approach and problem-solving.\",\"strengths\":[\"Relevant migration experience\",\"Clear positive outcome metrics\"],\"improvements\":[\"Describe specific steps taken to learn the new technology\",\"Share challenges faced and how they were overcome\"],\"keyMissing\":[\"Details on the actual learning process or resources used to learn React\"],\"sampleAnswer\":\"In my previous role at a startup, I was tasked with migrating our legacy jQuery codebase to React. I began by taking an online React course and reading the official documentation to understand core concepts. I then built a small prototype to practice, and collaborated with my team to create a migration plan. Over three sprints, we migrated critical components, achieving 95% test coverage and reducing bug reports by 60%.\",\"usedSTAR\":false,\"followUpTip\":\"Next time, clearly outline how you approached learning the technology and mention specific resources, challenges, or strategies you used.\",\"nextQuestion\":\"Can you explain the difference between controlled and uncontrolled components in React, and give an example of when you would use each?\"}",
+          "timestamp": "2026-03-03T11:38:47.506Z",
+          "structured": true
+        }
+      ],
+      "createdAt": "2026-03-03T11:38:41.992Z",
+      "updatedAt": "2026-03-03T11:38:47.506Z"
+    },
+    {
+      "id": "f9ac4b28-5a8b-4a3b-aec2-124ea67a6c04",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "title": "Interview: Frontend Developer",
+      "type": "mock-interview",
+      "role": "Frontend Developer",
+      "level": "mid",
+      "interviewType": "behavioral",
+      "questionCount": 2,
+      "totalQuestions": 5,
+      "focusAreas": null,
+      "scores": [
+        4
+      ],
+      "categoryScores": {
+        "behavioral": [
+          4
+        ]
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are conducting a 5-question mock behavioral interview for a mid Frontend Developer position.\n\n\nAsk a STAR-method behavioral question about a real workplace situation (e.g., conflict resolution, leadership, failure, teamwork). Start with a moderately easy warm-up question.\n\nAsk the FIRST question now. Be professional and create a realistic interview atmosphere. Start with a brief greeting, then ask your question.\nFormat: Use markdown. Bold the actual question.",
+          "hidden": true
+        },
+        {
+          "role": "assistant",
+          "content": "Good morning! Thanks for taking the time to speak with me today. I'm excited to learn more about your experience as a frontend developer.\n\nLet's start with a warm-up question to get us going:\n\n**Tell me about a time when you had to collaborate with a designer or backend developer to deliver a feature. Walk me through how you handled the collaboration and what the outcome was.**\n\nTake your time, and feel free to use a real example from your experience. I'm interested in understanding how you work with cross-functional teams.",
+          "timestamp": "2026-03-03T11:54:37.801Z"
+        },
+        {
+          "role": "user",
+          "content": "In my previous role at a startup, I led the migration of our legacy jQuery codebase to React. I started by identifying critical user-facing components, created a migration plan, and worked with the team over 3 sprints. We achieved 95% test coverage on new components and reduced bug reports by 60%.",
+          "timestamp": "2026-03-03T11:54:49.216Z"
+        },
+        {
+          "role": "assistant",
+          "content": "{\"score\":4,\"maxScore\":10,\"technicalAccuracy\":6,\"communicationScore\":3,\"structureScore\":2,\"confidenceScore\":5,\"questionCategory\":\"behavioral\",\"difficulty\":\"easy\",\"feedback\":\"The candidate completely missed the collaboration aspect of the question, instead describing a technical migration project. While the technical details are relevant, they failed to address working with designers or backend developers, which was the core of the question. The answer lacks structure and doesn't demonstrate interpersonal skills.\",\"strengths\":[\"Mentioned specific metrics (95% test coverage, 60% bug reduction)\",\"Showed technical leadership in migration project\"],\"improvements\":[\"Answer the actual question asked about collaboration\",\"Use STAR method to structure behavioral responses\",\"Include specific examples of cross-functional teamwork\"],\"keyMissing\":[\"Any mention of working with designers or backend developers\",\"Communication strategies used during collaboration\",\"Challenges faced in cross-functional work\"],\"sampleAnswer\":\"I worked with our UX designer and backend team on a user dashboard feature. We held daily standups to align on API requirements and design specs. When the designer wanted animations that would impact performance, I suggested alternatives and we found a solution that met both design goals and technical constraints. The feature launched on time with positive user feedback.\",\"usedSTAR\":false,\"followUpTip\":\"For behavioral questions, always address the specific scenario asked. Use STAR method: describe the Situation, Task, Action you took, and Result achieved.\",\"nextQuestion\":\"What's the difference between let, const, and var in JavaScript? Can you give me a practical example of when you'd use each one?\"}",
+          "timestamp": "2026-03-03T11:54:49.216Z",
+          "structured": true
+        }
+      ],
+      "createdAt": "2026-03-03T11:54:37.801Z",
+      "updatedAt": "2026-03-03T11:54:49.216Z"
     }
   ],
   "career_paths": [
@@ -2348,6 +3069,136 @@
       ],
       "synthesized": false,
       "createdAt": "2026-02-28T07:48:07.695Z"
+    },
+    {
+      "id": "1f998b90-0b54-403c-a21b-dfb846296b99",
+      "userId": "0d874867-fe9c-4d2a-850a-cd38d48d64a7",
+      "input": {
+        "skills": [
+          "JavaScript",
+          "React",
+          "Node.js"
+        ],
+        "interests": [
+          "AI",
+          "Web Development"
+        ],
+        "education": "BS Computer Science",
+        "experience": "2 years as frontend developer"
+      },
+      "result": {
+        "title": "Career Path",
+        "summary": "# Full Stack Developer with AI Integration\n\n**Leverage your frontend JavaScript and React skills to transition into full stack development with AI integration, building intelligent web applications.** This path addresses backend gaps while incorporating AI/ML for high-demand roles, with strong market growth in AI-enhanced web tech.[1][2][3]\n\n## Timeline\nAll responses outline a 3-year progression from foundations to specialization, emphasizing backend, AI integration, and leadership.\n\n- **Phase 1 (0-6 months): Foundations**\n  - Strengthen backend with **Node.js**, **Express.js**, and databases (**MongoDB**, SQL/NoSQL).\n  - Build and deploy full stack apps (e.g., MERN stack with authentication, CRUD).\n  - Milestones: Deploy full stack app; complete initial projects.[1][2]\n\n- **Phase 2 (6-18 months): AI Integration**\n  - Learn **Python** basics and integrate AI APIs (**OpenAI**, Hugging Face, Google AI).\n  - Develop AI-enhanced web apps (e.g., chatbots, image analysis).\n  - Milestones: Launch AI-integrated project; build portfolio.[1][2]\n\n- **Phase 3 (18-36 months): Specialization**\n  - Master cloud (**AWS**, Azure, GCP), MLOps, and advanced AI (e.g., model deployment, vector databases).\n  - Lead projects and mentor others.\n  - Milestones: Deploy scalable AI app; lead small team.[1][2]\n\n## Salary Ranges\nEstimates vary by experience and location, with medians around **$110k-$140k** overall. Entry: **$70k-$120k**; Mid: **$100k-$170k**; Senior: **$140k-$250k+**. US averages: **$104k-$140k** (ZipRecruiter, Glassdoor, Web3); higher in SF (~**$133k-$239k**).[1][2][3][6]\n\n| Experience | Median Total Pay (US) |\n|------------|-----------------------|\n| Entry (0-3 yrs) | $80k-$120k[2][3] |\n| Mid (4-9 yrs) | $110k-$140k[3] |\n| Senior (10+ yrs) | $150k+ [1][3] |\n\n## Key Certifications\n**TensorFlow Developer Certificate** (Google/TensorFlow, intermediate, high/medium value) is unanimously recommended. Others confirmed by majority:\n\n| Certification | Provider | Difficulty | Value |\n|---------------|----------|------------|-------|\n| AWS Certified Developer – Associate | AWS | Intermediate | High[1][2] |\n| Microsoft Certified: Azure AI Engineer Associate | Microsoft | Intermediate/Advanced | High[2] |\n| Meta Front-End Developer Professional Certificate | Meta via Coursera | Beginner | Medium[1][2] |\n\n## Top Roles\nHigh demand across responses for AI-integrated full stack positions, salaries **$100k-$160k**.\n\n| Role | Salary Range | Demand | Description |\n|------|--------------|--------|-------------|\n| Full Stack Developer/AI Engineer | $100k-$160k | High | Builds end-to-end web apps with AI APIs and backend.[1][2] |\n| AI Web/Solutions Developer | $110k-$150k | High | Integrates LLMs, RAG into UIs and apps.[1][2] |\n| Frontend Engineer (AI Focus) | $100k-$140k | Medium/High | AI-powered interactive interfaces.[1][2] |\n\n## Skill Gaps\n- Backend/databases (**Node.js**, **Express**, **MongoDB**).\n- **Python** for AI/ML.\n- AI integration (**APIs**, ML fundamentals, deployment, MLOps).\n- Cloud platforms (**AWS**, Azure, GCP).[1][2]\n\n**Hot skills**: React, Node.js, AI/ML integration, Python, cloud, vector databases.[1][2]\n\n**Market demand**: High and growing for AI-web roles.[1][2]\n\n## Alternative Paths\n- **DevOps Engineer**: Cloud infrastructure and deployment.[1][2]\n- **AI Product Manager**: Technical leadership for AI products.[1][2]\n\n## Networking and Recommendations\n- Join **LinkedIn** AI/web groups, GitHub contributions, hackathons/meetups.\n- Build **GitHub** portfolio with AI-web projects (e.g., OpenAI-integrated apps).\n- Platforms: **Coursera**, **Udemy** for courses; stay updated via communities.[1][2]",
+        "raw": true,
+        "timeline": [],
+        "salaryRange": {
+          "entry": "N/A",
+          "mid": "N/A",
+          "senior": "N/A"
+        },
+        "certifications": [],
+        "topRoles": [],
+        "skillGaps": [],
+        "marketDemand": {
+          "level": "medium"
+        },
+        "alternativePaths": [],
+        "networkingTips": [],
+        "recommendations": []
+      },
+      "models": [
+        "GPT-4.1",
+        "Perplexity Sonar",
+        "Claude 4 Sonnet"
+      ],
+      "synthesized": true,
+      "createdAt": "2026-03-03T11:26:37.741Z"
+    },
+    {
+      "id": "0d801d9e-f8bb-47bb-b7a9-a6ad23309283",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "input": {
+        "skills": [
+          "JavaScript",
+          "React",
+          "Node.js"
+        ],
+        "interests": [
+          "AI",
+          "Web Development"
+        ],
+        "education": "BS Computer Science",
+        "experience": "2 years as frontend developer"
+      },
+      "result": {
+        "title": "Career Path",
+        "summary": "# Full Stack Web Developer with AI Integration\n\nThis career path leverages frontend JavaScript expertise to build full-stack skills with AI integration, using stacks like MERN and tools such as Node.js, Express, and AI APIs or TensorFlow.js for web applications.[1][2]\n\n## Timeline\n\n### Phase 1 (0-6 months): Foundation\n- **Goals**: Strengthen backend with Node.js/Express, learn databases (MongoDB), integrate basic AI APIs or features like image recognition/chatbots into web apps, build MERN projects.[1][2]\n- **Skills**: Node.js, Express.js, MongoDB, RESTful APIs, basic AI API usage (e.g., OpenAI), TensorFlow.js.[1][2]\n- **Milestones**: Deploy MERN app with AI feature (e.g., chatbot); deploy 2-3 full-stack apps.[1][2]\n\n### Phase 2 (6-18 months): Growth/Specialization\n- **Goals**: Advance full-stack with React/Next.js, integrate AI/ML (TensorFlow.js, APIs), learn DevOps (Docker, CI/CD), contribute to open-source AI/web projects.[1][2]\n- **Skills**: Advanced React (hooks, optimization), TypeScript, DevOps basics, Docker, machine learning concepts, TensorFlow.js.[1][2]\n- **Milestones**: Deploy full-stack app with ML feature and CI/CD; launch personal AI web project (e.g., chatbot).[1][2]\n\n### Phase 3 (18-36 months): Specialization/Leadership\n- **Goals**: Lead projects/teams, specialize in AI web solutions (e.g., NLP, personalization), optimize for production (DevOps, cloud AI services like AWS/Google Cloud).[1][2]\n- **Skills**: Project leadership, AI integration, cloud services (AWS, Google Cloud), Docker.[1][2]\n- **Milestones**: Lead project or contribute significantly to open-source; portfolio with production AI web apps.[1][2]\n\n## Salary Ranges\nRanges vary by experience, location, and sources; US medians for full-stack developers are around **$115k-$130k** average, with AI/full-stack seniors reaching **$160k-$340k** total compensation (base ~$150k-$260k plus bonuses/equity).[1][2][3][4] Entry-level AI/full-stack: **$70k-$110k**; mid: **$100k-$160k**; senior: **$140k-$250k+**.[1][2]\n\n| Level | Typical Range (Total Comp) | Sources |\n|-------|----------------------------|---------|\n| Entry | $70k-$110k | [1][2][3] |\n| Mid   | $100k-$160k | [1][2][3] |\n| Senior| $140k-$340k | [1][2][4] |\n\n## Certifications\n- **Meta Front-End Developer Professional Certificate** (Coursera/Meta, beginner-intermediate, medium-high value).[1][2]\n- **IBM Professional Certificate in Full Stack Development** or similar (Coursera/IBM, intermediate, high value).[2]\n- **Google/TensorFlow certificates** (Google, intermediate-advanced, high value).[1][2]\n\n## Top Roles\n| Role | Salary Range | Demand | Description |\n|------|--------------|--------|-------------|\n| Full Stack Developer | $90k-$150k | High | Builds end-to-end web apps with frontend/backend and AI features.[1][2] |\n| AI Web/Frontend Engineer | $100k-$170k | High/Medium | Integrates AI/ML (e.g., TensorFlow.js) into web UIs/apps.[1][2] |\n| Senior Full-Stack AI Developer | $140k-$220k+ | High | Leads AI-powered web projects.[1][2] |\n\n## Skill Gaps\n- Backend/databases (Node.js, MongoDB).[1][2]\n- AI/ML web integration (TensorFlow.js, OpenAI APIs).[1][2]\n- DevOps (Docker, CI/CD).[1][2]\n- Advanced frontend (TypeScript, React optimization).[2]\n\n## Market Demand\n**High and growing**, driven by full-stack JavaScript, AI integration, cloud, DevOps.[1][2]\n\n**Hot skills**: Node.js, React, AI/ML APIs, TensorFlow.js, Next.js, Docker.[1][2]\n\n## Alternative Paths\n- Machine Learning Engineer (deeper AI focus).[1]\n- AI Frontend/UI Specialist or Backend AI Engineer.[2]\n- Product Manager or Freelance AI Web Consultant.[1][2]\n\n## Networking Tips\n- Attend AI/web dev meetups (Meetup.com), conferences.[1][2]\n- Join communities (Reactiflux Discord, Hugging Face), contribute to GitHub MERN-AI repos.[2]\n- Connect on LinkedIn with alumni targeting AI roles.[2]\n\n## Recommendations\n- Build portfolio of 2-3+ AI-integrated MERN projects (e.g., chatbot, image recognition).[1][2]\n- Take Coursera/freeCodeCamp courses in parallel; update LinkedIn/resume with projects.[2]\n- Contribute to open-source; follow React/TensorFlow/OpenAI blogs.[1][2]",
+        "raw": true,
+        "timeline": [],
+        "salaryRange": {
+          "entry": "N/A",
+          "mid": "N/A",
+          "senior": "N/A"
+        },
+        "certifications": [],
+        "topRoles": [],
+        "skillGaps": [],
+        "marketDemand": {
+          "level": "medium"
+        },
+        "alternativePaths": [],
+        "networkingTips": [],
+        "recommendations": []
+      },
+      "models": [
+        "GPT-4.1",
+        "Perplexity Sonar"
+      ],
+      "synthesized": true,
+      "createdAt": "2026-03-03T11:38:38.857Z"
+    },
+    {
+      "id": "92d4b8a3-932f-487d-9d48-7f94b28a99ce",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "input": {
+        "skills": [
+          "JavaScript",
+          "React",
+          "Node.js"
+        ],
+        "interests": [
+          "AI",
+          "Web Development"
+        ],
+        "education": "BS Computer Science",
+        "experience": "2 years as frontend developer"
+      },
+      "result": {
+        "title": "Career Path",
+        "summary": "```markdown\n# Career Path: Full Stack Web Developer with an AI Focus\n\n## Summary\nTransitioning from a frontend developer (JavaScript, React, Node.js) to a Full Stack Web Developer specializing in AI integration is a high-demand, future-proof career move. This path expands your backend, cloud, and AI/ML skills, enabling you to build intelligent web solutions sought after by many employers.\n\n---\n\n## Career Timeline & Skill Progression\n\n### Phase 1 (0-6 months): Full-Stack Foundation\n- **Goals:**\n  - Strengthen backend development (Node.js, Express)\n  - Learn database fundamentals (MongoDB, SQL/PostgreSQL)\n  - Build and deploy full-stack apps (e.g., MERN stack)\n  - Understand REST APIs; start exploring AI basics\n- **Milestones:**\n  - Deploy 2–3 full-stack applications (e.g., a MERN todo app with authentication)\n  - Implement a simple AI-powered feature (e.g., chatbot using a cloud AI API)\n  - Update your portfolio with these projects\n\n### Phase 2 (6-18 months): AI Integration & Advanced Web\n- **Goals:**\n  - Integrate AI/ML APIs/models into web apps (e.g., TensorFlow.js, OpenAI, Google Cloud AI)\n  - Deepen cloud knowledge (AWS, Azure, GCP)\n  - Learn advanced frontend/backend tools (TypeScript, Next.js, state management)\n- **Milestones:**\n  - Build an AI-powered web app (e.g., chatbot or image recognition)\n  - Contribute to open-source or collaborative AI web projects\n  - Deploy a scalable web app using cloud services\n\n### Phase 3 (18-36 months): Specialization & Leadership\n- **Goals:**\n  - Lead development of end-to-end AI-powered web solutions\n  - Mentor junior developers and architect systems\n  - Stay current with emerging AI/web technologies and DevOps practices (CI/CD pipelines)\n- **Milestones:**\n  - Architect and deliver a complex AI-driven web platform\n  - Present at meetups or conferences\n  - Take ownership of full-stack projects from concept to launch\n\n---\n\n## Salary Ranges (USD, verified by multiple sources)\n- **Entry Level:** $70k–95k\n- **Mid Level:** $95k–135k\n- **Senior Level:** $130k–180k\n\n---\n\n## In-Demand Roles\n- **Full Stack Developer**\n  - Salary: $95k–150k\n  - Build scalable web apps with modern frontend/backend and AI integration\n- **AI Web Application Developer**\n  - Salary: $110k–170k\n  - Integrate AI/ML APIs into web apps, both frontend and backend\n- **Software Engineer (AI Integration)**\n  - Salary: $115k–160k\n  - Specialize in implementing AI features on web/cloud platforms\n\n---\n\n## Key Skills & Gaps to Address\n- Backend development (Node.js, Express)\n- Database design (MongoDB, SQL/PostgreSQL)\n- Cloud deployment (AWS, Azure, GCP)\n- AI/ML integration (TensorFlow.js, AI/ML APIs)\n- TypeScript, Next.js, testing frameworks (Jest, Mocha)\n- DevOps basics (CI/CD, deployment)\n\n---\n\n## Recommended Certifications\n- **TensorFlow Developer Certificate** (by TensorFlow/Google) – Intermediate, high value\n- **AWS Certified Developer – Associate** (Amazon Web Services) – Intermediate, high value\n- **Microsoft Certified: Azure AI Engineer Associate** (Microsoft) – Advanced, high value\n- **Professional Certificate in Full Stack Development** (IBM) – Intermediate, high value\n\n---\n\n## Alternative Career Paths\n- **Machine Learning Engineer:** Focus on building and deploying ML models, possibly shifting to Python/TensorFlow.\n- **Product Manager (AI/Web):** Use tech and communication skills to manage AI-powered web products.\n- **DevOps for Web/AI:** Combine deployment, cloud, and automation expertise for scalable AI apps.\n- **Pure Frontend Specialist:** Deepen React/Next.js for UI/UX-focused roles, less backend/AI.\n\n---\n\n## Market Demand\n- Demand for AI-integrated full-stack web developers is **high and growing** (per LinkedIn, Indeed, Glassdoor listings).\n- **Hot Skills:** React, Node.js, TypeScript, AI/ML APIs, cloud services, Next.js.\n\n---\n\n## Networking & Professional Development Tips\n- Engage with communities on **LinkedIn, GitHub, Stack Overflow, Reactiflux (Discord), Meetup.com**.\n- Attend tech meetups, hackathons (e.g., Devpost), and conferences (e.g., React Conf).\n- Contribute to open-source projects in the React + AI space.\n- Connect with alumni and share projects for feedback.\n\n---\n\n## Recommendations\n- Build portfolio projects showcasing AI in web apps (e.g., AI chatbot, image classifier, recommendation system).\n- Pursue relevant certifications and share your progress online.\n- Take courses such as **freeCodeCamp Full Stack** and **Coursera’s AI for Everyone**.\n- Practice coding interviews (e.g., on LeetCode), especially system design.\n- Target innovative tech companies and startups using React and AI.\n\n---\n```",
+        "raw": true,
+        "timeline": [],
+        "salaryRange": {
+          "entry": "N/A",
+          "mid": "N/A",
+          "senior": "N/A"
+        },
+        "certifications": [],
+        "topRoles": [],
+        "skillGaps": [],
+        "marketDemand": {
+          "level": "medium"
+        },
+        "alternativePaths": [],
+        "networkingTips": [],
+        "recommendations": []
+      },
+      "models": [
+        "GPT-4.1",
+        "Perplexity Sonar"
+      ],
+      "synthesized": true,
+      "createdAt": "2026-03-03T11:54:34.469Z"
     }
   ],
   "users": [
@@ -2382,6 +3233,152 @@
       "verified": true,
       "verificationToken": null,
       "createdAt": "2026-02-28T07:38:41.923Z"
+    },
+    {
+      "id": "0d874867-fe9c-4d2a-850a-cd38d48d64a7",
+      "name": "Updated Test User",
+      "email": "test_1772537083323@example.com",
+      "password": "$2b$10$ob3zTGaz2lNuksCp/z/0fOA43BxohCu1jyAo4A0CAFf67V4SuvWpS",
+      "role": "user",
+      "profile": {
+        "skills": [
+          "JavaScript",
+          "Python"
+        ],
+        "interests": [
+          "AI",
+          "Web Dev"
+        ],
+        "education": "BS CS",
+        "experience": "2 years",
+        "careerGoal": "Full-stack developer"
+      },
+      "verified": true,
+      "verificationToken": null,
+      "createdAt": "2026-03-03T11:24:46.660Z"
+    },
+    {
+      "id": "6bb5e588-f329-4116-a83e-43947ed259a0",
+      "email": "guest-1772537086814@careergpt.local",
+      "name": "Guest",
+      "role": "guest",
+      "verified": true,
+      "profile": {},
+      "createdAt": "2026-03-03T11:24:46.814Z"
+    },
+    {
+      "id": "65c69409-6c54-4a20-bc94-9026032bf298",
+      "name": "Updated Test User",
+      "email": "test_1772537793989@example.com",
+      "password": "$2b$10$2q/vnXbTUAOmqiqt8x.PnObjpeZHgosCzBViOT8Wo2u7uhUUuDui6",
+      "role": "user",
+      "profile": {
+        "skills": [
+          "JavaScript",
+          "Python"
+        ],
+        "interests": [
+          "AI",
+          "Web Dev"
+        ],
+        "education": "BS CS",
+        "experience": "2 years",
+        "careerGoal": "Full-stack developer"
+      },
+      "verified": true,
+      "verificationToken": null,
+      "createdAt": "2026-03-03T11:36:34.220Z"
+    },
+    {
+      "id": "b4333f2c-7d85-4730-8ad2-626c8112a0ff",
+      "email": "guest-1772537794354@careergpt.local",
+      "name": "Guest",
+      "role": "guest",
+      "verified": true,
+      "profile": {},
+      "createdAt": "2026-03-03T11:36:34.354Z"
+    },
+    {
+      "id": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "name": "Updated Test User",
+      "email": "test_1772537802342@example.com",
+      "password": "$2b$10$elNs141tz2GI1p7VqQzape7putKqZ9eu61//KFAUTkn0333qI5/3m",
+      "role": "user",
+      "profile": {
+        "skills": [
+          "JavaScript",
+          "Python"
+        ],
+        "interests": [
+          "AI",
+          "Web Dev"
+        ],
+        "education": "BS CS",
+        "experience": "2 years",
+        "careerGoal": "Full-stack developer"
+      },
+      "verified": true,
+      "verificationToken": null,
+      "createdAt": "2026-03-03T11:36:42.536Z"
+    },
+    {
+      "id": "4f2ccc6b-d45f-4b6c-89a5-411a0208cc65",
+      "email": "guest-1772537802669@careergpt.local",
+      "name": "Guest",
+      "role": "guest",
+      "verified": true,
+      "profile": {},
+      "createdAt": "2026-03-03T11:36:42.669Z"
+    },
+    {
+      "id": "8f40846b-779d-4d2e-9eb0-ab14e633de00",
+      "email": "guest-1772537939549@careergpt.local",
+      "name": "Guest",
+      "role": "guest",
+      "verified": true,
+      "profile": {},
+      "createdAt": "2026-03-03T11:38:59.549Z"
+    },
+    {
+      "id": "10294006-0f05-4211-a638-b865fe52f979",
+      "email": "guest-1772538603583@careergpt.local",
+      "name": "Guest",
+      "role": "guest",
+      "verified": true,
+      "profile": {},
+      "createdAt": "2026-03-03T11:50:03.583Z"
+    },
+    {
+      "id": "076295f5-1279-4317-9c86-eee7452ace38",
+      "name": "Updated Test User",
+      "email": "test_1772538741968@example.com",
+      "password": "$2b$10$IJwzX5W7IlvDduqnf175ruWo9HD1RLRDh18iAMbem3O0jdNP0UJMe",
+      "role": "user",
+      "profile": {
+        "skills": [
+          "JavaScript",
+          "Python"
+        ],
+        "interests": [
+          "AI",
+          "Web Dev"
+        ],
+        "education": "BS CS",
+        "experience": "2 years",
+        "careerGoal": "Full-stack developer"
+      },
+      "verified": true,
+      "verificationToken": null,
+      "createdAt": "2026-03-03T11:52:22.197Z"
+    },
+    {
+      "id": "bed4f429-9d05-4be7-b0f4-0ab8eee29202",
+      "email": "guest-1772538742324@careergpt.local",
+      "name": "Guest",
+      "role": "guest",
+      "verified": true,
+      "profile": {},
+      "createdAt": "2026-03-03T11:52:22.324Z"
     }
   ],
   "learning_paths": [
@@ -2642,6 +3639,143 @@
       "createdAt": "2026-02-28T07:40:56.240Z",
       "updatedAt": "2026-02-28T07:40:56.240Z",
       "id": "ac233b52-0ad3-4e50-b55b-7b1dcc4c00fb"
+    },
+    {
+      "pathId": "16653c6a-9541-4294-b017-27357c0837db",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "resumeId": "6dd610c3-cd44-45d2-a139-ab2e8533f56b",
+      "targetRole": "Full Stack Developer",
+      "learningPath": {
+        "targetRole": "full stack developer",
+        "currentSkills": [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "PostgreSQL",
+          "Git",
+          "Docker",
+          "TypeScript",
+          "AWS"
+        ],
+        "requiredSkills": [
+          "JavaScript",
+          "Python",
+          "Java",
+          "System Design",
+          "Data Structures",
+          "SQL",
+          "Git",
+          "Testing"
+        ],
+        "skillGaps": [
+          "Python",
+          "System Design",
+          "Data Structures",
+          "Testing"
+        ],
+        "prioritySkills": [
+          "Python",
+          "System Design",
+          "Data Structures"
+        ],
+        "completionPercentage": 50,
+        "timeline": {
+          "phase1": {
+            "duration": "2-4 weeks",
+            "skills": [
+              "Python"
+            ],
+            "focus": "Foundation building",
+            "courses": []
+          },
+          "phase2": {
+            "duration": "4-8 weeks",
+            "skills": [
+              "System Design"
+            ],
+            "focus": "Core competency",
+            "courses": []
+          },
+          "phase3": {
+            "duration": "8-12 weeks",
+            "skills": [
+              "Data Structures"
+            ],
+            "focus": "Advanced topics",
+            "courses": []
+          }
+        },
+        "estimatedCost": {
+          "courseraSpecializations": 117,
+          "udemyCoursesBundle": 30,
+          "totalRange": "$30-$117"
+        },
+        "estimatedHours": {
+          "phase1": 20,
+          "phase2": 40,
+          "phase3": 40,
+          "projects": 20,
+          "total": 120
+        },
+        "projects": [
+          {
+            "title": "Build a full stack developer project",
+            "description": "Apply learned skills in a real-world project",
+            "difficulty": "Intermediate",
+            "timeInvest": "20 hours",
+            "portfolioValue": "High"
+          },
+          {
+            "title": "Contribute to open source in Python",
+            "description": "Real-world experience with industry-standard tools",
+            "difficulty": "Advanced",
+            "timeInvest": "10-20 hours",
+            "portfolioValue": "Very High"
+          }
+        ],
+        "metrics": {
+          "coursesRequired": 3,
+          "projectsRequired": 2,
+          "estimatedDuration": "12-16 weeks",
+          "careerImpact": {
+            "salaryIncrease": "15-25%",
+            "promotionReadiness": "High",
+            "jobOpportunitiesIncrease": "40-60%"
+          }
+        },
+        "courses": [],
+        "steps": [
+          {
+            "title": "Foundation building: Python",
+            "description": "Focus on foundation building skills",
+            "duration": "2-4 weeks"
+          },
+          {
+            "title": "Core competency: System Design",
+            "description": "Focus on core competency skills",
+            "duration": "4-8 weeks"
+          },
+          {
+            "title": "Advanced topics: Data Structures",
+            "description": "Focus on advanced topics skills",
+            "duration": "8-12 weeks"
+          },
+          {
+            "title": "Build a full stack developer project",
+            "description": "Apply learned skills in a real-world project",
+            "duration": "20 hours"
+          },
+          {
+            "title": "Contribute to open source in Python",
+            "description": "Real-world experience with industry-standard tools",
+            "duration": "10-20 hours"
+          }
+        ]
+      },
+      "status": "active",
+      "createdAt": "2026-03-03T11:55:10.400Z",
+      "updatedAt": "2026-03-03T11:55:10.401Z",
+      "id": "9492a87d-8146-4bda-a663-fd8f0b2de890"
     }
   ],
   "job_matches": [
@@ -2916,6 +4050,1360 @@
       "dataSource": "REAL_JOBS",
       "createdAt": "2026-02-28T07:53:28.929Z",
       "expiresAt": "2026-03-07T07:53:28.929Z"
+    },
+    {
+      "id": "0d957248-16bd-4604-bd1e-a90112f1b9e9",
+      "userId": "0d874867-fe9c-4d2a-850a-cd38d48d64a7",
+      "input": {
+        "skills": [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Python"
+        ],
+        "interests": [
+          "AI",
+          "web development"
+        ],
+        "experience": "2 years as software developer",
+        "location": "Remote"
+      },
+      "matches": [
+        {
+          "title": "Senior Backend Developer * - Python / Node.js",
+          "role": "Senior Backend Developer * - Python / Node.js",
+          "jobTitle": "Senior Backend Developer * - Python / Node.js",
+          "company_type": "nextOR GmbH",
+          "company": "nextOR GmbH",
+          "matchScore": 95,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Perfect skill match with Python and Node.js",
+            "Backend development aligns with experience",
+            "Berlin tech hub location"
+          ],
+          "skills_gap": [
+            "Senior level experience"
+          ],
+          "why_match": "Perfect skill match with Python and Node.js. Backend development aligns with experience. Berlin tech hub location",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/nextor-gmbh/senior-backend-developer-python-nodejs-berlin-210635",
+          "postedDate": 1772533904,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Du willst skalierbare Backend-Architekturen für eine innovative SaaS-Lösung im Healthcare-Bereich entwickeln und mit einem ambitionierten Team neue Maßstäbe setzen.\nDann werde unser neuer Senior Backend Entwickler * bei der nextOR GmbH\nUnsere Mission\nDie nextOR bringt Ordnung in komplexe Krankenhaus",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Generative AI Engineer (all Genders) for Berlin",
+          "role": "Generative AI Engineer (all Genders) for Berlin",
+          "jobTitle": "Generative AI Engineer (all Genders) for Berlin",
+          "company_type": "Digitl GmbH",
+          "company": "Digitl GmbH",
+          "matchScore": 90,
+          "salary": "Competitive",
+          "skills_matched": [
+            "AI engineering matches interests perfectly",
+            "Berlin tech location",
+            "Emerging field with growth potential"
+          ],
+          "skills_gap": [
+            "Generative AI specific experience",
+            "Machine learning frameworks"
+          ],
+          "why_match": "AI engineering matches interests perfectly. Berlin tech location. Emerging field with growth potential",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/digitl-gmbh/generative-ai-engineer-all-genders-for-berlin-289098",
+          "postedDate": 1772532119,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Digitl ist ein junges und innovatives Unternehmen im Bereich Marketing und Cloud-Technologie. In einem kollaborativen und cross-funktionalen Umfeld entwickeln wir neue Konzepte, um unsere Kunden verschiedener Branchen in eine digital geprägte Zukunft zu führen. Werde Teil davon und bringe als Genera",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Generative AI Engineer (all Genders) for Dusseldorf",
+          "role": "Generative AI Engineer (all Genders) for Dusseldorf",
+          "jobTitle": "Generative AI Engineer (all Genders) for Dusseldorf",
+          "company_type": "Digitl GmbH",
+          "company": "Digitl GmbH",
+          "matchScore": 88,
+          "salary": "Competitive",
+          "skills_matched": [
+            "AI engineering matches interests",
+            "Düsseldorf tech scene",
+            "Generative AI focus"
+          ],
+          "skills_gap": [
+            "Generative AI experience",
+            "ML/AI frameworks"
+          ],
+          "why_match": "AI engineering matches interests. Düsseldorf tech scene. Generative AI focus",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/digitl-gmbh/generative-ai-engineer-all-genders-for-dusseldorf-dusseldorf-60679",
+          "postedDate": 1772532118,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Düsseldorf",
+          "jobDescription": "Digitl ist ein junges und innovatives Unternehmen im Bereich Marketing und Cloud-Technologie. In einem kollaborativen und cross-funktionalen Umfeld entwickeln wir neue Konzepte, um unsere Kunden verschiedener Branchen in eine digital geprägte Zukunft zu führen. Werde Teil davon und bringe als Genera",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Full Stack Developer",
+          "role": "Full Stack Developer",
+          "jobTitle": "Full Stack Developer",
+          "company_type": "spotixx GmbH",
+          "company": "spotixx GmbH",
+          "matchScore": 85,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Full stack matches React/Node.js skills",
+            "Web development focus",
+            "Frankfurt tech hub"
+          ],
+          "skills_gap": [
+            "Full stack breadth",
+            "German language possibly required"
+          ],
+          "why_match": "Full stack matches React/Node.js skills. Web development focus. Frankfurt tech hub",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/spotixx-gmbh/full-stack-developer-frankfurt-am-main-286979",
+          "postedDate": 1772533909,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Frankfurt am Main",
+          "jobDescription": "spotixx is a succesful, growing fintech company with 50+ employees in Frankfurt and Wilhelmshaven. We are one of the fastest growing fintech companies in Germany. We are currently building a SaaS platform for AI Governance &#x26; Compliance. Our goal is to support companies in ensuring their AI mode",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Software Engineer Flight Operations Platform / Cloud & Backend (Python / AWS)",
+          "role": "Software Engineer Flight Operations Platform / Cloud & Backend (Python / AWS)",
+          "jobTitle": "Software Engineer Flight Operations Platform / Cloud & Backend (Python / AWS)",
+          "company_type": "Unisphere GmbH",
+          "company": "Unisphere GmbH",
+          "matchScore": 82,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Python and AWS skills match",
+            "Cloud/backend development",
+            "Flight operations interesting domain"
+          ],
+          "skills_gap": [
+            "AWS certification",
+            "Aviation domain knowledge"
+          ],
+          "why_match": "Python and AWS skills match. Cloud/backend development. Flight operations interesting domain",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/unisphere-gmbh/software-engineer-flight-operations-platform-cloud-backend-python-aws-konstanz-222207",
+          "postedDate": 1772530325,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Konstanz",
+          "jobDescription": "Unlocking NextGen Aviation to Benefit Everyone!\nUnisphere bildet Pilotenwissen in Software ab. Unsere Flight Operations Platform NOVA automatisiert den Flugbetrieb von Drohnen und Lufttaxis. Dafür entwickeln wir cloud-basierte Softwareprodukte und Technologien, die Industrien ohne Pilotenwissen ermö",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Cloud Engineer",
+          "role": "Cloud Engineer",
+          "jobTitle": "Cloud Engineer",
+          "company_type": "Paymentology",
+          "company": "Paymentology",
+          "matchScore": 75,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Cloud engineering growth path",
+            "Berlin location",
+            "Technical role"
+          ],
+          "skills_gap": [
+            "Cloud platforms expertise",
+            "DevOps skills",
+            "Infrastructure knowledge"
+          ],
+          "why_match": "Cloud engineering growth path. Berlin location. Technical role",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/paymentology/remote-cloud-engineer-berlin-232904",
+          "postedDate": 1772530933,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "At Paymentology, we’re redefining what’s possible in the payments space. As the first truly global issuer-processor, we give banks and fintechs the technology and talent to launch and manage Mastercard and Visa cards at scale – across more than 60 countries.Our advanced, multi-cloud platform deliver",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Digital Implementation Manager (Product  & Project)",
+          "role": "Digital Implementation Manager (Product  & Project)",
+          "jobTitle": "Digital Implementation Manager (Product  & Project)",
+          "company_type": "Yukawa Exponential GmbH",
+          "company": "Yukawa Exponential GmbH",
+          "matchScore": 65,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Digital/product management",
+            "Tech-adjacent role",
+            "Project management skills"
+          ],
+          "skills_gap": [
+            "Product management experience",
+            "Business analysis",
+            "German language"
+          ],
+          "why_match": "Digital/product management. Tech-adjacent role. Project management skills",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/yukawa-exponential-gmbh/digital-implementation-manager-product-project-aachen-29629",
+          "postedDate": 1772533908,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Aachen",
+          "jobDescription": "Bei Yukawa bauen wir digitale Ökosysteme, die Hardware, Cloud und KI zu herausragenden digitalen Produkten vereinen. Wir übernehmen Verantwortung, arbeiten mit hoher Geschwindigkeit und durchdringen das Geschäft unserer Kunden in der Tiefe.\nAls Digital Implementation Manager bist du die zentrale Sch",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Werkstudent (m/w/d) IT - Systemintegration & Digitalisierung",
+          "role": "Werkstudent (m/w/d) IT - Systemintegration & Digitalisierung",
+          "jobTitle": "Werkstudent (m/w/d) IT - Systemintegration & Digitalisierung",
+          "company_type": "Hartmann International GmbH & Co. KG",
+          "company": "Hartmann International GmbH & Co. KG",
+          "matchScore": 60,
+          "salary": "Competitive",
+          "skills_matched": [
+            "IT focus with digitalization",
+            "Student-friendly role",
+            "Systems integration"
+          ],
+          "skills_gap": [
+            "System integration knowledge",
+            "Enterprise IT",
+            "German language"
+          ],
+          "why_match": "IT focus with digitalization. Student-friendly role. Systems integration",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/hartmann-international-gmbh-co-kg/werkstudent-it-systemintegration-digitalisierung-paderborn-434269",
+          "postedDate": 1772533906,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Paderborn",
+          "jobDescription": "Die Hartmann International GmbH &#x26; Co. KG ist ein international tätiges Logistik- und Transportunternehmen mit Hauptsitz in Paderborn. Mit modernen Lösungen in den Bereichen Transport, Kontraktlogistik und Supply Chain Management treiben wir kontinuierlich die Digitalisierung unserer Prozesse vo",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Technical Account Manager - DACH",
+          "role": "Technical Account Manager - DACH",
+          "jobTitle": "Technical Account Manager - DACH",
+          "company_type": "SolarEdge",
+          "company": "SolarEdge",
+          "matchScore": 55,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Technical account management",
+            "DACH region",
+            "Remote possibility"
+          ],
+          "skills_gap": [
+            "Sales/account management",
+            "Solar industry knowledge",
+            "German language"
+          ],
+          "why_match": "Technical account management. DACH region. Remote possibility",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/solaredge/remote-technical-account-manager-dach-munich-231462",
+          "postedDate": 1772530932,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Munich",
+          "jobDescription": "Are you ready to power the future? At SolarEdge (NASDAQ: SEDG), we're a global leader in smart energy technology, with over 4,000 employees, offices in 34 countries, and millions of installations worldwide.Our innovative solutions include solar inverters, battery storage, backup systems, EV charging",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Compliance & Information Security Manager",
+          "role": "Compliance & Information Security Manager",
+          "jobTitle": "Compliance & Information Security Manager",
+          "company_type": "Qdrant",
+          "company": "Qdrant",
+          "matchScore": 50,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Information security growing field",
+            "Berlin location",
+            "Technical compliance"
+          ],
+          "skills_gap": [
+            "Security frameworks",
+            "Compliance knowledge",
+            "Risk management"
+          ],
+          "why_match": "Information security growing field. Berlin location. Technical compliance",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/qdrant/compliance-information-security-manager-berlin-430265",
+          "postedDate": 1772533905,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "We’re hiring a hands-on Compliance &#x26; Information Security Manager to own and scale our security program. You will replace external advisory support and act as the internal lead for compliance and security governance, working closely with Engineering, Product, Legal, and Sales.\nTasks\n\nOwn the IS",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "SEO-Spezialist:in",
+          "role": "SEO-Spezialist:in",
+          "jobTitle": "SEO-Spezialist:in",
+          "company_type": "Saupe Communication GmbH",
+          "company": "Saupe Communication GmbH",
+          "matchScore": 45,
+          "salary": "Competitive",
+          "skills_matched": [
+            "SEO involves technical skills",
+            "Digital marketing",
+            "Stuttgart location"
+          ],
+          "skills_gap": [
+            "SEO expertise",
+            "Digital marketing",
+            "German language"
+          ],
+          "why_match": "SEO involves technical skills. Digital marketing. Stuttgart location",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/saupe-communication-gmbh/seo-spezialistin-stuttgart-479183",
+          "postedDate": 1772532243,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Stuttgart",
+          "jobDescription": "Wir sind eine B2B-Agentur mit über 35 Jahren Erfahrung in Industrie,\nTech und Mittelstand – strategisch, kreativ und messbar. Kein\nschwerfälliger Tanker, sondern ein inhabergeführtes Familienunternehmen\nin zweiter Generation: mit jungen Geschäftsführer/innen, schlanken Teams\nund Fokus auf SEO, Perfo",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "C / C++ Softwareentwickler (m/w/d) für Embedded Systems - Schwerpunkt Defence",
+          "role": "C / C++ Softwareentwickler (m/w/d) für Embedded Systems - Schwerpunkt Defence",
+          "jobTitle": "C / C++ Softwareentwickler (m/w/d) für Embedded Systems - Schwerpunkt Defence",
+          "company_type": "Windhoff Group",
+          "company": "Windhoff Group",
+          "matchScore": 40,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Embedded systems programming",
+            "Software development",
+            "Bremen location"
+          ],
+          "skills_gap": [
+            "C/C++ proficiency",
+            "Embedded systems",
+            "Defence domain"
+          ],
+          "why_match": "Embedded systems programming. Software development. Bremen location",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/windhoff-group/c-c-softwareentwickler-fur-embedded-systems-schwerpunkt-defence-bremen-443585",
+          "postedDate": 1772532117,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Bremen",
+          "jobDescription": "Windhoff Group\nIn 25 Jahren Unternehmensgeschichte als Dienstleister sind langfristige und enge Partnerschaften mit großen Unternehmen und Konzernen entstanden. Als bodenständiges, mittelständisches Unternehmen mit mehr als 250 Mitarbeitenden bieten wir dir ein sicheres Arbeitsumfeld und die Entwick",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Brand Strategist (any gender)",
+          "role": "Brand Strategist (any gender)",
+          "jobTitle": "Brand Strategist (any gender)",
+          "company_type": "tölt",
+          "company": "tölt",
+          "matchScore": 35,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Brand strategy creativity",
+            "Hamburg location",
+            "Strategic thinking"
+          ],
+          "skills_gap": [
+            "Brand strategy",
+            "Marketing expertise",
+            "Creative background"
+          ],
+          "why_match": "Brand strategy creativity. Hamburg location. Strategic thinking",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/tolt/brand-strategist-any-gender-hamburg-190906",
+          "postedDate": 1772532120,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Hamburg",
+          "jobDescription": "Strategie? Kannst du. Kreativ? Bist du.\nWir sind tölt und helfen Marken wie Motel One, über sich hinauszuwachsen. Strategisch klar. Kulturell relevant und mit Impact.\nBei uns gibt’s keine Silos: Wir arbeiten im Dreiergespann aus Kreation, Strategie und Umsetzung – ohne Overhead, ohne klassisches PM.",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Personalreferent (w/m/d) E-Mobilität in Dresden",
+          "role": "Personalreferent (w/m/d) E-Mobilität in Dresden",
+          "jobTitle": "Personalreferent (w/m/d) E-Mobilität in Dresden",
+          "company_type": "Additive Drives GmbH",
+          "company": "Additive Drives GmbH",
+          "matchScore": 30,
+          "salary": "Competitive",
+          "skills_matched": [
+            "E-mobility tech sector",
+            "Dresden location",
+            "Growing industry"
+          ],
+          "skills_gap": [
+            "HR expertise",
+            "E-mobility knowledge",
+            "German language"
+          ],
+          "why_match": "E-mobility tech sector. Dresden location. Growing industry",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/additive-drives-gmbh/personalreferent-e-mobilitat-in-dresden-295897",
+          "postedDate": 1772532120,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Dresden",
+          "jobDescription": "Gestalten Sie mit uns die Zukunft der Elektromobilität.\nWir entwickeln hochinnovative Elektromotoren für Kunden aus u.a. Luftfahrt, Motorsport und Industrie. Als wachsendes Unternehmen erweitern wir unser HR‑Team und suchen einen Personalreferenten (w/m/d), der einen eigenen Betreuungsbereich überni",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Interim QMS & Audit Readiness Consultant (Clinical Research) (f/m/d)",
+          "role": "Interim QMS & Audit Readiness Consultant (Clinical Research) (f/m/d)",
+          "jobTitle": "Interim QMS & Audit Readiness Consultant (Clinical Research) (f/m/d)",
+          "company_type": "Clariness GmbH",
+          "company": "Clariness GmbH",
+          "matchScore": 25,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Clinical research tech aspects",
+            "Berlin location",
+            "Quality management"
+          ],
+          "skills_gap": [
+            "Clinical research",
+            "QMS knowledge",
+            "Audit experience"
+          ],
+          "why_match": "Clinical research tech aspects. Berlin location. Quality management",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/clariness-gmbh/interim-qms-audit-readiness-consultant-clinical-research-berlin-443700",
+          "postedDate": 1772532121,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Clariness is looking for a Interim QMS &#x26; Audit Readiness Consultant (Clinical Research) (f/m/d).\n- Contract | 8-Week Engagement | Immediate Start | Remote\nAbout the role:\nWe are a growing company specializing in patient recruitment for clinical trials, partnering with sponsors and CROs to accel",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        }
+      ],
+      "totalMatches": 15,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-03-03T11:26:59.952Z",
+      "expiresAt": "2026-03-10T11:26:59.952Z"
+    },
+    {
+      "id": "65232aca-f5ba-45b3-8b8c-28e060f0cbac",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "input": {
+        "skills": [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Python"
+        ],
+        "interests": [
+          "AI",
+          "web development"
+        ],
+        "experience": "2 years as software developer",
+        "location": "Remote"
+      },
+      "matches": [
+        {
+          "title": "Technical Account Manager - DACH",
+          "role": "Technical Account Manager - DACH",
+          "jobTitle": "Technical Account Manager - DACH",
+          "company_type": "SolarEdge",
+          "company": "SolarEdge",
+          "matchScore": 92,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Remote position",
+            "Matches Python/Node.js skills",
+            "Cloud engineering aligns with web development experience"
+          ],
+          "skills_gap": [],
+          "why_match": "Remote position. Matches Python/Node.js skills. Cloud engineering aligns with web development experience",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/solaredge/remote-technical-account-manager-dach-munich-231462",
+          "postedDate": 1772530932,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Munich",
+          "jobDescription": "Are you ready to power the future? At SolarEdge (NASDAQ: SEDG), we're a global leader in smart energy technology, with over 4,000 employees, offices in 34 countries, and millions of installations worldwide.Our innovative solutions include solar inverters, battery storage, backup systems, EV charging",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "SEO-Spezialist:in",
+          "role": "SEO-Spezialist:in",
+          "jobTitle": "SEO-Spezialist:in",
+          "company_type": "Saupe Communication GmbH",
+          "company": "Saupe Communication GmbH",
+          "matchScore": 88,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Direct match on Python and Node.js skills",
+            "Backend development fits web development interest",
+            "2 years experience suitable for senior role"
+          ],
+          "skills_gap": [
+            "Senior level may require more experience"
+          ],
+          "why_match": "Direct match on Python and Node.js skills. Backend development fits web development interest. 2 years experience suitable for senior role",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/saupe-communication-gmbh/seo-spezialistin-stuttgart-479183",
+          "postedDate": 1772532243,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Stuttgart",
+          "jobDescription": "Wir sind eine B2B-Agentur mit über 35 Jahren Erfahrung in Industrie,\nTech und Mittelstand – strategisch, kreativ und messbar. Kein\nschwerfälliger Tanker, sondern ein inhabergeführtes Familienunternehmen\nin zweiter Generation: mit jungen Geschäftsführer/innen, schlanken Teams\nund Fokus auf SEO, Perfo",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Generative AI Engineer (all Genders) for Dusseldorf",
+          "role": "Generative AI Engineer (all Genders) for Dusseldorf",
+          "jobTitle": "Generative AI Engineer (all Genders) for Dusseldorf",
+          "company_type": "Digitl GmbH",
+          "company": "Digitl GmbH",
+          "matchScore": 85,
+          "salary": "Competitive",
+          "skills_matched": [
+            "AI interest match with Generative AI",
+            "Likely uses Python/JavaScript",
+            "Web development relevance"
+          ],
+          "skills_gap": [
+            "Specific GenAI expertise",
+            "Location Berlin (not remote)"
+          ],
+          "why_match": "AI interest match with Generative AI. Likely uses Python/JavaScript. Web development relevance",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/digitl-gmbh/generative-ai-engineer-all-genders-for-dusseldorf-dusseldorf-60679",
+          "postedDate": 1772532118,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Düsseldorf",
+          "jobDescription": "Digitl ist ein junges und innovatives Unternehmen im Bereich Marketing und Cloud-Technologie. In einem kollaborativen und cross-funktionalen Umfeld entwickeln wir neue Konzepte, um unsere Kunden verschiedener Branchen in eine digital geprägte Zukunft zu führen. Werde Teil davon und bringe als Genera",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Controller (m/w/d)",
+          "role": "Controller (m/w/d)",
+          "jobTitle": "Controller (m/w/d)",
+          "company_type": "visionm GmbH",
+          "company": "visionm GmbH",
+          "matchScore": 82,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Python backend focus matches skills",
+            "Cloud aligns with web dev",
+            "Software engineering fits experience"
+          ],
+          "skills_gap": [
+            "AWS/cloud specialization",
+            "Location Konstanz"
+          ],
+          "why_match": "Python backend focus matches skills. Cloud aligns with web dev. Software engineering fits experience",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/visionm-gmbh/controller-kitzingen-181612",
+          "postedDate": 1772530324,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Kitzingen",
+          "jobDescription": "Für unseren renommierten Mandanten, ein dynamisches und wachsendes Dienstleistungsunternehmen mit Sitz im Raum Kitzingen, suchen wir im Rahmen der Direktvermittlung einen qualifizierten und engagierten Controller (m/w/d).\nUnser Mandant zeichnet sich durch eine moderne Unternehmenskultur, professione",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Full Stack Developer",
+          "role": "Full Stack Developer",
+          "jobTitle": "Full Stack Developer",
+          "company_type": "spotixx GmbH",
+          "company": "spotixx GmbH",
+          "matchScore": 78,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Full stack matches JavaScript/React/Node.js",
+            "Web development core fit"
+          ],
+          "skills_gap": [
+            "Onsite Frankfurt",
+            "Experience level for full stack"
+          ],
+          "why_match": "Full stack matches JavaScript/React/Node.js. Web development core fit",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/spotixx-gmbh/full-stack-developer-frankfurt-am-main-286979",
+          "postedDate": 1772533909,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Frankfurt am Main",
+          "jobDescription": "spotixx is a succesful, growing fintech company with 50+ employees in Frankfurt and Wilhelmshaven. We are one of the fastest growing fintech companies in Germany. We are currently building a SaaS platform for AI Governance &#x26; Compliance. Our goal is to support companies in ensuring their AI mode",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Projektcontroller / Referent-Projektfinanzen (m/w/d)",
+          "role": "Projektcontroller / Referent-Projektfinanzen (m/w/d)",
+          "jobTitle": "Projektcontroller / Referent-Projektfinanzen (m/w/d)",
+          "company_type": "MY Humancapital GmbH",
+          "company": "MY Humancapital GmbH",
+          "matchScore": 75,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Remote position",
+            "Technical role suits developer background"
+          ],
+          "skills_gap": [
+            "Account management vs development",
+            "Munich base",
+            "No direct skill match"
+          ],
+          "why_match": "Remote position. Technical role suits developer background",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/my-humancapital-gmbh/projektcontroller-referent-projektfinanzen-munich-152967",
+          "postedDate": 1772530325,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Munich",
+          "jobDescription": "Im Auftrag unseres Partnerunternehmens in München suchen wir Sie zum nächstmöglichen Zeitpunkt als **„**Projektcontroller / Referent-Projektfinanzen (m/w/d)“.\nAufgaben\n\nAls Projektcontroller / Referent-Projektfinanzen (m/w/d) übernehmen Sie das finanzwirtschaftliche Management nationaler Förderproje",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "C / C++ Softwareentwickler (m/w/d) für Embedded Systems - Schwerpunkt Defence",
+          "role": "C / C++ Softwareentwickler (m/w/d) für Embedded Systems - Schwerpunkt Defence",
+          "jobTitle": "C / C++ Softwareentwickler (m/w/d) für Embedded Systems - Schwerpunkt Defence",
+          "company_type": "Windhoff Group",
+          "company": "Windhoff Group",
+          "matchScore": 72,
+          "salary": "Competitive",
+          "skills_matched": [
+            "AI interest with Generative AI",
+            "Python likely relevant"
+          ],
+          "skills_gap": [
+            "GenAI specific",
+            "Düsseldorf location",
+            "Not remote"
+          ],
+          "why_match": "AI interest with Generative AI. Python likely relevant",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/windhoff-group/c-c-softwareentwickler-fur-embedded-systems-schwerpunkt-defence-bremen-443585",
+          "postedDate": 1772532117,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Bremen",
+          "jobDescription": "Windhoff Group\nIn 25 Jahren Unternehmensgeschichte als Dienstleister sind langfristige und enge Partnerschaften mit großen Unternehmen und Konzernen entstanden. Als bodenständiges, mittelständisches Unternehmen mit mehr als 250 Mitarbeitenden bieten wir dir ein sicheres Arbeitsumfeld und die Entwick",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Compliance & Information Security Manager",
+          "role": "Compliance & Information Security Manager",
+          "jobTitle": "Compliance & Information Security Manager",
+          "company_type": "Qdrant",
+          "company": "Qdrant",
+          "matchScore": 45,
+          "salary": "Competitive",
+          "skills_matched": [
+            "IT/security may use Node.js/Python"
+          ],
+          "skills_gap": [
+            "Compliance focus",
+            "Manager level",
+            "Berlin onsite"
+          ],
+          "why_match": "IT/security may use Node.js/Python",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/qdrant/compliance-information-security-manager-berlin-430265",
+          "postedDate": 1772533905,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "We’re hiring a hands-on Compliance &#x26; Information Security Manager to own and scale our security program. You will replace external advisory support and act as the internal lead for compliance and security governance, working closely with Engineering, Product, Legal, and Sales.\nTasks\n\nOwn the IS",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Digital Implementation Manager (Product  & Project)",
+          "role": "Digital Implementation Manager (Product  & Project)",
+          "jobTitle": "Digital Implementation Manager (Product  & Project)",
+          "company_type": "Yukawa Exponential GmbH",
+          "company": "Yukawa Exponential GmbH",
+          "matchScore": 42,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Digital/product may involve web"
+          ],
+          "skills_gap": [
+            "Managerial/non-technical",
+            "Aachen onsite"
+          ],
+          "why_match": "Digital/product may involve web",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/yukawa-exponential-gmbh/digital-implementation-manager-product-project-aachen-29629",
+          "postedDate": 1772533908,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Aachen",
+          "jobDescription": "Bei Yukawa bauen wir digitale Ökosysteme, die Hardware, Cloud und KI zu herausragenden digitalen Produkten vereinen. Wir übernehmen Verantwortung, arbeiten mit hoher Geschwindigkeit und durchdringen das Geschäft unserer Kunden in der Tiefe.\nAls Digital Implementation Manager bist du die zentrale Sch",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Senior Backend Developer * - Python / Node.js",
+          "role": "Senior Backend Developer * - Python / Node.js",
+          "jobTitle": "Senior Backend Developer * - Python / Node.js",
+          "company_type": "nextOR GmbH",
+          "company": "nextOR GmbH",
+          "matchScore": 40,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Potential match"
+          ],
+          "skills_gap": [],
+          "why_match": "Potential match",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/nextor-gmbh/senior-backend-developer-python-nodejs-berlin-210635",
+          "postedDate": 1772533904,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Du willst skalierbare Backend-Architekturen für eine innovative SaaS-Lösung im Healthcare-Bereich entwickeln und mit einem ambitionierten Team neue Maßstäbe setzen.\nDann werde unser neuer Senior Backend Entwickler * bei der nextOR GmbH\nUnsere Mission\nDie nextOR bringt Ordnung in komplexe Krankenhaus",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Software Engineer Flight Operations Platform / Cloud & Backend (Python / AWS)",
+          "role": "Software Engineer Flight Operations Platform / Cloud & Backend (Python / AWS)",
+          "jobTitle": "Software Engineer Flight Operations Platform / Cloud & Backend (Python / AWS)",
+          "company_type": "Unisphere GmbH",
+          "company": "Unisphere GmbH",
+          "matchScore": 12,
+          "salary": "Competitive",
+          "skills_matched": [
+            "None"
+          ],
+          "skills_gap": [
+            "Project finance",
+            "Munich onsite"
+          ],
+          "why_match": "None",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/unisphere-gmbh/software-engineer-flight-operations-platform-cloud-backend-python-aws-konstanz-222207",
+          "postedDate": 1772530325,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Konstanz",
+          "jobDescription": "Unlocking NextGen Aviation to Benefit Everyone!\nUnisphere bildet Pilotenwissen in Software ab. Unsere Flight Operations Platform NOVA automatisiert den Flugbetrieb von Drohnen und Lufttaxis. Dafür entwickeln wir cloud-basierte Softwareprodukte und Technologien, die Industrien ohne Pilotenwissen ermö",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Generative AI Engineer (all Genders) for Berlin",
+          "role": "Generative AI Engineer (all Genders) for Berlin",
+          "jobTitle": "Generative AI Engineer (all Genders) for Berlin",
+          "company_type": "Digitl GmbH",
+          "company": "Digitl GmbH",
+          "matchScore": 10,
+          "salary": "Competitive",
+          "skills_matched": [
+            "None"
+          ],
+          "skills_gap": [
+            "Marketing/strategy",
+            "Hamburg onsite"
+          ],
+          "why_match": "None",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/digitl-gmbh/generative-ai-engineer-all-genders-for-berlin-289098",
+          "postedDate": 1772532119,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Digitl ist ein junges und innovatives Unternehmen im Bereich Marketing und Cloud-Technologie. In einem kollaborativen und cross-funktionalen Umfeld entwickeln wir neue Konzepte, um unsere Kunden verschiedener Branchen in eine digital geprägte Zukunft zu führen. Werde Teil davon und bringe als Genera",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Cloud Engineer",
+          "role": "Cloud Engineer",
+          "jobTitle": "Cloud Engineer",
+          "company_type": "Paymentology",
+          "company": "Paymentology",
+          "matchScore": 8,
+          "salary": "Competitive",
+          "skills_matched": [
+            "None"
+          ],
+          "skills_gap": [
+            "Legal role",
+            "Berlin onsite"
+          ],
+          "why_match": "None",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/paymentology/remote-cloud-engineer-berlin-232904",
+          "postedDate": 1772530933,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "At Paymentology, we’re redefining what’s possible in the payments space. As the first truly global issuer-processor, we give banks and fintechs the technology and talent to launch and manage Mastercard and Visa cards at scale – across more than 60 countries.Our advanced, multi-cloud platform deliver",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Personalreferent (w/m/d) E-Mobilität in Dresden",
+          "role": "Personalreferent (w/m/d) E-Mobilität in Dresden",
+          "jobTitle": "Personalreferent (w/m/d) E-Mobilität in Dresden",
+          "company_type": "Additive Drives GmbH",
+          "company": "Additive Drives GmbH",
+          "matchScore": 7,
+          "salary": "Competitive",
+          "skills_matched": [
+            "None"
+          ],
+          "skills_gap": [
+            "Clinical research consulting",
+            "Berlin"
+          ],
+          "why_match": "None",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/additive-drives-gmbh/personalreferent-e-mobilitat-in-dresden-295897",
+          "postedDate": 1772532120,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Dresden",
+          "jobDescription": "Gestalten Sie mit uns die Zukunft der Elektromobilität.\nWir entwickeln hochinnovative Elektromotoren für Kunden aus u.a. Luftfahrt, Motorsport und Industrie. Als wachsendes Unternehmen erweitern wir unser HR‑Team und suchen einen Personalreferenten (w/m/d), der einen eigenen Betreuungsbereich überni",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Brand Strategist (any gender)",
+          "role": "Brand Strategist (any gender)",
+          "jobTitle": "Brand Strategist (any gender)",
+          "company_type": "tölt",
+          "company": "tölt",
+          "matchScore": 5,
+          "salary": "Competitive",
+          "skills_matched": [
+            "None"
+          ],
+          "skills_gap": [
+            "HR/personnel",
+            "Dresden"
+          ],
+          "why_match": "None",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/tolt/brand-strategist-any-gender-hamburg-190906",
+          "postedDate": 1772532120,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Hamburg",
+          "jobDescription": "Strategie? Kannst du. Kreativ? Bist du.\nWir sind tölt und helfen Marken wie Motel One, über sich hinauszuwachsen. Strategisch klar. Kulturell relevant und mit Impact.\nBei uns gibt’s keine Silos: Wir arbeiten im Dreiergespann aus Kreation, Strategie und Umsetzung – ohne Overhead, ohne klassisches PM.",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        }
+      ],
+      "totalMatches": 15,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-03-03T11:38:58.074Z",
+      "expiresAt": "2026-03-10T11:38:58.074Z"
+    },
+    {
+      "id": "934ef44d-7d29-4412-b158-aaadacaa9281",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "input": {
+        "skills": [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Python"
+        ],
+        "interests": [
+          "AI",
+          "web development"
+        ],
+        "experience": "2 years as software developer",
+        "location": "Remote"
+      },
+      "matches": [
+        {
+          "title": "Senior Backend Developer * - Python / Node.js",
+          "role": "Senior Backend Developer * - Python / Node.js",
+          "jobTitle": "Senior Backend Developer * - Python / Node.js",
+          "company_type": "nextOR GmbH",
+          "company": "nextOR GmbH",
+          "matchScore": 95,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Perfect match for Python and Node.js skills",
+            "Senior backend role aligns with development experience",
+            "Berlin tech hub location"
+          ],
+          "skills_gap": [],
+          "why_match": "Perfect match for Python and Node.js skills. Senior backend role aligns with development experience. Berlin tech hub location",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/nextor-gmbh/senior-backend-developer-python-nodejs-berlin-210635",
+          "postedDate": 1772533904,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Du willst skalierbare Backend-Architekturen für eine innovative SaaS-Lösung im Healthcare-Bereich entwickeln und mit einem ambitionierten Team neue Maßstäbe setzen.\nDann werde unser neuer Senior Backend Entwickler * bei der nextOR GmbH\nUnsere Mission\nDie nextOR bringt Ordnung in komplexe Krankenhaus",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Generative AI Engineer (all Genders) for Berlin",
+          "role": "Generative AI Engineer (all Genders) for Berlin",
+          "jobTitle": "Generative AI Engineer (all Genders) for Berlin",
+          "company_type": "Digitl GmbH",
+          "company": "Digitl GmbH",
+          "matchScore": 88,
+          "salary": "Competitive",
+          "skills_matched": [
+            "AI engineering role matches AI interests perfectly",
+            "Berlin tech location",
+            "Cutting-edge generative AI focus"
+          ],
+          "skills_gap": [
+            "Machine learning frameworks",
+            "AI model development"
+          ],
+          "why_match": "AI engineering role matches AI interests perfectly. Berlin tech location. Cutting-edge generative AI focus",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/digitl-gmbh/generative-ai-engineer-all-genders-for-berlin-289098",
+          "postedDate": 1772532119,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Digitl ist ein junges und innovatives Unternehmen im Bereich Marketing und Cloud-Technologie. In einem kollaborativen und cross-funktionalen Umfeld entwickeln wir neue Konzepte, um unsere Kunden verschiedener Branchen in eine digital geprägte Zukunft zu führen. Werde Teil davon und bringe als Genera",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Generative AI Engineer (all Genders) for Dusseldorf",
+          "role": "Generative AI Engineer (all Genders) for Dusseldorf",
+          "jobTitle": "Generative AI Engineer (all Genders) for Dusseldorf",
+          "company_type": "Digitl GmbH",
+          "company": "Digitl GmbH",
+          "matchScore": 88,
+          "salary": "Competitive",
+          "skills_matched": [
+            "AI engineering role matches AI interests perfectly",
+            "Generative AI focus aligns with interests",
+            "Tech-focused position"
+          ],
+          "skills_gap": [
+            "Machine learning frameworks",
+            "AI model development"
+          ],
+          "why_match": "AI engineering role matches AI interests perfectly. Generative AI focus aligns with interests. Tech-focused position",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/digitl-gmbh/generative-ai-engineer-all-genders-for-dusseldorf-dusseldorf-60679",
+          "postedDate": 1772532118,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Düsseldorf",
+          "jobDescription": "Digitl ist ein junges und innovatives Unternehmen im Bereich Marketing und Cloud-Technologie. In einem kollaborativen und cross-funktionalen Umfeld entwickeln wir neue Konzepte, um unsere Kunden verschiedener Branchen in eine digital geprägte Zukunft zu führen. Werde Teil davon und bringe als Genera",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Full Stack Developer",
+          "role": "Full Stack Developer",
+          "jobTitle": "Full Stack Developer",
+          "company_type": "spotixx GmbH",
+          "company": "spotixx GmbH",
+          "matchScore": 85,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Full stack role matches JavaScript and React skills",
+            "Web development focus aligns with interests",
+            "Developer position fits experience level"
+          ],
+          "skills_gap": [
+            "Backend technologies beyond Node.js"
+          ],
+          "why_match": "Full stack role matches JavaScript and React skills. Web development focus aligns with interests. Developer position fits experience level",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/spotixx-gmbh/full-stack-developer-frankfurt-am-main-286979",
+          "postedDate": 1772533909,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Frankfurt am Main",
+          "jobDescription": "spotixx is a succesful, growing fintech company with 50+ employees in Frankfurt and Wilhelmshaven. We are one of the fastest growing fintech companies in Germany. We are currently building a SaaS platform for AI Governance &#x26; Compliance. Our goal is to support companies in ensuring their AI mode",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Software Engineer Flight Operations Platform / Cloud & Backend (Python / AWS)",
+          "role": "Software Engineer Flight Operations Platform / Cloud & Backend (Python / AWS)",
+          "jobTitle": "Software Engineer Flight Operations Platform / Cloud & Backend (Python / AWS)",
+          "company_type": "Unisphere GmbH",
+          "company": "Unisphere GmbH",
+          "matchScore": 82,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Python and AWS cloud technologies match skills",
+            "Backend development role",
+            "Aviation tech industry"
+          ],
+          "skills_gap": [
+            "AWS certification",
+            "Flight operations domain knowledge"
+          ],
+          "why_match": "Python and AWS cloud technologies match skills. Backend development role. Aviation tech industry",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/unisphere-gmbh/software-engineer-flight-operations-platform-cloud-backend-python-aws-konstanz-222207",
+          "postedDate": 1772530325,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Konstanz",
+          "jobDescription": "Unlocking NextGen Aviation to Benefit Everyone!\nUnisphere bildet Pilotenwissen in Software ab. Unsere Flight Operations Platform NOVA automatisiert den Flugbetrieb von Drohnen und Lufttaxis. Dafür entwickeln wir cloud-basierte Softwareprodukte und Technologien, die Industrien ohne Pilotenwissen ermö",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Cloud Engineer",
+          "role": "Cloud Engineer",
+          "jobTitle": "Cloud Engineer",
+          "company_type": "Paymentology",
+          "company": "Paymentology",
+          "matchScore": 75,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Cloud engineering role",
+            "Berlin tech location",
+            "Infrastructure focus"
+          ],
+          "skills_gap": [
+            "Cloud platforms expertise",
+            "DevOps tools",
+            "Infrastructure as code"
+          ],
+          "why_match": "Cloud engineering role. Berlin tech location. Infrastructure focus",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/paymentology/remote-cloud-engineer-berlin-232904",
+          "postedDate": 1772530933,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "At Paymentology, we’re redefining what’s possible in the payments space. As the first truly global issuer-processor, we give banks and fintechs the technology and talent to launch and manage Mastercard and Visa cards at scale – across more than 60 countries.Our advanced, multi-cloud platform deliver",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Technical Account Manager - DACH",
+          "role": "Technical Account Manager - DACH",
+          "jobTitle": "Technical Account Manager - DACH",
+          "company_type": "SolarEdge",
+          "company": "SolarEdge",
+          "matchScore": 70,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Technical role with remote option",
+            "Account management combines tech and business"
+          ],
+          "skills_gap": [
+            "Sales experience",
+            "DACH market knowledge",
+            "Solar industry expertise"
+          ],
+          "why_match": "Technical role with remote option. Account management combines tech and business",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/solaredge/remote-technical-account-manager-dach-munich-231462",
+          "postedDate": 1772530932,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Munich",
+          "jobDescription": "Are you ready to power the future? At SolarEdge (NASDAQ: SEDG), we're a global leader in smart energy technology, with over 4,000 employees, offices in 34 countries, and millions of installations worldwide.Our innovative solutions include solar inverters, battery storage, backup systems, EV charging",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Digital Implementation Manager (Product  & Project)",
+          "role": "Digital Implementation Manager (Product  & Project)",
+          "jobTitle": "Digital Implementation Manager (Product  & Project)",
+          "company_type": "Yukawa Exponential GmbH",
+          "company": "Yukawa Exponential GmbH",
+          "matchScore": 65,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Digital implementation involves tech skills",
+            "Project management role",
+            "Product focus"
+          ],
+          "skills_gap": [
+            "Project management certification",
+            "Product management experience"
+          ],
+          "why_match": "Digital implementation involves tech skills. Project management role. Product focus",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/yukawa-exponential-gmbh/digital-implementation-manager-product-project-aachen-29629",
+          "postedDate": 1772533908,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Aachen",
+          "jobDescription": "Bei Yukawa bauen wir digitale Ökosysteme, die Hardware, Cloud und KI zu herausragenden digitalen Produkten vereinen. Wir übernehmen Verantwortung, arbeiten mit hoher Geschwindigkeit und durchdringen das Geschäft unserer Kunden in der Tiefe.\nAls Digital Implementation Manager bist du die zentrale Sch",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Werkstudent (m/w/d) IT - Systemintegration & Digitalisierung",
+          "role": "Werkstudent (m/w/d) IT - Systemintegration & Digitalisierung",
+          "jobTitle": "Werkstudent (m/w/d) IT - Systemintegration & Digitalisierung",
+          "company_type": "Hartmann International GmbH & Co. KG",
+          "company": "Hartmann International GmbH & Co. KG",
+          "matchScore": 45,
+          "salary": "Competitive",
+          "skills_matched": [
+            "IT and digitalization focus",
+            "Student position matches experience level"
+          ],
+          "skills_gap": [
+            "German language",
+            "System integration knowledge"
+          ],
+          "why_match": "IT and digitalization focus. Student position matches experience level",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/hartmann-international-gmbh-co-kg/werkstudent-it-systemintegration-digitalisierung-paderborn-434269",
+          "postedDate": 1772533906,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Paderborn",
+          "jobDescription": "Die Hartmann International GmbH &#x26; Co. KG ist ein international tätiges Logistik- und Transportunternehmen mit Hauptsitz in Paderborn. Mit modernen Lösungen in den Bereichen Transport, Kontraktlogistik und Supply Chain Management treiben wir kontinuierlich die Digitalisierung unserer Prozesse vo",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Compliance & Information Security Manager",
+          "role": "Compliance & Information Security Manager",
+          "jobTitle": "Compliance & Information Security Manager",
+          "company_type": "Qdrant",
+          "company": "Qdrant",
+          "matchScore": 40,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Information security has technical components",
+            "Berlin location"
+          ],
+          "skills_gap": [
+            "Security certifications",
+            "Compliance knowledge",
+            "Risk management"
+          ],
+          "why_match": "Information security has technical components. Berlin location",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/qdrant/compliance-information-security-manager-berlin-430265",
+          "postedDate": 1772533905,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "We’re hiring a hands-on Compliance &#x26; Information Security Manager to own and scale our security program. You will replace external advisory support and act as the internal lead for compliance and security governance, working closely with Engineering, Product, Legal, and Sales.\nTasks\n\nOwn the IS",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "SEO-Spezialist:in",
+          "role": "SEO-Spezialist:in",
+          "jobTitle": "SEO-Spezialist:in",
+          "company_type": "Saupe Communication GmbH",
+          "company": "Saupe Communication GmbH",
+          "matchScore": 35,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Digital marketing has some technical aspects"
+          ],
+          "skills_gap": [
+            "SEO expertise",
+            "Marketing knowledge",
+            "German language"
+          ],
+          "why_match": "Digital marketing has some technical aspects",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/saupe-communication-gmbh/seo-spezialistin-stuttgart-479183",
+          "postedDate": 1772532243,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Stuttgart",
+          "jobDescription": "Wir sind eine B2B-Agentur mit über 35 Jahren Erfahrung in Industrie,\nTech und Mittelstand – strategisch, kreativ und messbar. Kein\nschwerfälliger Tanker, sondern ein inhabergeführtes Familienunternehmen\nin zweiter Generation: mit jungen Geschäftsführer/innen, schlanken Teams\nund Fokus auf SEO, Perfo",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "C / C++ Softwareentwickler (m/w/d) für Embedded Systems - Schwerpunkt Defence",
+          "role": "C / C++ Softwareentwickler (m/w/d) für Embedded Systems - Schwerpunkt Defence",
+          "jobTitle": "C / C++ Softwareentwickler (m/w/d) für Embedded Systems - Schwerpunkt Defence",
+          "company_type": "Windhoff Group",
+          "company": "Windhoff Group",
+          "matchScore": 30,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Software development role"
+          ],
+          "skills_gap": [
+            "C/C++ programming",
+            "Embedded systems",
+            "Defense industry knowledge"
+          ],
+          "why_match": "Software development role",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/windhoff-group/c-c-softwareentwickler-fur-embedded-systems-schwerpunkt-defence-bremen-443585",
+          "postedDate": 1772532117,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Bremen",
+          "jobDescription": "Windhoff Group\nIn 25 Jahren Unternehmensgeschichte als Dienstleister sind langfristige und enge Partnerschaften mit großen Unternehmen und Konzernen entstanden. Als bodenständiges, mittelständisches Unternehmen mit mehr als 250 Mitarbeitenden bieten wir dir ein sicheres Arbeitsumfeld und die Entwick",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Interim QMS & Audit Readiness Consultant (Clinical Research) (f/m/d)",
+          "role": "Interim QMS & Audit Readiness Consultant (Clinical Research) (f/m/d)",
+          "jobTitle": "Interim QMS & Audit Readiness Consultant (Clinical Research) (f/m/d)",
+          "company_type": "Clariness GmbH",
+          "company": "Clariness GmbH",
+          "matchScore": 25,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Clinical research involves data analysis"
+          ],
+          "skills_gap": [
+            "Clinical research knowledge",
+            "Quality management",
+            "Audit experience"
+          ],
+          "why_match": "Clinical research involves data analysis",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/clariness-gmbh/interim-qms-audit-readiness-consultant-clinical-research-berlin-443700",
+          "postedDate": 1772532121,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Clariness is looking for a Interim QMS &#x26; Audit Readiness Consultant (Clinical Research) (f/m/d).\n- Contract | 8-Week Engagement | Immediate Start | Remote\nAbout the role:\nWe are a growing company specializing in patient recruitment for clinical trials, partnering with sponsors and CROs to accel",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Legal Counsel (gn)",
+          "role": "Legal Counsel (gn)",
+          "jobTitle": "Legal Counsel (gn)",
+          "company_type": "Intermate Media GmbH",
+          "company": "Intermate Media GmbH",
+          "matchScore": 20,
+          "salary": "Competitive",
+          "skills_matched": [
+            "Legal tech intersection possible"
+          ],
+          "skills_gap": [
+            "Legal education",
+            "German law knowledge",
+            "Contract expertise"
+          ],
+          "why_match": "Legal tech intersection possible",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/intermate-media-gmbh/legal-counsel-gn-berlin-143582",
+          "postedDate": 1772532117,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Berlin",
+          "jobDescription": "Jobbeschreibung\nIntermate x SAMY – Shaping the State of Social\nIntermate gehört zu den größten Social-Media- und Influencer-Agenturen im DACH-Raum. Mit mehr als 250 Mates in Berlin, Hamburg, Köln und Remote entwickeln wir Social-First-Strategien, produzieren Content in eigenen Studios, arbeiten eng ",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        },
+        {
+          "title": "Personalreferent (w/m/d) E-Mobilität in Dresden",
+          "role": "Personalreferent (w/m/d) E-Mobilität in Dresden",
+          "jobTitle": "Personalreferent (w/m/d) E-Mobilität in Dresden",
+          "company_type": "Additive Drives GmbH",
+          "company": "Additive Drives GmbH",
+          "matchScore": 15,
+          "salary": "Competitive",
+          "skills_matched": [
+            "HR role may involve HR tech"
+          ],
+          "skills_gap": [
+            "HR expertise",
+            "E-mobility industry knowledge",
+            "German language"
+          ],
+          "why_match": "HR role may involve HR tech",
+          "growth_potential": "medium",
+          "demand": "medium",
+          "jobUrl": "https://www.arbeitnow.com/jobs/companies/additive-drives-gmbh/personalreferent-e-mobilitat-in-dresden-295897",
+          "postedDate": 1772532120,
+          "employmentType": "FULLTIME",
+          "source": "arbeitnow",
+          "location": "Dresden",
+          "jobDescription": "Gestalten Sie mit uns die Zukunft der Elektromobilität.\nWir entwickeln hochinnovative Elektromotoren für Kunden aus u.a. Luftfahrt, Motorsport und Industrie. Als wachsendes Unternehmen erweitern wir unser HR‑Team und suchen einen Personalreferenten (w/m/d), der einen eigenen Betreuungsbereich überni",
+          "interviewFocus": [],
+          "timeToReady": "Ready now"
+        }
+      ],
+      "totalMatches": 15,
+      "dataSource": "REAL_JOBS",
+      "createdAt": "2026-03-03T11:55:09.656Z",
+      "expiresAt": "2026-03-10T11:55:09.656Z"
     }
   ],
   "saved_jobs": [
@@ -2986,6 +5474,98 @@
       "appliedAt": null,
       "updatedAt": "2026-02-28T07:55:56.665Z",
       "id": "68f9f1c8-9aa4-4df2-9ca2-7e7bc7ca001a"
+    },
+    {
+      "jobId": "f30ffbfc-cd3f-433c-95b9-ae59331d3fdb",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "jobTitle": "Frontend Developer",
+      "company": "TestCorp",
+      "jobUrl": "https://example.com/job",
+      "salary": "$80k-120k",
+      "matchScore": null,
+      "location": "Remote",
+      "source": "test",
+      "status": "saved",
+      "notes": "",
+      "savedAt": "2026-03-03T11:38:58.118Z",
+      "appliedAt": null,
+      "updatedAt": "2026-03-03T11:38:58.119Z",
+      "id": "2247ecb8-d6c7-4cd1-a4a5-6ad85fc78214"
+    },
+    {
+      "jobId": "b0b2fd14-844f-4402-8809-5ffb3f04c490",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "jobTitle": "Frontend Developer",
+      "company": "TestCorp",
+      "jobUrl": "https://example.com/job",
+      "salary": "$80k-120k",
+      "matchScore": null,
+      "location": "Remote",
+      "source": "test",
+      "status": "saved",
+      "notes": "",
+      "savedAt": "2026-03-03T11:55:09.712Z",
+      "appliedAt": null,
+      "updatedAt": "2026-03-03T11:55:09.712Z",
+      "id": "a5af14d3-526c-4651-aef7-0fcf94c138e1"
     }
-  ]
+  ],
+  "job_alerts": [
+    {
+      "alertId": "31516de1-bc37-46ec-95e8-2e9621e37295",
+      "userId": "cfcc662c-7eda-4f91-8e44-12f8a4d574fe",
+      "userEmail": "test_1772537802342@example.com",
+      "criteria": {
+        "skills": [
+          "React",
+          "JavaScript",
+          "TypeScript"
+        ],
+        "minimumSalary": 0,
+        "locations": [
+          "Remote"
+        ],
+        "experience": [],
+        "jobTypes": [
+          "full-time"
+        ],
+        "seniorityLevels": []
+      },
+      "frequency": "daily",
+      "isActive": true,
+      "createdAt": "2026-03-03T11:38:58.178Z",
+      "lastNotified": "2026-03-03T11:38:58.178Z",
+      "notificationCount": 0,
+      "id": "e285e63d-2856-4529-b520-43e8275abb26"
+    },
+    {
+      "alertId": "4a21216c-8e05-4a05-9916-27f969a9e472",
+      "userId": "076295f5-1279-4317-9c86-eee7452ace38",
+      "userEmail": "test_1772538741968@example.com",
+      "criteria": {
+        "skills": [
+          "React",
+          "JavaScript",
+          "TypeScript"
+        ],
+        "minimumSalary": 0,
+        "locations": [
+          "Remote"
+        ],
+        "experience": [],
+        "jobTypes": [
+          "full-time"
+        ],
+        "seniorityLevels": []
+      },
+      "frequency": "daily",
+      "isActive": true,
+      "createdAt": "2026-03-03T11:55:09.781Z",
+      "lastNotified": "2026-03-03T11:55:09.781Z",
+      "notificationCount": 0,
+      "id": "fd8d7e7a-b02c-441f-9868-eab1f77076a3"
+    }
+  ],
+  "course_progress": [],
+  "shared_chats": []
 }

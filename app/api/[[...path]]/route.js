@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import pdf from 'pdf-parse/lib/pdf-parse.js';
 import mammoth from 'mammoth';
 
 // Shared backend modules
-import { getDb } from '@/lib/backend/db';
-import { getOpenAIClient, getModelStr, ALL_MODELS, GUARANTEED_MODELS, modelHealth, callModel, callMultiModel, callSingleModel } from '@/lib/backend/llm';
+import { getDb, isUsingMockDb } from '@/lib/backend/db';
+import { JWT_SECRET } from '@/lib/backend/config';
+import { getOpenAIClient, getModelStr, ALL_MODELS, GUARANTEED_MODELS, modelHealth, callModel, callMultiModel, callSingleModel, modelRotationIndex, getModelRotationIndex, incrementModelRotation } from '@/lib/backend/llm';
 import { generateToken, verifyToken } from '@/lib/backend/auth';
 import { logAnalytics } from '@/lib/backend/analytics-helper';
 import { CAREER_SYSTEM, CAREER_PATH_SYSTEM, RESUME_ATS_SYSTEM, INTERVIEW_SYSTEM, INTERVIEW_FEEDBACK_SYSTEM, JOB_MATCH_SYSTEM } from '@/lib/backend/prompts';
@@ -66,7 +68,7 @@ async function handleRegister(body, clientIp) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const userId = uuidv4();
-    const verificationToken = jwt.sign({ email: email.toLowerCase(), type: 'email-verify' }, process.env.JWT_SECRET || 'careergpt-jwt-secret-2025', { expiresIn: '24h' });
+    const verificationToken = jwt.sign({ email: email.toLowerCase(), type: 'email-verify' }, JWT_SECRET, { expiresIn: '24h' });
 
     const user = {
       id: userId,
@@ -127,7 +129,7 @@ async function handleRegister(body, clientIp) {
 
 async function handleVerifyEmail(token) {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'careergpt-jwt-secret-2025');
+    const decoded = jwt.verify(token, JWT_SECRET);
     if (decoded.type !== 'email-verify') {
       return NextResponse.json({ error: 'Invalid token type' }, { status: 400 });
     }
@@ -204,7 +206,7 @@ async function handleResendVerification(body) {
     }
 
     // Generate new verification token
-    const verificationToken = jwt.sign({ email: email.toLowerCase(), type: 'email-verify' }, process.env.JWT_SECRET || 'careergpt-jwt-secret-2025', { expiresIn: '24h' });
+    const verificationToken = jwt.sign({ email: email.toLowerCase(), type: 'email-verify' }, JWT_SECRET, { expiresIn: '24h' });
     await db.collection('users').updateOne(
       { email: email.toLowerCase() },
       { $set: { verificationToken } }
@@ -234,7 +236,7 @@ async function handleForgotPassword(body) {
       return NextResponse.json({ message: 'If an account exists, password reset link sent to email' });
     }
 
-    const resetToken = jwt.sign({ email: email.toLowerCase(), type: 'password-reset' }, process.env.JWT_SECRET || 'careergpt-jwt-secret-2025', { expiresIn: '30m' });
+    const resetToken = jwt.sign({ email: email.toLowerCase(), type: 'password-reset' }, JWT_SECRET, { expiresIn: '30m' });
     
     await db.collection('users').updateOne(
       { id: user.id },
@@ -266,7 +268,7 @@ async function handleResetPassword(body) {
     if (!token || !newPassword) return NextResponse.json({ error: 'Token and new password required' }, { status: 400 });
     if (newPassword.length < 6) return NextResponse.json({ error: 'Password must be at least 6 characters' }, { status: 400 });
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'careergpt-jwt-secret-2025');
+    const decoded = jwt.verify(token, JWT_SECRET);
     if (decoded.type !== 'password-reset') {
       return NextResponse.json({ error: 'Invalid token' }, { status: 400 });
     }
@@ -588,8 +590,8 @@ Responses:\n\n${valid.map(r => `--- ${r.name} ---\n${r.response}`).join('\n\n')}
     // Generate follow-up suggestions — rotate model
     let followUpSuggestions = [];
     try {
-      const suggestModel = GUARANTEED_MODELS[modelRotationIndex % GUARANTEED_MODELS.length];
-      modelRotationIndex++;
+      const suggestModel = GUARANTEED_MODELS[getModelRotationIndex() % GUARANTEED_MODELS.length];
+      incrementModelRotation();
       const suggestPrompt = `Based on this career conversation, suggest exactly 3 short follow-up questions (max 10 words each) the user might ask next. Return ONLY a JSON array of strings, no markdown:\nUser: ${message}\nAssistant: ${combinedResponse.substring(0, 500)}`;
       const suggestResult = await callModel(client, getModelStr(suggestModel.provider, suggestModel.model), [
         { role: 'system', content: 'Return only a JSON array of 3 short follow-up questions. No markdown, no explanation.' },
@@ -1101,8 +1103,8 @@ Evaluate thoroughly. Be honest and specific in scoring. Return ONLY valid JSON m
     const client = getOpenAIClient();
     const maxTok = isLast ? 4000 : 3000;
     // Rotate among guaranteed models for interview evaluation
-    const evalModel = GUARANTEED_MODELS[modelRotationIndex % GUARANTEED_MODELS.length];
-    modelRotationIndex++;
+    const evalModel = GUARANTEED_MODELS[getModelRotationIndex() % GUARANTEED_MODELS.length];
+    incrementModelRotation();
     const evalModelStr = getModelStr(evalModel.provider, evalModel.model);
     console.log(`[Interview] Evaluating with ${evalModel.name}`);
     const response = await callModel(client, evalModelStr, [
@@ -1910,7 +1912,7 @@ async function handleTestModels(request) {
     models: results,
     health: Object.fromEntries(ALL_MODELS.map(m => [m.name, modelHealth[m.name]])),
     testedAt: new Date().toISOString(),
-    rotationIndex: modelRotationIndex,
+    rotationIndex: getModelRotationIndex(),
   });
 }
 
@@ -2485,7 +2487,7 @@ async function handleHealth() {
     if (typeof db.command === 'function') {
       await db.command({ ping: 1 });
     }
-    return NextResponse.json({ status: 'healthy', usingMockDb, timestamp: new Date().toISOString() });
+    return NextResponse.json({ status: 'healthy', usingMockDb: isUsingMockDb(), timestamp: new Date().toISOString() });
   } catch (error) {
     return NextResponse.json({ status: 'unhealthy', error: error.message }, { status: 500 });
   }
