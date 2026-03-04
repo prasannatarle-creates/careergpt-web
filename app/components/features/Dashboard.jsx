@@ -14,6 +14,7 @@ export default function Dashboard({ user, onNavigate }) {
   const [profile, setProfile] = useState(null);
   const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [aiModels, setAiModels] = useState([]);
 
   useEffect(() => {
     if (user) {
@@ -22,6 +23,13 @@ export default function Dashboard({ user, onNavigate }) {
         setProfile(d.profile);
         setRecentActivity(d.recentActivity || []);
       }).catch(() => {}).finally(() => setLoading(false));
+
+      api.get('/models').then(d => {
+        if (d.models) setAiModels(d.models.map(m => ({
+          name: m.name, color: m.color,
+          status: m.guaranteed ? 'active' : 'beta'
+        })));
+      }).catch(() => {});
     } else {
       setLoading(false);
     }
@@ -282,13 +290,7 @@ export default function Dashboard({ user, onNavigate }) {
           AI Models Connected
         </h3>
         <div className="flex flex-wrap gap-3">
-          {[
-            { name: 'GPT-4.1', color: '#10a37f', status: 'active' },
-            { name: 'Claude 4 Sonnet', color: '#d97706', status: 'active' },
-            { name: 'Gemini 2.5 Flash', color: '#4285f4', status: 'active' },
-            { name: 'Grok 3 Mini', color: '#ef4444', status: 'beta' },
-            { name: 'Perplexity Sonar', color: '#22d3ee', status: 'beta' },
-          ].map(m => (
+          {aiModels.map(m => (
             <div key={m.name} className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border transition-all duration-300 hover:scale-[1.02]" style={{ borderColor: m.color + '25', backgroundColor: m.color + '08' }}>
               <div className={`w-2 h-2 rounded-full ${m.status === 'active' ? 'animate-pulse' : 'opacity-40'}`} style={{ backgroundColor: m.color }} />
               <span className="text-sm font-medium" style={{ color: m.color }}>{m.name}</span>

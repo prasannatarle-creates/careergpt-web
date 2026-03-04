@@ -5,13 +5,11 @@ import dynamic from 'next/dynamic';
 import { Brain, Loader2 } from 'lucide-react';
 import api from '@/lib/api-client';
 
-// Static imports for components needed immediately on load
 import AuthPage from '@/app/components/features/AuthPage';
 import Sidebar from '@/app/components/features/Sidebar';
 
-// Dynamic imports with code splitting â€” heavy feature components loaded on demand
 const Dashboard = dynamic(() => import('@/app/components/features/Dashboard'), { ssr: false, loading: () => <PageLoader /> });
-const AIChat = dynamic(() => import('@/app/components/features/AIChat'), { ssr: false, loading: () => <PageLoader /> });
+const Chat = dynamic(() => import('@/app/components/features/Chat'), { ssr: false, loading: () => <PageLoader /> });
 const ResumeAnalyzer = dynamic(() => import('@/app/components/features/ResumeAnalyzer'), { ssr: false, loading: () => <PageLoader /> });
 const CareerPath = dynamic(() => import('@/app/components/features/CareerPath'), { ssr: false, loading: () => <PageLoader /> });
 const MockInterview = dynamic(() => import('@/app/components/features/MockInterview'), { ssr: false, loading: () => <PageLoader /> });
@@ -29,7 +27,6 @@ function PageLoader() {
   );
 }
 
-// ============ MAIN APP ============
 function App() {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState(undefined); // undefined = loading, null = guest
@@ -75,7 +72,7 @@ function App() {
         </div>
         <div className="flex items-center gap-2">
           <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
-          <span className="text-sm text-slate-400">Loading CareerGPT...</span>
+          <span className="text-sm text-slate-400">Loading...</span>
         </div>
       </div>
     </div>
@@ -92,7 +89,7 @@ function App() {
     switch (page) {
       case 'dashboard': return <Dashboard user={user} onNavigate={setPage} />;
       case 'profile': return <UserProfile user={user} onUpdate={(u) => setUser(u)} />;
-      case 'chat': return <AIChat />;
+      case 'chat': return <Chat />;
       case 'resume': return <ResumeAnalyzer />;
       case 'career': return <CareerPath onNavigate={setPage} user={user} />;
       case 'interview': return <MockInterview />;

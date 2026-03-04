@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 import pdf from 'pdf-parse/lib/pdf-parse.js';
 import mammoth from 'mammoth';
 
-// Shared backend modules
 import { getDb, isUsingMockDb } from '@/lib/backend/db';
 import { JWT_SECRET } from '@/lib/backend/config';
 import { getOpenAIClient, getModelStr, ALL_MODELS, GUARANTEED_MODELS, modelHealth, callModel, callMultiModel, callSingleModel, modelRotationIndex, getModelRotationIndex, incrementModelRotation } from '@/lib/backend/llm';
@@ -13,7 +12,6 @@ import { generateToken, verifyToken } from '@/lib/backend/auth';
 import { logAnalytics } from '@/lib/backend/analytics-helper';
 import { CAREER_SYSTEM, CAREER_PATH_SYSTEM, RESUME_ATS_SYSTEM, INTERVIEW_SYSTEM, INTERVIEW_FEEDBACK_SYSTEM, JOB_MATCH_SYSTEM } from '@/lib/backend/prompts';
 
-// External utility imports
 const { sendEmail, emailTemplates } = require('../../../lib/email.js');
 const { authLimiter, registerLimiter } = require('../../../lib/rateLimiter.js');
 const { parseResumeStructure, calculateExperienceYears, extractSkills, detectSeniorityLevel, detectFocusArea } = require('../../../lib/resumeParser.js');
@@ -26,9 +24,7 @@ const { analyzeSkillGaps, getRecommendedCourses, generateLearningPath, trackCour
 const { getDashboardMetrics, calculateDAU, calculateWAU, calculateMAU, analyzeFunnel, getUserSegmentation, analyzeCohorts, getModuleUsage } = require('../../../lib/analyticsDashboard.js');
 const { convertToMarkdown, convertToHTML, createShareLink, getSharedChat, revokeShareLink, getUserShareLinks, exportAsMarkdown, exportAsHTML } = require('../../../lib/chatExportSharing.js');
 
-// ============ ROUTE HANDLERS ============
 
-// --- AUTH ---
 async function handleRegister(body, clientIp) {
   try {
     // Rate limiting: max 3 registrations per hour per IP
@@ -335,7 +331,6 @@ async function handleLogin(body, clientIp) {
   }
 }
 
-// --- PROFILE ---
 async function handleGetProfile(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -384,7 +379,6 @@ async function handleUpdateProfile(request) {
   return NextResponse.json({ success: true });
 }
 
-// --- PROFILE AVATAR ---
 async function handleUpdateAvatar(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -406,7 +400,6 @@ async function handleUpdateAvatar(request) {
   }
 }
 
-// --- CHANGE PASSWORD ---
 async function handleChangePassword(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -435,7 +428,6 @@ async function handleChangePassword(request) {
   }
 }
 
-// --- CAREER CHAT ---
 async function handleChatSend(request) {
   const auth = verifyToken(request);
   const body = await request.json();
@@ -653,7 +645,6 @@ async function handleRenameSession(request) {
   return NextResponse.json({ success: true });
 }
 
-// --- STRUCTURED CAREER PATH ---
 async function handleGenerateCareerPath(request) {
   const auth = verifyToken(request);
   const body = await request.json();
@@ -812,7 +803,6 @@ async function handleGetCareerPaths(request) {
   return NextResponse.json({ paths });
 }
 
-// --- RESUME UPLOAD & ATS ANALYSIS ---
 async function handleResumeUpload(request) {
   try {
     // Support both FormData (file upload) and JSON (text paste) formats
@@ -996,7 +986,6 @@ async function handleGetResume(request, resumeId) {
   return NextResponse.json({ resume });
 }
 
-// --- MOCK INTERVIEW ---
 async function handleInterviewStart(request) {
   const auth = verifyToken(request);
   const body = await request.json();
@@ -1175,7 +1164,6 @@ Evaluate thoroughly. Be honest and specific in scoring. Return ONLY valid JSON m
   }
 }
 
-// --- JOB MATCHING ---
 async function handleJobMatch(request) {
   const auth = verifyToken(request);
   const body = await request.json();
@@ -1347,7 +1335,6 @@ Return ONLY valid JSON matching the system prompt schema.`;
   }
 }
 
-// --- JOB MATCH HISTORY ---
 async function handleJobMatchHistory(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -1366,7 +1353,6 @@ async function handleJobMatchHistory(request) {
   }
 }
 
-// --- SAVED JOBS ---
 async function handleSaveJob(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -1477,7 +1463,6 @@ async function handleGetSavedJobs(request) {
   }
 }
 
-// --- JOB ALERTS ---
 async function handleCreateJobAlert(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -1550,7 +1535,6 @@ async function handleDeleteJobAlert(request) {
   }
 }
 
-// --- LIVE JOB SEARCH ---
 async function handleLiveJobSearch(request) {
   const auth = verifyToken(request);
   const body = await request.json();
@@ -1616,7 +1600,6 @@ async function handleLiveJobSearch(request) {
   }
 }
 
-// --- PHASE 2: RESUME A/B TESTING ---
 async function handleCreateResumeVariant(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -1702,7 +1685,6 @@ async function handleResumeOptimizationRecommendations(request) {
   }
 }
 
-// --- PHASE 2: STREAMING CHAT ---
 async function handleChatSendStreamWrapper(request) {
   // Wrapper that passes required dependencies to streaming function
   try {
@@ -1720,7 +1702,6 @@ async function handleChatSendStreamWrapper(request) {
   }
 }
 
-// --- PHASE 2: INTERVIEW TRANSCRIPTION & REPORTS ---
 async function handleInterviewUploadAudio(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -1857,7 +1838,6 @@ async function handleExportInterviewReport(request, reportId) {
   }
 }
 
-// --- MODEL HEALTH TEST ---
 async function handleTestModels(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -1916,7 +1896,6 @@ async function handleTestModels(request) {
   });
 }
 
-// --- ADMIN ANALYTICS ---
 async function handleGetAnalytics(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -1964,7 +1943,6 @@ async function handleGetAnalytics(request) {
   });
 }
 
-// --- PHASE 3: CAREER LEARNING RESOURCES ---
 async function handleGenerateLearningPath(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -2150,7 +2128,6 @@ async function handleGetSkillGaps(request) {
   }
 }
 
-// --- PHASE 4: ANALYTICS DASHBOARD ---
 async function handleGetDashboard(request) {
   try {
     const db = await getDb();
@@ -2307,7 +2284,6 @@ async function handleGetModuleUsage(request) {
   }
 }
 
-// --- PHASE 5: CHAT EXPORT & SHARING ---
 async function handleExportChatMarkdown(request) {
   const auth = verifyToken(request);
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -2480,7 +2456,6 @@ async function handleGetPublicSharedChat(shareCode, password = null, clientIp = 
   }
 }
 
-// --- HEALTH ---
 async function handleHealth() {
   try {
     const db = await getDb();
@@ -2524,7 +2499,6 @@ async function handleHealth() {
   }
 }
 
-// ============ ROUTER ============
 function getPath(request) {
   return new URL(request.url).pathname.replace('/api', '');
 }
@@ -2624,24 +2598,19 @@ export async function POST(request) {
     if (path === '/job-alerts/delete') return handleDeleteJobAlert(request);
     if (path === '/jobs/live-search') return handleLiveJobSearch(request);
     
-    // Phase 2: Resume A/B Testing
     if (path === '/resume/create-variant') return handleCreateResumeVariant(request);
     if (path === '/resume/track-metric') return handleTrackResumeMetric(request);
     if (path === '/resume/recommendations') return handleResumeOptimizationRecommendations(request);
     
-    // Phase 2: Streaming Chat
     if (path === '/chat/send-stream') return handleChatSendStreamWrapper(request);
     
-    // Phase 2: Interview Transcription & Reports
     if (path === '/interview/upload-audio') return handleInterviewUploadAudio(request);
     if (path === '/interview/generate-report') return handleGenerateInterviewReport(request);
     
-    // Phase 3: Career Learning Resources
     if (path === '/learning-path/generate') return handleGenerateLearningPath(request);
     if (path === '/learning-path/skill-gaps') return handleGetSkillGaps(request);
     if (path === '/course/track-progress') return handleTrackCourseProgress(request);
     
-    // Phase 5: Chat Export & Sharing
     if (path === '/chat/export-markdown') return handleExportChatMarkdown(request);
     if (path === '/chat/export-html') return handleExportChatHTML(request);
     if (path === '/chat/create-share') return handleCreateShareLink(request);

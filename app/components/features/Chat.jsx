@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import api, { formatDate, formatDateTime } from '@/lib/api-client';
 
-export default function AIChat() {
+export default function Chat() {
   const [sessions, setSessions] = useState([]);
   const [activeSession, setActiveSession] = useState(null);
   const [messages, setMessages] = useState([]);

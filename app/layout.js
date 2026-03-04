@@ -2,9 +2,13 @@ import './globals.css';
 
 export const metadata = {
   title: 'CareerGPT - AI-Powered Career Guidance Platform',
-  description: 'Get AI-driven career guidance, resume analysis, mock interviews, and personalized career path recommendations. Powered by advanced AI models.',
+  description: 'AI-Powered career guidance, resume analysis, mock interviews, and personalized career path recommendations.',
   keywords: 'career, AI, guidance, resume, interview, career path, job matching',
-  viewport: 'width=device-width, initial-scale=1',
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }) {
