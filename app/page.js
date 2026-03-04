@@ -94,6 +94,7 @@ function App() {
       case 'career': return <CareerPath onNavigate={setPage} user={user} />;
       case 'interview': return <MockInterview />;
       case 'jobs': return <Jobs />;
+      case 'jobboard': return <Jobs />;
       case 'savedjobs': return <SavedJobs />;
       case 'learning': return <LearningCenter />;
       case 'analytics': return <Analytics />;

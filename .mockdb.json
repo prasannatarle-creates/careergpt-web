@@ -3193,6 +3193,13 @@
         "sessionId": "7bed92ef-f5c2-4c03-ba0c-8545c394418d"
       },
       "createdAt": "2026-03-04T04:11:32.070Z"
+    },
+    {
+      "id": "17414808-e867-4d29-9140-62c64dd62c49",
+      "type": "user_login",
+      "userId": "1b8432a4-9d05-4599-8a50-d022ad304cd8",
+      "metadata": {},
+      "createdAt": "2026-03-04T05:02:53.920Z"
     }
   ],
   "sessions": [
